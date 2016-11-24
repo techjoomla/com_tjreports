@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset>
+		<field
+				name="id"
+				type="hidden"
+				/>
+		<field
+				name="title"
+				type="text"
+				label="Plugin Name"
+				size="40"
+				class="inputbox"
+				default=""
+				/>
+		<field
+				name="alias"
+				type="text"
+				label="URL slug"
+				size="40"
+				class="inputbox"
+				default=""
+				/>
+	</fieldset>
+</form>

@@ -42,7 +42,7 @@ class TjreportsViewTjreports extends JViewLegacy
 		}
 	*/
 
-		// TjreportsHelper::addSubmenu('tjreports');
+	//	TjreportsHelper::addSubmenu('tjreports');
 
 		// Set the tool-bar and number of found items
 		$this->addToolBar();
@@ -61,6 +61,7 @@ class TjreportsViewTjreports extends JViewLegacy
 	 */
 	protected function addToolBar()
 	{
+
 		$state = $this->get('State');
 		$canDo = TjreportsHelper::getActions();
 

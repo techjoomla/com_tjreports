@@ -40,6 +40,7 @@ class TjreportsModelReports extends JModelList
 	{
 		$input = JFactory::getApplication()->input;
 		$mainframe  = JFactory::getApplication();
+		$user       = JFactory::getUser();
 
 		$reportName = $input->get('reportToBuild', '', 'STRING');
 
@@ -95,11 +96,31 @@ class TjreportsModelReports extends JModelList
 		$sortCol       = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_sortCol', '');
 		$sortOrder     = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_sortOrder', '');
 
+		$reportId = $input->get('reportId', '', 'INT');
+
+		if (!$reportId)
+		{
+			$session = JFactory::getSession();
+			$reportId = $session->get('reportId', '');
+		}
+
+		$created_by = 0;
+
+		if (!empty($reportId))
+		{
+			$permission_viewall = $this->checkpermissions($reportId);
+
+			if (!$permission_viewall)
+			{
+				$created_by = $user->id;
+			}
+		}
+
 		$dispatcher = JDispatcher::getInstance();
 		JPluginHelper::importPlugin('tjreports');
 		$data = $dispatcher->trigger('plg' . $reportName . 'RenderPluginHTML', array
 																					(
-																						$filters, $colNames, $rowsTofetch, $limit_start, $sortCol, $sortOrder, $action, ''
+																						$filters, $colNames, $rowsTofetch, $limit_start, $sortCol, $sortOrder, $action, $created_by, ''
 																					)
 									);
 
@@ -331,17 +352,24 @@ class TjreportsModelReports extends JModelList
 	/**
 	 * Function to get the course filter
 	 *
+	 * @param   INT  $created_by  created_by
+	 *
 	 * @return  object
 	 *
 	 * @since 1.0.0
 	 */
-	public function getCourseFilter()
+	public function getCourseFilter($created_by)
 	{
 		$db = JFactory::getDbo();
 
 		$query = $db->getQuery(true);
 		$query->select('DISTINCT(id) as id,title');
 		$query->from('#__tjlms_courses');
+
+		if ($created_by)
+		{
+			$query->where('created_by=' . $created_by);
+		}
 
 		$db->setQuery($query);
 		$courses = $db->loadObjectList();
@@ -362,17 +390,27 @@ class TjreportsModelReports extends JModelList
 	/**
 	 * Function to get the lesson filter
 	 *
+	 * @param   INT  $created_by  created_by
+	 *
 	 * @return  object
 	 *
 	 * @since 1.0.0
 	 */
-	public function getLessonFilter()
+	public function getLessonFilter($created_by)
 	{
 		$db = JFactory::getDbo();
 
 		$query = $db->getQuery(true);
-		$query->select('DISTINCT(id) as id,name');
-		$query->from('#__tjlms_lessons');
+		$query->select('DISTINCT(l.id) as id,l.name');
+		$query->from('#__tjlms_lessons as l');
+		$query->join('INNER', '`#__tjlms_courses` as c ON c.id = l.course_id');
+
+		// Check for permission
+
+		if ($created_by)
+		{
+			$query->where('c.created_by=' . $created_by);
+		}
 
 		$db->setQuery($query);
 		$lessons = $db->loadObjectList();
@@ -499,5 +537,27 @@ class TjreportsModelReports extends JModelList
 		}
 
 		return $options;
+	}
+
+	/**
+	 * Check for permissions
+	 *
+	 * @param   INT  $reportId  report id
+	 *
+	 * @return    object
+	 *
+	 * @since    1.0
+	 */
+
+	public function checkpermissions($reportId)
+	{
+		$user       = JFactory::getUser();
+
+		if ($reportId)
+		{
+			$allow = $user->authorise('core.viewall', 'com_tjreports.tjreport.' . $reportId);
+
+			return $allow;
+		}
 	}
 }

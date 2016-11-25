@@ -27,6 +27,10 @@ $report = $input->get('reportToBuild','','string');
 $client = $input->get('client','','string');
 $reportId = $input->get('reportId','','INT');
 
+// Filters will get values from session
+$session = JFactory::getSession();
+$session->set('reportId', $reportId);
+
 if(empty($report))
 {
 	$this->items ="";

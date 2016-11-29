@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.1" type="plugin" group="tjreports" method="upgrade">
+	<name>PLG_TJREPORTS_ATTEMPTREPORT</name>
+	<author>Techjoomla</author>
+	<creationDate>17th June 2016</creationDate>
+	<copyright>(C)techjoomla.com</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>contact@techjoomla.com</authorEmail>
+	<authorUrl>www.techjoomla.com</authorUrl>
+	<version>1.0.2</version>
+	<description>PLG_TJREPORTS_ATTEMPTREPORT_DESC</description>
+
+	<files>
+		<filename plugin="attemptreport">attemptreport.php</filename>
+		<filename>index.html</filename>
+		<folder>attemptreport</folder>
+	</files>
+
+	<languages>
+		<language tag="en-GB">language/en-GB/en-GB.plg_tjreports_attemptreport.ini</language>
+		<language tag="en-GB">language/en-GB/en-GB.plg_tjreports_attemptreport.sys.ini</language>
+	</languages>
+</extension>

@@ -23,7 +23,7 @@ class TjreportsControllerTjreport extends JControllerForm
 	 * Contructor
 	 */
 
-	function __construct()
+	public function __construct()
 	{
 		$this->view_list = 'tjreports';
 		parent::__construct();

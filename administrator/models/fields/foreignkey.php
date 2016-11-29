@@ -80,7 +80,7 @@ class JFormFieldForeignKey extends JFormField
 			{
 				$fk_value .= $db->quoteName($field) . ', \' \', ';
 			}
-			
+
 			$fk_value = substr($fk_value, 0, -7);
 			$fk_value .= ') AS ' . $db->quoteName($this->value_field);
 		}

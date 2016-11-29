@@ -49,9 +49,7 @@
     <administration>
         <menu img="media/com_tjreports/images/s_com_tjreports.png" >COM_TJREPORTS</menu>
         <submenu>
-
-			<menu link="option=com_tjreports&amp;view=tests" view="tests" img="media/com_tjreports/images/s_.png" alt="Tjreports/Tests">COM_TJREPORTS_TITLE_TESTS</menu>
-
+			<menu link="option=com_tjreports&amp;view=tjreports" view="tjreports" img="media/com_tjreports/images/s_.png" alt="Tjreports/Tjreports">COM_TJREPORTS_TITLE_TJREPORTS</menu>
         </submenu>
         <files folder="administrator">
             <filename>access.xml</filename>

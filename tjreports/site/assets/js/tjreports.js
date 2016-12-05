@@ -386,7 +386,7 @@ function validate_file(thisfile,mod_id,subformat)
 
 }
 
-function getReportdata(page, colToShow, limit, sortCol, sortOrder, action)
+function getReportdata(page, colToShow, limit, sortCol, sortOrder, action, allow_permission, reportId)
 {
 	var filter = [];
 	var filterTitle = [];
@@ -441,7 +441,7 @@ function getReportdata(page, colToShow, limit, sortCol, sortOrder, action)
 		url: site_root+"index.php?option=com_tjreports&task=reports.getFilterData",
 		type: "POST",
 		dataType: "json",
-		data:{filterValue:filter, filterName:filterTitle, limit:limit, page:page, colToShow:colToShow, sortCol:sortCol, sortOrder:sortOrder,action:action,reportToBuild:reportToBuild},
+		data:{filterValue:filter, filterName:filterTitle, limit:limit, page:page, colToShow:colToShow, sortCol:sortCol, sortOrder:sortOrder,action:action,reportToBuild:reportToBuild,allow_permission:allow_permission,reportId:reportId},
 		success: function(data)
 		{
 			techjoomla.jQuery('#report-containing-div').html('');
@@ -455,6 +455,9 @@ function getReportdata(page, colToShow, limit, sortCol, sortOrder, action)
 
 function getFilterdata(page, event, action, sortCol, sortOrder)
 {
+	allow_permission = techjoomla.jQuery('#allow_permission').val();
+	reportId = techjoomla.jQuery('#reportId').val();
+
 	sortCol = typeof sortCol !== 'undefined' ? sortCol : '';
 	sortOrder = typeof sortOrder !== 'undefined' ? sortOrder : '';
 
@@ -496,12 +499,12 @@ function getFilterdata(page, event, action, sortCol, sortOrder)
 	{
 		if(event.which == 13)
 		{
-			getReportdata(page, colToShow, limit, sortCol, sortOrder, action);
+			getReportdata(page, colToShow, limit, sortCol, sortOrder, action, allow_permission, reportId);
 		}
 	}
 	else
 	{
-		getReportdata(page, colToShow, limit, sortCol, sortOrder, action);
+		getReportdata(page, colToShow, limit, sortCol, sortOrder, action, allow_permission, reportId);
 	}
 }
 

@@ -43,7 +43,8 @@ class TjreportsViewReports extends JViewLegacy
 	public function display($tpl = null)
 	{
 		$canDo = TjreportsHelpersTjreports::getActions();
-		$user_id = JFactory::getUser()->id;
+		$user       = JFactory::getUser();
+		$user_id    = $user->id;
 		$input = JFactory::getApplication()->input;
 
 		if (!$canDo->get('view.reports'))
@@ -58,6 +59,14 @@ class TjreportsViewReports extends JViewLegacy
 		$client = $input->get('client', '', 'STRING');
 		$reportToBuild = $input->get('reportToBuild', '', 'STRING');
 		$reportId = $input->get('reportId', '', 'INT');
+
+		if ($reportId)
+		{
+			$allow_permission = $user->authorise('core.viewall', 'com_tjreports.tjreport.' . $reportId);
+			$input->set('allow_permission', $allow_permission);
+		}
+
+		$input->set('reportId', $reportId);
 
 		// Get respected plugin data
 		$this->items		= $this->get('Data');
@@ -128,11 +137,11 @@ class TjreportsViewReports extends JViewLegacy
 		$bar = JToolBar::getInstance('toolbar');
 		JToolBarHelper::title(JText::_('COM_TJREPORTS_TITLE_REPORT'), 'list');
 
-		/*$button = "<a class='btn' class='button'
+		$button = "<a class='btn' class='button'
 			type='submit' onclick=\"Joomla.submitbutton('reports.csvexport');\" href='#'><span title='Export'
 			class='icon-download'></span>" . JText::_('COM_TJREPORTS_CSV_EXPORT') . "</a>";
 		$bar->appendButton('Custom', $button);
-		*/
+
 /*
 		foreach ($this->enableReportPlugins as $eachPlugin) :
 				$button = "<a class='btn button report-btn' id='" . $eachPlugin->element . "'
@@ -141,9 +150,12 @@ class TjreportsViewReports extends JViewLegacy
 				$bar->appendButton('Custom', $button);
 		endforeach;
 */
-		// $this->extra_sidebar = '';
 
-		// R require_once JPATH_SITE . '/helpers/tjreports.php';
+/*
+ * 		// CSV export code for ajax based
+		$this->extra_sidebar = '';
+
+		require_once JPATH_SITE . '/helpers/tjreports.php';
 		$state	= $this->get('State');
 		$bar = JToolBar::getInstance('toolbar');
 		JToolBarHelper::title(JText::_('COM_TJREPORTS_TITLE'), 'list');
@@ -156,8 +168,8 @@ class TjreportsViewReports extends JViewLegacy
 			$message['inprogress'] = JText::_("COM_TJREPORTS_EXPORT_FILE_NOTICE");
 			$bar->appendButton('CsvExport', $message);
 		}
-		// Show trash and delete for components that uses the state field
-		// JToolBarHelper::deleteList(JText::_('COM_TJREPORTS_SURE_DELETE'), 'attemptreport.delete', 'JTOOLBAR_DELETE');
+
 		$this->extra_sidebar = '';
+*/
 	}
 }

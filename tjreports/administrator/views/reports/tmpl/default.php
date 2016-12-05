@@ -13,7 +13,8 @@ defined('_JEXEC') or die;
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 $mainframe  = JFactory::getApplication();
 $document = JFactory::getDocument();
-$user_id = JFactory::getUser()->id;
+$user = JFactory::getUser();
+$user_id = $user->id;
 
 $document->addScript(JURI::root().'/components/com_tjreports/assets/js/jquery.twbsPagination.js');
 $document->addScript(JURI::root().'/components/com_tjreports/assets/js/tjreports.js');
@@ -25,9 +26,10 @@ $report = $input->get('reportToBuild','','string');
 $client = $input->get('client','','string');
 $reportId = $input->get('reportId','','INT');
 
-// Filters will get values from session
-$session = JFactory::getSession();
-$session->set('reportId', $reportId);
+if ($reportId)
+{
+	$allow_permission = $user->authorise('core.viewall', 'com_tjreports.tjreport.' . $reportId);
+}
 
 $currentQuery = $report . '_' . $queryId;
 
@@ -167,6 +169,8 @@ $document->addScriptDeclaration('var reportId = "' . $reportId . '"');
 						<ul id="pagination-demo" class="pagination-sm ">
 						</ul>
 					</div>
+					<input type="hidden" id="allow_permission" name="allow_permission" value="<?php echo  $allow_permission; ?>" />
+					<input type="hidden" id="reportId" name="reportId" value="<?php echo  $reportId; ?>" />
 					<input type="hidden" id="task" name="task" value="" />
 					<input type="hidden" name="boxchecked" value="0" />
 					<input type="hidden" name="totalRows" id="totalRows" value="<?php echo $this->items['total_rows']; ?>" />

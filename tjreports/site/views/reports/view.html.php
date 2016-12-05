@@ -58,6 +58,16 @@ class TjreportsViewReports extends JViewLegacy
 
 		$this->options		= $this->get('reportoptions');
 
+		$user       = JFactory::getUser();
+
+		if ($reportId)
+		{
+			$allow_permission = $user->authorise('core.viewall', 'com_tjreports.tjreport.' . $reportId);
+			$input->set('allow_permission', $allow_permission);
+		}
+
+		$input->set('reportId', $reportId);
+
 		// Get respected plugin data
 		$this->items		= $this->get('Data');
 

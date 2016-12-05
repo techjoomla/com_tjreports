@@ -45,6 +45,7 @@ class TjreportsControllerReports extends JControllerAdmin
 		$sortOrder = $post->get('sortOrder', '', 'STRING');
 		$colNames  = $post->get('colToShow', '', 'ARRAY');
 		$action    = $post->get('action', '', 'STRING');
+		$allow_permission    = $post->get('allow_permission', '', 'INT');
 
 		$limit_start = 0;
 
@@ -84,10 +85,16 @@ class TjreportsControllerReports extends JControllerAdmin
 		$mainframe  = JFactory::getApplication();
 		$input = JFactory::getApplication()->input;
 		$reportName = $input->get('reportToBuild', '', 'STRING');
+		$reportId = $input->get('reportId', '', 'INT');
 
 		if (empty($reportName))
 		{
 			$reportName = $mainframe->getUserState('com_tjreports' . '.reportName', '');
+		}
+
+		if (empty($reportId))
+		{
+			$reportId = $mainframe->getUserState('com_tjreports' . '.reportId', '');
 		}
 
 		$colNames      = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_colNames', '');
@@ -98,6 +105,19 @@ class TjreportsControllerReports extends JControllerAdmin
 		$limit_start   = 0;
 		$action        = 'csv';
 
+		$created_by = 0;
+		$user = JFactory::getUser();
+
+		$allow_permission = $input->get('allow_permission', '', 'INT');
+
+		if (!empty($reportId))
+		{
+			if (!$allow_permission)
+			{
+				$created_by = $user->id;
+			}
+		}
+
 		$dispatcher = JDispatcher::getInstance();
 		JPluginHelper::importPlugin('tjreports');
 		$data = $dispatcher->trigger('plg' . $reportName . 'GetData', array(
@@ -105,10 +125,9 @@ class TjreportsControllerReports extends JControllerAdmin
 																				$colNames,
 																				$rows_to_fetch,
 																				$limit_start,
-																				'',
 																				$sortCol,
 																				$sortOrder,
-																				$action
+																				$created_by
 																			)
 									);
 
@@ -289,7 +308,7 @@ class TjreportsControllerReports extends JControllerAdmin
 	}
 
 	/**
-	 * Function used to get report
+	 * Function used to get all reports
 	 *
 	 * @return  json
 	 *

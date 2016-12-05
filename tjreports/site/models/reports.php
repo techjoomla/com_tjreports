@@ -39,9 +39,27 @@ class TjreportsModelReports extends JModelList
 	public function getData($filters = array(), $colNames = array(), $rowsTofetch = 20, $limit_start = 0,  $sortCol = '', $sortOrder = '', $action = '')
 	{
 		$input = JFactory::getApplication()->input;
+		$post  = $input->post;
 		$mainframe  = JFactory::getApplication();
 		$user       = JFactory::getUser();
 
+		// This takes post value from post request of ajax call
+		$allow_permission    = $post->get('allow_permission', '', 'INT');
+		$reportId    = $post->get('reportId', '', 'INT');
+
+		if (!$allow_permission)
+		{
+			// If allow_permission not yet set take value from function get input from view.html
+			$allow_permission = $input->get('allow_permission', '', 'INT');
+		}
+
+		if (!$reportId)
+		{
+			// If reportId not yet set take value from function get input from view.html
+			$reportId = $input->get('reportId', '', 'INT');
+		}
+
+		// If reportname is not in url or input get it from state
 		$reportName = $input->get('reportToBuild', '', 'STRING');
 
 		if (empty($reportName))
@@ -96,21 +114,11 @@ class TjreportsModelReports extends JModelList
 		$sortCol       = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_sortCol', '');
 		$sortOrder     = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_sortOrder', '');
 
-		$reportId = $input->get('reportId', '', 'INT');
-
-		if (!$reportId)
-		{
-			$session = JFactory::getSession();
-			$reportId = $session->get('reportId', '');
-		}
-
 		$created_by = 0;
 
 		if (!empty($reportId))
 		{
-			$permission_viewall = $this->checkpermissions($reportId);
-
-			if (!$permission_viewall)
+			if (!$allow_permission)
 			{
 				$created_by = $user->id;
 			}
@@ -516,6 +524,10 @@ class TjreportsModelReports extends JModelList
 
 		$query->select('r.title as text, r.id as value');
 		$query->from('#__tj_reports as r');
+		$query->join('INNER', '`#__extensions` as ex ON ex.element = r.plugin');
+		$query->where('ex.type=' . $db->quote("plugin"));
+		$query->where('ex.folder=' . $db->quote("tjreports"));
+		$query->where('ex.enabled= 1');
 		$query->where('(r.parent = 0  or r.userid = ' . $user_id . ')');
 		$query->where('r.id not in ( select `parent` from #__tj_reports as tr where tr.userid=' . $user_id . ' and tr.`default`=1)');
 
@@ -559,5 +571,121 @@ class TjreportsModelReports extends JModelList
 
 			return $allow;
 		}
+	}
+
+	/**
+	 * Function to get the payment statues
+	 *
+	 * @return  object
+	 *
+	 * @since 1.0.0
+	 */
+	public function getPaymentFilter()
+	{
+		$paymentStatus[]      = JHTML::_('select.option', '', JText::_('COM_TJREPORTS_FILTER_SELECT_PAYMENT_STATUS'));
+		$paymentStatus['I']   = JText::_('COM_TJLMS_PSTATUS_INITIATED');
+		$paymentStatus['P']   = JText::_('COM_TJLMS_PSTATUS_PENDING');
+		$paymentStatus['C']   = JText::_('COM_TJLMS_PSTATUS_COMPLETED');
+		$paymentStatus['D']   = JText::_('COM_TJLMS_PSTATUS_DECLINED');
+		$paymentStatus['E']   = JText::_('COM_TJLMS_PSTATUS_FAILED');
+		$paymentStatus['UR']  = JText::_('COM_TJLMS_PSTATUS_UNDERREVIW');
+		$paymentStatus['RF']  = JText::_('COM_TJLMS_PSTATUS_REFUNDED');
+		$paymentStatus['CRV'] = JText::_('COM_TJLMS_PSTATUS_CANCEL_REVERSED');
+		$paymentStatus['RV']  = JText::_('COM_TJLMS_PSTATUS_REVERSED');
+
+		return $paymentStatus;
+	}
+
+	/**
+	 * Function to get the course status
+	 *
+	 * @param   INT  $created_by  created_by
+	 *
+	 * @return  object
+	 *
+	 * @since 1.0.0
+	 */
+	public function getCourseStatusFilter($created_by)
+	{
+		$paymentStatus[]    = JHTML::_('select.option', '', JText::_('COM_TJREPORTS_FILTER_SELECT_COURSE_STATUS'));
+		$paymentStatus['I'] = JText::_('COM_TJREPORTS_COURSE_STATUS_INCOMPLETE');
+		$paymentStatus['C'] = JText::_('COM_TJREPORTS_COURSE_STATUS_COMPLETE');
+
+		return $paymentStatus;
+	}
+
+	/**
+	 * Function to get all usergroups
+	 *
+	 * @return  objectList
+	 *
+	 * @since 1.0.0
+	 */
+	public function getUserGroupFilter()
+	{
+		// Initialize variables.
+		$db    = JFactory::getDbo();
+		$query = $db->getQuery(true);
+
+		$query->select('r.title as text, r.id as value');
+		$query->from('#__usergroups as r');
+		$db->setQuery($query);
+		$reports = $db->loadObjectList();
+
+		$options[] = JHTML::_('select.option', '', JText::_('COM_TJREPORTS_FILTER_SELECT_USERGROUP'));
+
+		foreach ($reports as $repo)
+		{
+			$options[] = JHtml::_('select.option', $repo->value, $repo->text);
+		}
+
+		return $options;
+	}
+
+	/**
+	 * Function to get payment processor
+	 *
+	 * @return  object
+	 *
+	 * @since 1.0.0
+	 */
+	public function getPaymentProcessorFilter()
+	{
+		$db = JFactory::getDbo();
+
+		$query = $db->getQuery(true);
+		$query->select('o.processor');
+		$query->from('#__tjlms_orders as o');
+		$query->group('o.processor');
+		$db->setQuery($query);
+		$processors = $db->loadObjectList();
+
+		$processorFilter[] = JHTML::_('select.option', '', JText::_('COM_TJREPORTS_FILTER_SELECT_PROCESSOR'));
+
+		if (!empty($processors))
+		{
+			foreach ($processors as $eachUser)
+			{
+				$processorFilter[] = JHTML::_('select.option', $eachUser->processor, $eachUser->processor);
+			}
+		}
+
+		return $processorFilter;
+	}
+
+	/**
+	 * Function to set coupon discount filter
+	 *
+	 * @return  object
+	 *
+	 * @since 1.0.0
+	 */
+	public function getCouponDiscountFilter()
+	{
+		$discount[]      = JHTML::_('select.option', '', JText::_('COM_TJREPORTS_FILTER_SELECT_COUPON_DISCOUNT_STATUS'));
+		$discount['YES'] = JText::_('COM_TJREPORTS_FILTER_SELECT_COUPON_DISCOUNT_STATUS_YES');
+		$discount['NO']  = JText::_('COM_TJREPORTS_FILTER_SELECT_COUPON_DISCOUNT_STATUS_NO');
+
+		return $discount;
 	}
 }

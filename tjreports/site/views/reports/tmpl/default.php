@@ -16,9 +16,9 @@ $mainframe  = JFactory::getApplication('admin');
 $link = 'index.php?option=com_tjreports&view=reports';
 $menu = $mainframe->getMenu();
 $menuItem = $menu->getItems( 'link', $link, true );
-
-$document = JFactory::getDocument();
-$user_id = JFactory::getUser()->id;
+$document   = JFactory::getDocument();
+$user       = JFactory::getUser();
+$user_id    = $user->id;
 $document->addScript(JURI::base(true).'/components/com_tjreports/assets/js/jquery.twbsPagination.js');
 $document->addScript(JURI::base(true).'/components/com_tjreports/assets/js/tjreports.js');
 $input = JFactory::getApplication()->input;
@@ -27,9 +27,10 @@ $report = $input->get('reportToBuild','','string');
 $client = $input->get('client','','string');
 $reportId = $input->get('reportId','','INT');
 
-// Filters will get values from session
-$session = JFactory::getSession();
-$session->set('reportId', $reportId);
+if ($reportId)
+{
+	$allow_permission = $user->authorise('core.viewall', 'com_tjreports.tjreport.' . $reportId);
+}
 
 if(empty($report))
 {
@@ -43,29 +44,7 @@ $document->addScriptDeclaration('var site_root = "' . JUri::root() . '"');
 $document->addScriptDeclaration('var current_user = "' . $user_id . '"');
 $document->addScriptDeclaration('var client = "' . $client . '"');
 $document->addScriptDeclaration('var reportId = "' . $reportId . '"');
-
-
-	//print_r($this->reports);
-/*
-	foreach ($this->reports as $repo)
-	{
-		if($repo->default == 0)
-		{
-			$reportId = $repo->parent;
-		}
-		else
-		{
-			$reportId = $repo->id;
-		}
-
-		echo $repo->name ."&nbsp&nbsp&nbsp&nbsp";
-		$url = 'index.php?option=com_tjreports&view=reports&client='. $repo->client .'&reportToBuild='.$repo->plugin.'&reportId='.$reportId.'&Itemid=563';
-		echo '<a href='.JRoute::_("$url").'>view </a>';
-		echo "<br>";
-
-	}
-
-	*/
+$document->addScriptDeclaration('var allow_permission = "' . $allow_permission . '"');
 
 ?>
 
@@ -120,18 +99,29 @@ $document->addScriptDeclaration('var reportId = "' . $reportId . '"');
 			<div class="row margint20">
 				<div class="col-md-10 col-lg-10 text-semibold">
 					<div>
-						<span>
-							<?php echo JText::_("COM_TJREPORTS_AVAILABLE_REPORT_LIST"); ?>
-						</span>
-						<span>
+						<div class="col-md-6">
+							<span>
+								<?php echo JText::_("COM_TJREPORTS_AVAILABLE_REPORT_LIST"); ?>
+							</span>
+							<span>
+								<?php
+									if (!empty($this->options)): ?>
+									<div>
+										<?php echo JHtml::_('select.genericlist', $this->options, "filter_selectplugin", 'class="" size="1" onchange="loadReport(this.value,' . $menuItem->id . ');" name="filter_selectplugin"', "value", "text",  $reportId);
+											?>
+									</div>
+								<?php endif; ?>
+							</span>
+						</div>
+						<div class="col-md-6">
 							<?php
-								if (!empty($this->options)): ?>
-								<div>
-									<?php echo JHtml::_('select.genericlist', $this->options, "filter_selectplugin", 'class="" size="1" onchange="loadReport(this.value,' . $menuItem->id . ');" name="filter_selectplugin"', "value", "text",  $reportId);
-										?>
-								</div>
-							<?php endif; ?>
-						</span>
+							if(!empty($reportId)):
+								echo "<a class='btn' class='button'
+										type='submit' onclick=\"Joomla.submitbutton('reports.csvexport');\" href='#'><span title='Export'
+									class='icon-download'></span>" . JText::_('COM_TJREPORTS_CSV_EXPORT') . "</a>";
+							endif
+							?>
+						</div>
 					</div>
 				</div>
 
@@ -199,7 +189,7 @@ $document->addScriptDeclaration('var reportId = "' . $reportId . '"');
 						<?php
 						if (!empty($this->saveQueriesList)): ?>
 							<div>
-									<?php echo JHtml::_('select.genericlist', $this->saveQueriesList, "filter_saveQuery", 'class="" size="1" onchange="getQueryResult(this.value);" name="filter_saveQuery"', "value", "text", $currentQuery);
+									<?php echo JHtml::_('select.genericlist', $this->saveQueriesList, "filter_saveQuery", 'class="" size="1" onchange="getQueryResult(this.value,'. $menuItem->id .');" name="filter_saveQuery"', "value", "text", $currentQuery);
 									?>
 							</div>
 						<?php endif; ?>
@@ -252,6 +242,8 @@ $document->addScriptDeclaration('var reportId = "' . $reportId . '"');
 					</div>
 				</div>
 
+				<input type="hidden" id="allow_permission" name="allow_permission" value="<?php echo  $allow_permission; ?>" />
+				<input type="hidden" id="reportId" name="reportId" value="<?php echo  $reportId; ?>" />
 				<input type="hidden" id="task" name="task" value="" />
 				<input type="hidden" name="boxchecked" value="0" />
 				<input type="hidden" name="totalRows" id="totalRows" value="<?php echo $this->items['total_rows']; ?>" />
@@ -269,17 +261,17 @@ function getColNames()
 	techjoomla.jQuery('.ColVis_collection').toggle();
 }
 
-function getQueryResult(id)
+function getQueryResult(id, Itemid)
 {
 	var queryId = id.split("_");
 
 	if (queryId=="")
 	{
-		window.location.href = 'index.php?option=com_tjreports&view=reports&reportToBuild='+reportToBuild+'&client='+client+'&reportId='+reportId;
+		window.location.href = 'index.php?option=com_tjreports&view=reports&reportToBuild='+reportToBuild+'&client='+client+'&reportId='+reportId+"&Itemid="+Itemid;
 	}
 	else
 	{
-		window.location.href = 'index.php?option=com_tjreports&view=reports&savedQuery=1&reportToBuild='+queryId[0]+'&client='+client+'&queryId='+queryId[1]+'&reportId='+reportId;
+		window.location.href = 'index.php?option=com_tjreports&view=reports&savedQuery=1&reportToBuild='+queryId[0]+'&client='+client+'&queryId='+queryId[1]+'&reportId='+reportId+"&Itemid="+Itemid;
 	}
 }
 

@@ -42,6 +42,7 @@ class TjreportsViewReports extends JViewLegacy
 		$user_id = JFactory::getUser()->id;
 		$input = JFactory::getApplication()->input;
 		$TjreportsModelReports = new TjreportsModelReports;
+		$app = JFactory::getApplication();
 /*
 		if (!$canDo->get('view.reports'))
 		{
@@ -50,9 +51,19 @@ class TjreportsViewReports extends JViewLegacy
 			return false;
 		}
 */
+
+		$client = $input->get('client', '', 'STRING');
+
+		// Get all vendars from backend
+		if (empty($client))
+		{
+			$params = JComponentHelper::getParams('com_tjreports');
+			$client = $params->get('vendars');
+			$input->set('client', $client);
+		}
+
 		// Get saved data
 		$queryId = $input->get('queryId', '0', 'INT');
-		$client = $input->get('client', '', 'STRING');
 		$reportToBuild = $input->get('reportToBuild', '', 'STRING');
 		$reportId = $input->get('reportId', '', 'INT');
 

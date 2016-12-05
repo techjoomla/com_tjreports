@@ -104,8 +104,14 @@ class PlgTjreportsStudentcoursereport extends JPlugin
 				case 'totaltimespent':
 					$query->select('eu.user_id');
 					break;
+				case 'name':
+					$query->select('u.name');
+					break;
 				case 'username':
 					$query->select('u.username');
+					break;
+				case 'email':
+					$query->select('u.email');
 					break;
 				case 'certificate_term':
 					$query->select('c.certificate_term');
@@ -115,6 +121,9 @@ class PlgTjreportsStudentcoursereport extends JPlugin
 					break;
 				case 'end_time':
 					$query->select('eu.end_time');
+					break;
+				case 'usergroup':
+					$query->select('ug.title as usergroup');
 					break;
 			}
 		}
@@ -129,9 +138,11 @@ class PlgTjreportsStudentcoursereport extends JPlugin
 			$query->where('c.created_by=' . $created_by);
 		}
 
-		if (in_array('username', $colToshow))
+		if (in_array('username', $colToshow) or in_array('email', $colToshow) or in_array('name', $colToshow) or in_array('usergroup', $colToshow))
 		{
 			$query->join('INNER', '`#__users` as u ON u.id = eu.user_id');
+			$query->join('INNER', '`#__user_usergroup_map` as ugm ON ugm.user_id = u.id');
+			$query->join('INNER', '`#__usergroups` as ug ON ug.id = ugm.group_id');
 		}
 
 		if (in_array('cat_title', $colToshow))
@@ -186,6 +197,11 @@ class PlgTjreportsStudentcoursereport extends JPlugin
 			if (array_key_exists('user_id', $filters))
 			{
 				$query->where('eu.user_id=' . $filters['user_id']);
+			}
+
+			if (array_key_exists('usergroup', $filters))
+			{
+				$query->where('ug.id =' . $filters['usergroup']);
 			}
 		}
 
@@ -379,7 +395,8 @@ class PlgTjreportsStudentcoursereport extends JPlugin
 	 *
 	 * @since    1.0
 	 */
-	public function plgstudentcoursereportRenderPluginHTML($filters, $colNames, $rowsToFetch, $limit_start, $sortCol, $sortOrder, $action, $created_by, $layout)
+	public function plgstudentcoursereportRenderPluginHTML($filters, $colNames, $rowsToFetch,
+		$limit_start, $sortCol, $sortOrder, $action, $created_by, $layout)
 	{
 		if (!isset($layout) && empty($layout))
 		{
@@ -418,6 +435,11 @@ class PlgTjreportsStudentcoursereport extends JPlugin
 		if (in_array('username', $colToshow))
 		{
 			$this->userFilter = $TjreportsModelReports->getUserFilter();
+		}
+		// User group filter
+		if (in_array('usergroup', $colToshow))
+		{
+			$this->userGroupFilter = $TjreportsModelReports->getUserGroupFilter();
 		}
 
 		// Get course filter
@@ -487,13 +509,17 @@ class PlgTjreportsStudentcoursereport extends JPlugin
 			'PLG_TJREPORTS_STUDENTCOURSEREPORT_TITLE' => 'title',
 			'PLG_TJREPORTS_STUDENTCOURSEREPORT_CAT_TITLE' => 'cat_title',
 			'PLG_TJREPORTS_STUDENTCOURSEREPORT_USER_ID' => 'user_id',
+			'PLG_TJREPORTS_STUDENTCOURSEREPORT_NAME' => 'name',
 			'PLG_TJREPORTS_STUDENTCOURSEREPORT_USERNAME' => 'username',
+			'PLG_TJREPORTS_STUDENTCOURSEREPORT_EMAIL' => 'email',
 			'PLG_TJREPORTS_STUDENTCOURSEREPORT_CERTIFICATE_TERM' => 'certificate_term',
 			'PLG_TJREPORTS_STUDENTCOURSEREPORT_ENROLLED_ON_TIME' => 'enrolled_on_time',
 			'PLG_TJREPORTS_STUDENTCOURSEREPORT_END_TIME' => 'end_time',
+			'PLG_TJREPORTS_STUDENTCOURSEREPORT_USERGROUP' => 'usergroup',
 			'PLG_TJREPORTS_STUDENTCOURSEREPORT_ACCESS_LEVEL_TITLE' => 'access_level_title',
 			'PLG_TJREPORTS_STUDENTCOURSEREPORT_COMPLETION' => 'completion',
 			'PLG_TJREPORTS_STUDENTCOURSEREPORT_TOTALTIMESPENT' => 'totaltimespent'
+
 		);
 
 		return $ColArray;
@@ -513,7 +539,8 @@ class PlgTjreportsStudentcoursereport extends JPlugin
 			'title',
 			'cat_title',
 			'user_id',
-			'username'
+			'username',
+			'usergroup'
 		);
 
 		return $filterArray;

@@ -79,6 +79,13 @@ $lang->load('com_tjreports', JPATH_ADMINISTRATOR);
 														echo JHtml::_('select.genericlist', $this->catFilter, "search-filter-". $eachColumn , 'class="filter-input input-medium" size="1" onchange="getFilterdata();" name="filter_catFilter"', "value", "text", isset($filters[$eachColumn]) ? $filters[$eachColumn] : '');
 													}
 												}
+												else if ($eachColumn == 'usergroup')
+												{
+													if (isset($this->userGroupFilter))
+													{
+														echo JHtml::_('select.genericlist', $this->userGroupFilter, "search-filter-". $eachColumn , 'class="filter-input input-medium" size="1" onchange="getFilterdata();" name="filter_catFilter"', "value", "text", isset($filters[$eachColumn]) ? $filters[$eachColumn] : '');
+													}
+												}
 												else
 												{
 													?>

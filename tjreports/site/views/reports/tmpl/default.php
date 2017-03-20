@@ -231,7 +231,7 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 					</div>
 				</div>
 
-				<div id="report-containing-div" class="tjlms-tbl margint20">
+				<div id="report-containing-div" class="tjlms-tbl margint20" style="overflow-x: auto">
 					<?php echo $this->items['html']; ?>
 				</div>
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="filter">
+        <field
+            name="search"
+            type="text"
+            hint="COM_TJREPORTS_SEARCH_FILTER_SUBMIT"
+            label="COM_USERS_FILTER_SEARCH_DESC"
+            class="js-stools-search-string form-control" />
+
+        <field
+            label="COM_TJREPORTS_CLIENT_FILTER"
+            name="client"
+            type="sql"
+            class="inputbox"
+            onchange="this.form.submit();"
+            query="SELECT '' AS `id`, '- Select client -' AS `region_name` UNION SELECT `client`, `client` FROM `#__tj_reports` GROUP BY client"
+            key_field="id"
+            value_field="region_name"/>
+
+        <field
+            label="COM_TJREPORTS_PLUGIN_FILTER"
+            name="plugin"
+            type="sql"
+            class="inputbox"
+            onchange="this.form.submit();"
+            query="SELECT '' AS `id`, '- Select plugin -' AS `region_name` UNION SELECT `plugin`, `plugin` FROM `#__tj_reports` GROUP BY plugin"
+            key_field="id"
+            value_field="region_name"/>
+    </fields>
+</form>

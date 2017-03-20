@@ -12,15 +12,27 @@ JHtml::_('formbehavior.chosen', 'select');
 
 $listOrder     = $this->escape($this->state->get('list.ordering'));
 $listDirn      = $this->escape($this->state->get('list.direction'));
+
+$input=JFactory::getApplication()->input;
+
 ?>
 <form action="index.php?option=com_tjreports&view=tjreports" method="post" id="adminForm" name="adminForm">
+<?php
+		if (!empty($this->sidebar)):?>
+				<div id="j-sidebar-container" class="span2">
+					<?php echo $this->sidebar;?>
+				</div>
+				<div id="j-main-container" class="span10">
+		<?php else :?>
+				<div id="j-main-container">
+		<?php endif;?>
 
 	<div class="row-fluid">
 		<div class="span6">
 			<?php
 				echo JLayoutHelper::render(
 					'joomla.searchtools.default',
-					array('view' => $this)
+					array('view' => $this,'options' => array('filtersHidden' =>true))
 				);
 			?>
 		</div>
@@ -71,8 +83,7 @@ $listDirn      = $this->escape($this->state->get('list.direction'));
 						{
 							$reportId = $row->id;
 						}
-
-						$link = JRoute::_('index.php?option=com_tjreports&task=tjreport.edit&id=' . $row->id);
+						$link = JRoute::_('index.php?option=com_tjreports&task=tjreport.edit&id=' . $row->id.'&extension='.$input->get('extension','','STRING'));
 						$report_link = JRoute::_('index.php?option=com_tjreports&view=reports&client=' . $row->client . '&reportToBuild='. $row->plugin . '&reportId=' . $reportId);
 				?>
 					<tr>

@@ -47,7 +47,9 @@ class TjreportsViewTjreport extends JViewLegacy
 		$this->form = $form;
 		$this->item = $item;
 
-		// Set the toolbar
+		$input = JFactory::getApplication()->input;
+		$extension = $input->get('extension', '', 'STRING');
+
 		$this->addToolBar();
 
 		// Display the template

@@ -32,7 +32,8 @@ class TjreportsViewTjreports extends JViewLegacy
 		$this->filterForm    = $this->get('FilterForm');
 		$this->activeFilters = $this->get('ActiveFilters');
 
-		// Check for errors.
+		// Initialise variables.
+		$app = JFactory::getApplication('administrator');
 
 	/*
 		if (count($errors = $this->get('Errors')))
@@ -42,11 +43,19 @@ class TjreportsViewTjreports extends JViewLegacy
 		}
 	*/
 
-		// TjreportsHelper::addSubmenu('tjreports');
+				// Get extension name
+		$extension = JFactory::getApplication()->input->get('extension', '', 'word');
+
+		if ($extension)
+		{
+			TjreportsHelper::addSubmenu('tjreports');
+			$this->sidebar = JHtmlSidebar::render();
+		}
 
 		// Set the tool-bar and number of found items
 		$this->addToolBar();
-		$this->sidebar = JHtmlSidebar::render();
+
+		//$this->sidebar = JHtmlSidebar::render();
 
 		// Display the template
 		parent::display($tpl);

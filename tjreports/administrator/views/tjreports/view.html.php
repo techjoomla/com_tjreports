@@ -55,8 +55,6 @@ class TjreportsViewTjreports extends JViewLegacy
 		// Set the tool-bar and number of found items
 		$this->addToolBar();
 
-		//$this->sidebar = JHtmlSidebar::render();
-
 		// Display the template
 		parent::display($tpl);
 	}

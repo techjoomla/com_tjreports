@@ -25,7 +25,6 @@ class TjreportsControllerTjreport extends JControllerForm
 
 	public function __construct()
 	{
-		$input = JFactory::getApplication()->input;
 		$this->view_list = 'tjreports';
 		parent::__construct();
 	}

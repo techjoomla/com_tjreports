@@ -9,6 +9,7 @@
 // No direct access
 defined('_JEXEC') or die;
 JHtml::_('behavior.formvalidator');
+$input = JFactory::getApplication()->input;
 ?>
 <script>
 	jQuery('#myTabs a').click(function (e) {
@@ -94,6 +95,8 @@ jQuery('#myTabs li:eq(2) a').tab('show') // Select third tab (0-indexed)
 </div>
 
     <input type="hidden" name="jform[parent]" value="" id="jform_parent" />
+    
+    <input type="hidden" name="extension" value="<?php echo $input->get('extension') ?>" id="jform_parent" />
 
     <input type="hidden" name="jform[plugin]" value="" id="jform_plugin" />
 

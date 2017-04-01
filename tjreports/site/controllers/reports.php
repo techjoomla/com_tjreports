@@ -166,19 +166,19 @@ class TjreportsControllerReports extends JControllerAdmin
 			{
 				if (in_array($index, $data['colToshow']))
 				{
-					// Remove double Quotes from the data 
+					// Remove double Quotes from the data
 					$finalValue       = str_replace('"', '', $finalValue);
-					
-					// Remove single Quotes from the data 
+
+					// Remove single Quotes from the data
 					$finalValue       = str_replace("'", '', $finalValue);
-					
-					// Remove tabs and newlines from the data 
+
+					// Remove tabs and newlines from the data
 					$finalValue2      = preg_replace('/(\r\n|\r|\n)+/', " ", $finalValue);
-					
-					// Remove extra spaces from the data 
+
+					// Remove extra spaces from the data
 					$final_text_value = preg_replace('/\s+/', " ", $finalValue2);
-					
-					//Add data in the Quotes and asign it in the csv array
+
+					// Add data in the Quotes and asign it in the csv array
 					$csvData_arr1[] = '"' . $final_text_value . '"';
 				}
 			}

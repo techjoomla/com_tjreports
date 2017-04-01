@@ -133,6 +133,34 @@ class TjreportsControllerReports extends JControllerAdmin
 
 		$data = $data[0];
 
+		foreach ($data['items'] as $key => $item)
+		{
+			foreach ($item as $item_key => $item_value)
+			{
+				$variable = strip_tags($item_value);
+
+				if ($variable != $item_value)
+				{
+					$parsedXml = new SimpleXMLElement($item_value);
+
+					if (!empty($parsedXml['href']))
+					{
+						$parsedUrl = parse_url($parsedXml['href']);
+
+						if (empty($parsedUrl['host']))
+						{
+							$root = rtrim(JURI::root(), "/");
+							$parsedXml['href'] = $root . "" . $parsedXml['href'];
+						}
+
+						$item_value = $variable . " | " . $parsedXml['href'];
+					}
+				}
+
+				$data['items'][$key]->$item_key = preg_replace('/[ ,]+/', ' ', $item_value);
+			}
+		}
+
 		$csvData     = null;
 		$csvData_arr = array();
 
@@ -144,12 +172,12 @@ class TjreportsControllerReports extends JControllerAdmin
 			$csvData_arr[] = JText::_($calHeading);
 		}
 
-		$csvData .= implode('	', $csvData_arr);
+		$csvData .= implode(',', $csvData_arr);
 		$csvData .= "\n";
 		echo $csvData;
 
 		$csvData  = '';
-		$filename = "tjreports_" . $reportName . "_report_" . date("Y-m-d_H-i", time());
+		$filename = $reportName . "_report_" . date("Y-m-d_H-i", time());
 
 		// Set CSV headers
 		header("Content-type: text/csv");
@@ -171,7 +199,7 @@ class TjreportsControllerReports extends JControllerAdmin
 			}
 
 			// TRIGGER After csv body add extra fields
-			$csvData = implode('	', $csvData_arr1);
+			$csvData = implode(',', $csvData_arr1);
 			echo $csvData . "\n";
 		}
 

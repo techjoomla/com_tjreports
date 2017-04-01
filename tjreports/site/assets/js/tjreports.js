@@ -402,7 +402,7 @@ function getReportdata(page, colToShow, limit, sortCol, sortOrder, action, allow
 		{
 			if (isNaN(filterValue))
 			{
-				var msg = Joomla.JText._('COM_TJLMS_NO_NEGATIVE_NUMBER');
+				var msg = Joomla.JText._('COM_TJREPORTS_NO_NEGATIVE_NUMBER');
 				alert(msg);
 
 				return false;
@@ -442,6 +442,12 @@ function getReportdata(page, colToShow, limit, sortCol, sortOrder, action, allow
 		type: "POST",
 		dataType: "json",
 		data:{filterValue:filter, filterName:filterTitle, limit:limit, page:page, colToShow:colToShow, sortCol:sortCol, sortOrder:sortOrder,action:action,reportToBuild:reportToBuild,allow_permission:allow_permission,reportId:reportId},
+		beforeSend: function(){
+			loadingreportImage("report-containing-div", 0);
+		},
+		complete: function(){
+			hideImage();
+		},
 		success: function(data)
 		{
 			techjoomla.jQuery('#report-containing-div').html('');
@@ -449,8 +455,51 @@ function getReportdata(page, colToShow, limit, sortCol, sortOrder, action, allow
 			techjoomla.jQuery('#report-containing-div').html(data.html);
 			techjoomla.jQuery('#totalRows').val(data.total_rows);
 			getPaginationBar(action, data.total_rows);
+
+			// Trigger chosen for select
+			jQuery("select").chosen();
 		}
 	});
+}
+
+
+/* Function to load the loading image. */
+function loadingreportImage(divId, captureWholeScreen)
+{
+	if (typeof(captureWholeScreen)==='undefined')
+	{
+	  captureWholeScreen = 0;
+	}
+	if(captureWholeScreen == 1)
+	{
+		imgwidth = techjoomla.jQuery(document).width();
+		imgheight = techjoomla.jQuery(document).height();
+	}
+	else
+	{
+		imgwidth = techjoomla.jQuery('#'+divId).width();
+		imgheight = techjoomla.jQuery('#'+divId).height();
+	}
+
+	techjoomla.jQuery("<div id='appsloading'></div>")
+	.css("background", "rgba(0, 0, 0, 0.2) url('"+site_root+"/components/com_tjlms/assets/images/ajax.gif') 50% 100px no-repeat")
+	//.css("top", techjoomla.jQuery('#'+divId).position().top - techjoomla.jQuery('#'+divId).scrollTop())
+	.css("top", 0)
+	.css("bottom", 0)
+	.css("left", 0)
+	.css("right", 0)
+	.css("position", "absolute")
+	.css("z-index", "1000")
+	.css("opacity", "1")
+	.css("-ms-filter", "progid:DXImageTransform.Microsoft.Alpha(Opacity = 80)")
+	.css("filter", "alpha(opacity = 80)")
+	.appendTo('#'+divId);
+}
+
+/* Function to close the loading image. */
+function hideImage()
+{
+	techjoomla.jQuery('#appsloading').remove();
 }
 
 function getFilterdata(page, event, action, sortCol, sortOrder)
@@ -490,7 +539,7 @@ function getFilterdata(page, event, action, sortCol, sortOrder)
 	}
 
 	if (colToShow.length === 0) {
-		msg = Joomla.JText._('COM_TJLMS_REPORTS_CANNOT_SELECT_NONE');
+		msg = Joomla.JText._('COM_TJREPORTS_REPORTS_CANNOT_SELECT_NONE');
 		alert(msg);
 		return false;
 	}

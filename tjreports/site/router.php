@@ -85,7 +85,6 @@ class TjreportsRouter extends JComponentRouterBase
 
 		// View is always the first element of the array
 		$vars['view'] = array_shift($segments);
-		$model        = TjreportsHelpersTjreports::getModel($vars['view']);
 
 		while (!empty($segments))
 		{

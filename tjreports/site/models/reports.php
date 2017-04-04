@@ -379,6 +379,9 @@ class TjreportsModelReports extends JModelList
 			$query->where('created_by=' . $created_by);
 		}
 
+		$query->where($db->qn('state') . '=' . 1);
+		$query->order('title ASC');
+
 		$db->setQuery($query);
 		$courses = $db->loadObjectList();
 
@@ -484,6 +487,7 @@ class TjreportsModelReports extends JModelList
 		$query->from('#__categories');
 		$query->where('extension="com_tjlms"');
 		$query->where('published=1');
+		$query->order('title ASC');
 
 		$db->setQuery($query);
 		$cats = $db->loadObjectList();
@@ -540,8 +544,6 @@ class TjreportsModelReports extends JModelList
 
 		$db->setQuery($query);
 		$reports = $db->loadObjectList();
-
-		$options[] = JHTML::_('select.option', '', JText::_('COM_TJREPORTS_SELONE_REPORTS'));
 
 		foreach ($reports as $repo)
 		{

@@ -402,7 +402,7 @@ function getReportdata(page, colToShow, limit, sortCol, sortOrder, action)
 		{
 			if (isNaN(filterValue))
 			{
-				var msg = Joomla.JText._('COM_TJLMS_NO_NEGATIVE_NUMBER');
+				var msg = Joomla.JText._('COM_TJREPORTS_NO_NEGATIVE_NUMBER');
 				alert(msg);
 
 				return false;
@@ -498,7 +498,7 @@ function getFilterdata(page, event, action, sortCol, sortOrder)
 	}
 
 	if (colToShow.length === 0) {
-		msg = Joomla.JText._('COM_TJLMS_REPORTS_CANNOT_SELECT_NONE');
+		msg = Joomla.JText._('COM_TJREPORTS_REPORTS_CANNOT_SELECT_NONE');
 		alert(msg);
 		return false;
 	}

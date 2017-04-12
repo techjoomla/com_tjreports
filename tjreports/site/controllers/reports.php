@@ -144,7 +144,7 @@ class TjreportsControllerReports extends JControllerAdmin
 			$csvData_arr[] = JText::_($calHeading);
 		}
 
-		$csvData .= implode('	', $csvData_arr);
+		$csvData .= implode(',', $csvData_arr);
 		$csvData .= "\n";
 		echo $csvData;
 
@@ -166,12 +166,25 @@ class TjreportsControllerReports extends JControllerAdmin
 			{
 				if (in_array($index, $data['colToshow']))
 				{
-					$csvData_arr1[] = $finalValue;
+					// Remove double Quotes from the data
+					$finalValue       = str_replace('"', '', $finalValue);
+
+					// Remove single Quotes from the data
+					$finalValue       = str_replace("'", '', $finalValue);
+
+					// Remove tabs and newlines from the data
+					$finalValue2      = preg_replace('/(\r\n|\r|\n)+/', " ", $finalValue);
+
+					// Remove extra spaces from the data
+					$final_text_value = preg_replace('/\s+/', " ", $finalValue2);
+
+					// Add data in the Quotes and asign it in the csv array
+					$csvData_arr1[] = '"' . $final_text_value . '"';
 				}
 			}
 
 			// TRIGGER After csv body add extra fields
-			$csvData = implode('	', $csvData_arr1);
+			$csvData = implode(',', $csvData_arr1);
 			echo $csvData . "\n";
 		}
 

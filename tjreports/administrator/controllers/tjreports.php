@@ -32,4 +32,27 @@ class TjreportsControllerTjreports extends JControllerAdmin
 
 		return $model;
 	}
+
+/**
+	* Set a URL for browser redirection.
+	*
+	* @param   string  $url   URL to redirect to.
+	* @param   string  $msg   Message to display on redirect. Optional, defaults to value set internally by controller, if any.
+	* @param   string  $type  Message type. Optional, defaults to 'message' or the type set by a previous call to setMessage.
+	*
+	* @return  JControllerLegacy  This object to support chaining.
+	*
+	* @since   12.2
+	*/
+	public function setRedirect(string $url, string $msg = null, string $type = null)
+	{
+		$extension = JFactory::getApplication()->input->get('extension', '', 'word');
+
+		if ($extension)
+		{
+			$url .= '&extension=' . $extension;
+		}
+
+		parent::setRedirect($url, $msg, $type);
+	}
 }

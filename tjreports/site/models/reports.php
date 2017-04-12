@@ -518,9 +518,12 @@ class TjreportsModelReports extends JModelList
 		$input = JFactory::getApplication()->input;
 		$clients = $input->get('client', "", "STRING");
 
-		// Need alternative code for this
-		$clients = explode(",", $clients);
-		$clients = "'" . implode("','", $clients) . "'";
+		// Check for the client
+		if ($clients)
+		{
+			$clients = explode(",", $clients);
+			$clients = "'" . implode("','", $clients) . "'";
+		}
 
 		$query->select('r.title as text, r.id as value');
 		$query->from('#__tj_reports as r');

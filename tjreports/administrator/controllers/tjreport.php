@@ -52,49 +52,25 @@ class TjreportsControllerTjreport extends JControllerForm
 		$result = $model->getparams();
 	}
 
-	/**
-	 * Gets the URL arguments to append to an item redirect.
-	 *
-	 * @param   integer  $recordId  The primary key id for the item.
-	 * @param   string   $urlVar    The name of the URL variable for the id.
-	 *
-	 * @return  string  The arguments to append to the redirect URL.
-	 *
-	 * @since   1.6
-	 */
-	protected function getRedirectToItemAppend($recordId = null, $urlVar = 'id')
-	{
-		$extension = JFactory::getApplication()->input->get('extension', '', 'word');
-		$append = parent::getRedirectToItemAppend($recordId);
+/**
+	*Set a URL for browser redirection.
+	*
+	* @param   string  $url   URL to redirect to.
+	* @param   string  $msg   Message to display on redirect. Optional, defaults to value set internally by controller, if any.
+	* @param   string  $type  Message type. Optional, defaults to 'message' or the type set by a previous call to setMessage.
+	*
+	* @return  JControllerLegacy  This object to support chaining.
+	*/
 
-		if ($extension)
-		{
-			$append .= '&extension=' . $extension;
-		}
-
-		return $append;
-	}
-
-	/**
-	 * Function to cancel the operation on field
-	 *
-	 * @param   string  $key  key
-	 *
-	 * @return  void
-	 */
-	public function cancel($key = null)
+	public function setRedirect(string $url, string $msg = null, string $type = null)
 	{
 		$extension = JFactory::getApplication()->input->get('extension', '', 'word');
 
 		if ($extension)
 		{
-			$link = JRoute::_('index.php?option=com_tjreports&view=tjreports&extension=' . $extension, false);
-		}
-		else
-		{
-			$link = JRoute::_('index.php?option=com_tjreports&view=tjreports', false);
+			$url .= '&extension=' . $extension;
 		}
 
-		$this->setRedirect($link);
+		parent::setRedirect($url, $msg, $type);
 	}
 }

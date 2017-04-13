@@ -39,7 +39,8 @@ class TjreportsViewReports extends JViewLegacy
 	public function display($tpl = null)
 	{
 		$canDo = TjreportsHelpersTjreports::getActions();
-		$user_id = JFactory::getUser()->id;
+		$user = JFactory::getUser();
+		$user_id = $user->id;
 		$input = JFactory::getApplication()->input;
 		$TjreportsModelReports = new TjreportsModelReports;
 		$app = JFactory::getApplication();

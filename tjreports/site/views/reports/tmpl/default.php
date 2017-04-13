@@ -32,9 +32,15 @@ if ($reportId)
 	$allow_permission = $user->authorise('core.viewall', 'com_tjreports.tjreport.' . $reportId);
 }
 
-if(empty($report))
+// Check is there only one report present
+
+if (count($this->options) == 1)
 {
-	$this->items ="";
+	$document->addScriptDeclaration('var is_single_report = 1');
+}
+else
+{
+	$document->addScriptDeclaration('var is_single_report = 0');
 }
 
 $currentQuery = $report . '_' . $queryId;
@@ -94,12 +100,12 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 	?>
 	<!--// JHtmlsidebar for menu ends-->
 
-	<form action="<?php echo JRoute::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm">
+	<form action="<?php echo JRoute::_('?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm">
 		<div>
 			<div class="row margint20">
 				<div class="col-md-10 col-lg-10 text-semibold">
 					<div>
-						<div class="col-md-6">
+						<div class="col-md-6 dropdown-list">
 							<span>
 								<?php echo JText::_("COM_TJREPORTS_AVAILABLE_REPORT_LIST"); ?>
 							</span>
@@ -117,7 +123,7 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 							<?php
 							if(!empty($reportId)):
 								echo "<a class='btn' class='button'
-										type='submit' onclick=\"Joomla.submitbutton('reports.csvexport');\" href='#'><span title='Export'
+										type='submit'  href='index.php?option=com_tjreports&task=reports.csvexport'><span title='Export'
 									class='icon-download'></span>" . JText::_('COM_TJREPORTS_CSV_EXPORT') . "</a>";
 							endif
 							?>
@@ -229,6 +235,10 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 							-->
 						<?php endif; ?>
 					</div>
+
+					<div>
+						<button type="button" title="<?php echo "Clear"; ?>" onClick="window.location.reload();">Clear</button>
+					</div>
 				</div>
 
 				<div id="report-containing-div" class="tjlms-tbl margint20" style="overflow-x: auto">
@@ -267,33 +277,24 @@ function getQueryResult(id, Itemid)
 
 	if (queryId=="")
 	{
-		window.location.href = 'index.php?option=com_tjreports&view=reports&reportToBuild='+reportToBuild+'&client='+client+'&reportId='+reportId+"&Itemid="+Itemid;
+		window.location.href = '?option=com_tjreports&view=reports&reportToBuild='+reportToBuild+'&client='+client+'&reportId='+reportId+"&Itemid="+Itemid;
 	}
 	else
 	{
-		window.location.href = 'index.php?option=com_tjreports&view=reports&savedQuery=1&reportToBuild='+queryId[0]+'&client='+client+'&queryId='+queryId[1]+'&reportId='+reportId+"&Itemid="+Itemid;
+		window.location.href = '?option=com_tjreports&view=reports&savedQuery=1&reportToBuild='+queryId[0]+'&client='+client+'&queryId='+queryId[1]+'&reportId='+reportId+"&Itemid="+Itemid;
 	}
 }
 
 techjoomla.jQuery(document).ready(function()
 {
-	switch('<?php echo $report; ?>')
+	if(is_single_report)
 	{
-		case 'userreport':
-			techjoomla.jQuery('#userreport').addClass('active btn-primary');
-			break;
-		case 'studentcoursereport':
-			techjoomla.jQuery('#studentcoursereport').addClass('active btn-primary');
-			break;
-		case 'lessonreport':
-			techjoomla.jQuery('#lessonreport').addClass('active btn-primary');
-			break;
-		case 'coursereport':
-			techjoomla.jQuery('#coursereport').addClass('active btn-primary');
-			break;
-		case 'attemptreport':
-			techjoomla.jQuery('#attemptreport').addClass('active btn-primary');
-			break;
+		jQuery(".dropdown-list").hide();
+	}
+
+	if(reportId == 0)
+	{
+		loadReport(<?php echo $this->options[0]->value ?>,<?php echo $menuItem->id ?>);
 	}
 
 	techjoomla.jQuery('.ColVis_collection input').click(function(){

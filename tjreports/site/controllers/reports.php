@@ -166,10 +166,24 @@ class TjreportsControllerReports extends JControllerAdmin
 
 		foreach ($data['colToshow'] as $eachColumn)
 		{
-			$calHeading    = strtoupper($eachColumn);
+			// Remove double Quotes from the data
+			$eachColumn       = str_replace('"', '', $eachColumn);
+
+			// Remove single Quotes from the data
+			$eachColumn       = str_replace("'", '', $eachColumn);
+
+			// Remove tabs and newlines from the data
+			$eachColumn2      = preg_replace('/(\r\n|\r|\n)+/', " ", $eachColumn);
+
+			// Remove extra spaces from the data
+			$final_eachColumn = preg_replace('/\s+/', " ", $eachColumn2);
+
+			// Add data in the Quotes and asign it in the csv array
+			// $csvData_arr1[] = '"' . $final_eachColumn . '"';
+			$calHeading    = strtoupper($final_eachColumn);
 			$plgReport     = strtoupper($reportName);
 			$calHeading    = 'PLG_TJREPORTS_' . $plgReport . '_' . $calHeading;
-			$csvData_arr[] = JText::_($calHeading);
+			$csvData_arr[] = '"' . JText::_($calHeading) . '"';
 		}
 
 		$csvData .= implode(',', $csvData_arr);

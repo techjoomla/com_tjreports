@@ -123,7 +123,6 @@ class TjreportsModelTjreports extends JModelList
 
 		// Initialise variables.
 		$app = JFactory::getApplication();
-		$client = JFactory::getApplication()->input->get('extension', '', 'word');
 
 		$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'), 'uint');
 		$this->setState('list.limit', $limit);

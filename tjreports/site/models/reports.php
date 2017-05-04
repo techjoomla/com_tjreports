@@ -390,9 +390,11 @@ class TjreportsModelReports extends JModelList
 		$db = JFactory::getDBO();
 		$condtion = array(0 => '\'tjreports\'');
 		$condtionatype = join(',', $condtion);
+		$query = $db->getQuery(true);
 
-		$query = "SELECT extension_id as id,name,element,enabled as published FROM #__extensions WHERE folder in (" . $condtionatype . ") AND enabled=1";
-
+		$query->select($db->quoteName(array('extension_id','name','element','enabled'), array('id',null,null,'published')));
+		$query->from($db->quoteName('#__extensions'));
+		$query->where("folder in (" . $condtionatype . ") AND enabled=1");
 		$db->setQuery($query);
 		$reportPlugins = $db->loadobjectList();
 

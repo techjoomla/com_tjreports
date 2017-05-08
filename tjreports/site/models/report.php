@@ -32,9 +32,19 @@ class  TjreportsModelReport extends JModelAdmin
 	{
 		return JTable::getInstance($type, $prefix, $config);
 	}
+
+	/**
+	 * Method to save the form data.
+	 *
+	 * @param   array  $data  The form data.
+	 *
+	 * @return  mixed  The user id on success, false on failure.
+	 *
+	 * @since  1.0
+	 */
 	public function save($data)
 	{
-		if(parent::save($data))
+		if (parent::save($data))
 		{
 			return true;
 		}
@@ -45,15 +55,15 @@ class  TjreportsModelReport extends JModelAdmin
 	}
 
 /**
-	 * Method to get the record form.
-	 *
-	 * @param   array    $data      Data for the form.
-	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
-	 *
-	 * @return  mixed    A JForm object on success, false on failure
-	 *
-	 * @since   1.6
-	 */
+	* Method to get the record form.
+	*
+	* @param   array    $data      Data for the form.
+	* @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	*
+	* @return  mixed    A JForm object on success, false on failure
+	*
+	* @since   1.6
+	*/
 	public function getForm($data = array(), $loadData = true)
 	{
 		// Get the form.

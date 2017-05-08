@@ -277,7 +277,9 @@ class TjreportsControllerReports extends JControllerAdmin
 		$insert_object->userid        = $current_user;
 		$insert_object->param         = $params;
 
-		if (!$db->insertObject('#__tj_reports', $insert_object, 'id'))
+		$model = JModelLegacy::getInstance('Report', 'TjreportsModel');
+
+		if (!$model->save((array) $insert_object))
 		{
 			echo $db->stderr();
 
@@ -349,5 +351,46 @@ class TjreportsControllerReports extends JControllerAdmin
 			die();
 			jexit();
 		}
+	}
+
+/**
+	* Function used to delete reports
+	*
+	* @return  boolean
+	*
+	* @since  1.0
+	*/
+	public function deleteQuery()
+	{
+		$cid = JFactory::getApplication()->input->get('cid', '', 'array');
+		$model = JModelLegacy::getInstance('Report', 'TjreportsModel');
+
+		if ($model->delete($cid))
+		{
+			echo json_encode(1);
+			jexit();
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+// This is useful for manager report
+/**
+	* Function used to delete reports
+	*
+	* @return  json
+	*
+	* @since  1.0
+	*/
+	public function setUserType()
+	{
+		$userTypeId = JFactory::getApplication()->input->get('userTypeId', '', 'int');
+
+		$setUserType = JFactory::getApplication()->setUserState("setUserType", $userTypeId);
+
+		echo json_encode($setUserType);
+		jexit();
 	}
 }

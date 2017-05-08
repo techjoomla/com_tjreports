@@ -798,3 +798,47 @@ function opentjlmsSqueezeBox(link)
 	var hheight = height-(height*0.10);
 	parent.SqueezeBox.open(link, { handler: 'iframe', size: {x: wwidth, y: hheight},classWindow: 'tjlms-modal'});
 }
+
+function deleteQuery(queryId)
+{
+	var check = confirm("Do you want to delete ?");
+
+   if( check == true )
+   {
+	var qid=parseInt(queryId);
+		jQuery.ajax({
+			url: '?option=com_tjreports&task=reports.deleteQuery',
+			dataType: 'json',
+			type: 'POST',
+			data: {'cid':qid} ,
+
+			success: function (resp)
+			{
+				window.location.reload();
+			}
+		});
+
+	}
+	else
+	{
+		window.location.reload();
+	}
+
+// This is for manager report
+//~ function setUserType(userTypeId)
+//~ {
+	
+	//~ var userTypeId=parseInt(userTypeId.value);
+		//~ jQuery.ajax({
+			//~ url: '?option=com_tjreports&task=reports.setUserType',
+			//~ dataType: 'json',
+			//~ type: 'POST',
+			//~ data: {'userTypeId':userTypeId} ,
+
+			//~ success: function (resp)
+			//~ {
+				//~ window.location.reload();
+			//~ }
+		//~ });
+//~ }
+}

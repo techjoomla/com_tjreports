@@ -174,6 +174,8 @@ $document->addScriptDeclaration('var reportId = "' . $reportId . '"');
 					<input type="hidden" id="task" name="task" value="" />
 					<input type="hidden" name="boxchecked" value="0" />
 					<input type="hidden" name="totalRows" id="totalRows" value="<?php echo $this->items['total_rows']; ?>" />
+					<input type="hidden" name="extension" value="<?php echo $input->get('client','','word'); ?>">
+
 					<?php echo JHtml::_('form.token'); ?>
 			<?php endif; ?>
 		</form>

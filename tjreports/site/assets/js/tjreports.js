@@ -402,7 +402,7 @@ function getReportdata(page, colToShow, limit, sortCol, sortOrder, action, allow
 		{
 			if (isNaN(filterValue))
 			{
-				var msg = Joomla.JText._('COM_TJLMS_NO_NEGATIVE_NUMBER');
+				var msg = Joomla.JText._('COM_TJREPORTS_NO_NEGATIVE_NUMBER');
 				alert(msg);
 
 				return false;
@@ -807,7 +807,7 @@ function deleteQuery(queryId)
    {
 	var qid=parseInt(queryId);
 		jQuery.ajax({
-			url: '?option=com_tjreports&task=reports.deleteQuery',
+			url: site_root+'index.php?option=com_tjreports&task=reports.deleteQuery',
 			dataType: 'json',
 			type: 'POST',
 			data: {'cid':qid} ,

@@ -100,7 +100,8 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 	?>
 	<!--// JHtmlsidebar for menu ends-->
 
-	<form action="<?php echo JRoute::_('?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm">
+ 
+	<form action="<?php echo JRoute::_(JUri::root() . 'index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm">
 		<div>
 			<div class="row">
 				<div class="span5 dropdown-list">
@@ -161,9 +162,11 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 					</div>
 				<div class="span2">
 					<?php
+						$report_path=JUri::root().'index.php?option=com_tjreports&task=reports.csvexport';
+
 						if(!empty($reportId)):
 						echo "<a class='btn' class='button'
-						type='submit'  href='?option=com_tjreports&task=reports.csvexport'><span title='Export'
+						type='submit'  href='$report_path'><span title='Export'
 						class='icon-download'></span>" . JText::_('COM_TJREPORTS_CSV_EXPORT') . "</a>";
 						endif
 					?>
@@ -295,11 +298,11 @@ function getQueryResult(id, Itemid)
 
 	if (queryId=="")
 	{
-		window.location.href = '?option=com_tjreports&view=reports&reportToBuild='+reportToBuild+'&client='+client+'&reportId='+reportId+"&Itemid="+Itemid;
+		window.location.href = site_root + 'index.php?option=com_tjreports&view=reports&reportToBuild='+reportToBuild+'&client='+client+'&reportId='+reportId+"&Itemid="+Itemid;
 	}
 	else
 	{
-		window.location.href = '?option=com_tjreports&view=reports&savedQuery=1&reportToBuild='+queryId[0]+'&client='+client+'&queryId='+queryId[1]+'&reportId='+reportId+"&Itemid="+Itemid;
+		window.location.href = site_root + 'index.php?option=com_tjreports&view=reports&savedQuery=1&reportToBuild='+queryId[0]+'&client='+client+'&queryId='+queryId[1]+'&reportId='+reportId+"&Itemid="+Itemid;
 	}
 }
 
@@ -332,7 +335,7 @@ techjoomla.jQuery(document).ready(function()
 
 function loadReport(reportToLoad,mid)
 {
-		var path = window.location.pathname + "?option=com_tjreports&task=reports.getreport";
+		var path = site_root + "index.php?option=com_tjreports&task=reports.getreport";
 
 		// Report to load is id.
 		var data = 'reportToLoad=' + reportToLoad;

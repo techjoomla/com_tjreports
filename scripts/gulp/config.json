@@ -1,0 +1,12 @@
+{
+	"components": [
+		{"name": "com_tjreports", "admin":"tjreports/administrator", "site": "tjreports/site", "manifest": "tjreports/tjreports.xml"}
+	],
+	"plugins": [],
+	"other": [
+		{"src": "tjreports/media", "folder": "media", "dest": "com_tjreports"},
+		{"src": "tjreports/languages/administrator/en-GB/en-GB.com_tjreports.ini", "folder": "administrator/languages/en-GB", "dest": "en-GB.com_tjreports.ini"},
+		{"src": "tjreports/languages/administrator/en-GB/en-GB.com_tjreports.sys.ini", "folder": "administrator/languages/en-GB", "dest": "en-GB.com_tjreports.sys.ini"},
+		{"src": "tjreports/languages/site/en-GB/en-GB.com_tjreports.ini", "folder": "languages/en-GB", "dest": "en-GB.com_tjreports.ini"}
+	]
+}

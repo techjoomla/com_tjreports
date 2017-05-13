@@ -1,0 +1,15 @@
+# File types
+*~*
+*.jpa
+
+# skip tests/vendor
+tests/codeception/vendor/*
+tests/codeception/tests/_output/*
+tests/codeception/composer.lock
+
+# Other development folders / files
+node_modules
+.DS_Store
+.DS_store
+packages/com_tjlms/admin/tjlms.xml
+packages/com_tmt/admin/tmt.xml

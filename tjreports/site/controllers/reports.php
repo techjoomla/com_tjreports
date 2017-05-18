@@ -365,15 +365,9 @@ class TjreportsControllerReports extends JControllerAdmin
 		$cid = JFactory::getApplication()->input->get('cid', '', 'array');
 		$model = JModelLegacy::getInstance('Report', 'TjreportsModel');
 
-		if ($model->delete($cid))
-		{
-			echo json_encode(1);
-			jexit();
-		}
-		else
-		{
-			return false;
-		}
+		$result = $model->delete($cid);
+		echo new JResponseJson($result);
+		jexit();
 	}
 
 // This is useful for manager report
@@ -386,11 +380,11 @@ class TjreportsControllerReports extends JControllerAdmin
 	*/
 	public function setUserType()
 	{
-		$userTypeId = JFactory::getApplication()->input->get('userTypeId', '', 'int');
+		$userTypeId = JFactory::getApplication()->input->get('com_hierarchy.userTypeId', '', 'int');
 
-		$setUserType = JFactory::getApplication()->setUserState("setUserType", $userTypeId);
+		$setUserType = JFactory::getApplication()->setUserState('com_hierarchy.setUserType', $userTypeId);
 
-		echo json_encode($setUserType);
+		echo new JResponseJson($setUserType);
 		jexit();
 	}
 }

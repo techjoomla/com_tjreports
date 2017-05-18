@@ -33,27 +33,6 @@ class  TjreportsModelReport extends JModelAdmin
 		return JTable::getInstance($type, $prefix, $config);
 	}
 
-	/**
-	 * Method to save the form data.
-	 *
-	 * @param   array  $data  The form data.
-	 *
-	 * @return  mixed  The user id on success, false on failure.
-	 *
-	 * @since  1.0
-	 */
-	public function save($data)
-	{
-		if (parent::save($data))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
 /**
 	* Method to get the record form.
 	*

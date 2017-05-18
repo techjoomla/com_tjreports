@@ -55,18 +55,20 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 ?>
 
 <script>
-	techjoomla.jQuery(document).click(function(e)
+	techjoomla.jQuery(document).ready(function()
 	{
-		if (!techjoomla.jQuery(e.target).closest('#ul-columns-name').length && e.target.id != 'show-hide-cols-btn')
+		if(is_single_report)
 		{
-			techjoomla.jQuery(".ColVis_collection").hide();
+			jQuery(".dropdown-list").hide();
+		}
+
+		if(reportId == 0)
+		{
+			loadReport(<?php echo (int)$this->options[0]->value ?>,<?php echo  (int)$menuItem->id ?>);
 		}
 	});
-
-	techjoomla.jQuery(document).ready(function(){
-		getPaginationBar();
-	});
 </script>
+
 	<?php
 		jimport('joomla.application.module.helper');
 		$modules = JModuleHelper::getModules('manager-menu');
@@ -106,27 +108,11 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 			<div class="row">
 				<div class="span5 dropdown-list">
 								<?php echo JText::_("COM_TJREPORTS_AVAILABLE_REPORT_LIST"); ?>
-							</span>
-							<span>
 								<?php
 									if (!empty($this->options)): ?>
-									<div>
 										<?php echo JHtml::_('select.genericlist', $this->options, "filter_selectplugin", 'class="" size="1" onchange="loadReport(this.value,' . $menuItem->id . ');" name="filter_selectplugin"', "value", "text",  $reportId);
 											?>
-									</div>
 								<?php endif; ?>
-							</span>
-						</div>
-						<div class="col-md-6">
-							<?php
-							if(!empty($reportId)):
-								echo "<a class='btn' class='button'
-										type='submit' onclick=\"Joomla.submitbutton('reports.csvexport');\" href='#'><span title='Export'
-									class='icon-download'></span>" . JText::_('COM_TJREPORTS_CSV_EXPORT') . "</a>";
-							endif
-							?>
-						</div>
-					</div>
 				</div>
 				<div class="span3">
 						<div class="show-hide-cols ">
@@ -152,7 +138,7 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 												<?php endif; ?>
 											<?php endif; ?>
 
-											<input type="checkbox" <?php echo $checked; ?> name="<?php echo $colName;	?>" <?php echo $disabled; ?> id="<?php echo $colName;	?>">
+											<input type="checkbox" <?php echo $checked; ?> name="<?php echo $colName;?>" <?php echo $disabled; ?> id="<?php echo $colName;	?>">
 												<span><?php echo JText::_($constant);	?></span>
 										</label>
 									</li>
@@ -283,105 +269,4 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 		</div>
 	</form>
 </div>
-
-<script>
-
-function getColNames()
-{
-	techjoomla.jQuery('#saveQuery').show();
-	techjoomla.jQuery('.ColVis_collection').toggle();
-}
-
-function getQueryResult(id, Itemid)
-{
-	var queryId = id.split("_");
-
-	if (queryId=="")
-	{
-		window.location.href = site_root + 'index.php?option=com_tjreports&view=reports&reportToBuild='+reportToBuild+'&client='+client+'&reportId='+reportId+"&Itemid="+Itemid;
-	}
-	else
-	{
-		window.location.href = site_root + 'index.php?option=com_tjreports&view=reports&savedQuery=1&reportToBuild='+queryId[0]+'&client='+client+'&queryId='+queryId[1]+'&reportId='+reportId+"&Itemid="+Itemid;
-	}
-}
-
-techjoomla.jQuery(document).ready(function()
-{
-	if(is_single_report)
-	{
-		jQuery(".dropdown-list").hide();
-	}
-
-	if(reportId == 0)
-	{
-		loadReport(<?php echo (int)$this->options[0]->value ?>,<?php echo  (int)$menuItem->id ?>);
-	}
-
-	techjoomla.jQuery('.ColVis_collection input').click(function(){
-
-		if (techjoomla.jQuery(".ColVis_collection input:checkbox:checked").length > 0)
-		{
-			getFilterdata(-1, '', 'hideShowCols');
-		}
-		else
-		{
-			var msg = Joomla.JText._('COM_TJREPORTS_REPORTS_CANNOT_SELECT_NONE');
-			alert(msg);
-			return false;
-		}
-	});
-});
-
-function loadReport(reportToLoad,mid)
-{
-		var path = site_root + "index.php?option=com_tjreports&task=reports.getreport";
-
-		// Report to load is id.
-		var data = 'reportToLoad=' + reportToLoad;
-
-		jQuery.ajax({
-		url: path,
-		type: 'post',
-		data : data,
-		dataType: 'json',
-
-		success: function(resp)
-		{
-			reportToLoad = resp.plugin;
-			clientt = resp.client;
-			var clientArray = [];
-			clientArray.push(clientt);
-
-			 // Add current client to first and append others.
-
-			var res = client.split(",");
-			for(var i in res){
-				if(res[i] == clientt){
-					res.splice(i,1);
-					break;
-				}
-			}
-
-			for(var i = 0; i < res.length; i++){
-				clientArray.push(res[i]);
-			}
-
-			clients = clientArray.toString();
-
-			reportId = resp.id;
-			var action = document.adminForm.action;
-			var newAction = action+'&reportToBuild='+reportToLoad+'&client='+clients+'&reportId='+reportId+'&Itemid='+mid;
-			window.location.href = newAction;
-
-		}});
-}
-
-function cleardate()
-{
-	techjoomla.jQuery("#attempt_begin").val('');
-	techjoomla.jQuery("#attempt_end").val('');
-	getFilterdata(-1, '', 'dateSearch');
-}
-</script>
 

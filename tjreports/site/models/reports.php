@@ -21,7 +21,6 @@ jimport('joomla.application.component.modellist');
  */
 class TjreportsModelReports extends JModelList
 {
-	
 	/**
 	 * Method to auto-populate the model state.
 	 *
@@ -401,8 +400,6 @@ class TjreportsModelReports extends JModelList
 		return $reportPlugins;
 	}
 
-	
-
 	/**
 	 * Function to get the user filter
 	 *
@@ -435,7 +432,6 @@ class TjreportsModelReports extends JModelList
 		return $userFilter;
 	}
 
-	
 	/**
 	 * Function to get all reports from tjreport
 	 *
@@ -509,8 +505,6 @@ class TjreportsModelReports extends JModelList
 			return $allow;
 		}
 	}
-
-	
 
 	/**
 	 * Function to get all usergroups

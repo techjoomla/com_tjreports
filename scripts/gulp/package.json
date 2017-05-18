@@ -1,0 +1,16 @@
+{
+  "devDependencies": {
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-chug": "^0.5.1",
+    "gulp-concat": "latest",
+    "gulp-connect": "latest",
+    "gulp-if": "^2.0.2",
+    "gulp-sass": "latest",
+    "gulp-symlink": "^2.1.4",
+    "gulp-uglify": "^2.1.2",
+    "gulp-util": "latest",
+    "minimist": "^1.2.0",
+    "path": "^0.12.7"
+  }
+}

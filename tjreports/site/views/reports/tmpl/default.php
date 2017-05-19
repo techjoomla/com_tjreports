@@ -103,7 +103,7 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 	<!--// JHtmlsidebar for menu ends-->
 
  
-	<form action="<?php echo JRoute::_(JUri::root() . 'index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm">
+	<form action="<?php echo JRoute::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm">
 		<div>
 			<div class="row">
 				<div class="span5 dropdown-list">
@@ -148,7 +148,7 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 					</div>
 				<div class="span2">
 					<?php
-						$report_path=JUri::root().'index.php?option=com_tjreports&task=reports.csvexport';
+						$report_path=JRoute::_('index.php?option=com_tjreports&task=reports.csvexport');
 
 						if(!empty($reportId)):
 						echo "<a class='btn' class='button'

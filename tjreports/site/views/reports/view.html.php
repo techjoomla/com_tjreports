@@ -110,6 +110,15 @@ class TjreportsViewReports extends JViewLegacy
 			$param = json_decode($QueryData->param);
 			$this->colToshow = $param->colToshow;
 		}
+		// Added By komal to show default field
+		else
+		{
+			$model = $this->getModel();
+			$colToSelect = array('colToshow');
+			$QueryData = $model->getDefaultReport();
+			$param = json_decode($QueryData->param);
+			$this->colToshow = $param->colToshow;
+		}
 
 		$input = JFactory::getApplication()->input;
 

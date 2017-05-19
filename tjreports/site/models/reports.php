@@ -103,7 +103,10 @@ class TjreportsModelReports extends JModelList
 
 		if (empty($colNames))
 		{
-			$colNames = $this->getColNames();
+			// Get all column name for default report
+			$configcolNames = (array) $this->getconfigColNames();
+
+			$colNames = (array) ($configcolNames['colToshow']);
 		}
 
 		$this->setAllUserPreference($reportName, $sortCol, $sortOrder, $colNames, $filters);
@@ -199,9 +202,10 @@ class TjreportsModelReports extends JModelList
 
 		$colNames  = array_intersect($plugcolNames[0], $confirgcols);
 
-		if (!empty($colNames))
+		// Change By komal to show default field
+		if (!empty($plugcolNames[0]))
 		{
-			return $colNames;
+			return $plugcolNames[0];
 		}
 
 		return false;
@@ -330,6 +334,39 @@ class TjreportsModelReports extends JModelList
 		$query->where('userid=' . $ol_user);
 		$query->where('id=' . $queryId);
 
+		$db->setQuery($query);
+		$queryData = $db->loadObject();
+
+		return $queryData;
+	}
+
+	/**
+	 * By komal to show default field
+	 * Get all Default fields names
+	 *
+	 * @return    object
+	 *
+	 * @since    1.0
+	 */
+	public function getDefaultReport()
+	{
+		$input = JFactory::getApplication()->input;
+		$reportName = $input->get('reportToBuild', '', 'STRING');
+
+		if (empty($reportName))
+		{
+			$mainframe  = JFactory::getApplication();
+			$reportName = $mainframe->getUserState('com_tjreports' . '.reportName', '');
+		}
+
+		$db        = JFactory::getDBO();
+		$query = $db->getQuery(true);
+		$query->select('*');
+		$query->from($db->quoteName('#__tj_reports', 'tjr'));
+		$query->where($db->quoteName('tjr.plugin') . ' = ' . $db->quote($reportName));
+		$query->where($db->quoteName('tjr.default') . ' = ' . 1);
+		$query->where($db->quoteName('tjr.userid') . ' = ' . 0);
+		$query->where($db->quoteName('tjr.parent') . ' = ' . 0);
 		$db->setQuery($query);
 		$queryData = $db->loadObject();
 

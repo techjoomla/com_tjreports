@@ -1,8 +1,108 @@
+function getColNames()
+{
+	techjoomla.jQuery('#saveQuery').show();
+	techjoomla.jQuery('.ColVis_collection').toggle();
+}
+
+function getQueryResult(id, Itemid)
+{
+	var queryId = id.split("_");
+
+	if (queryId=="")
+	{
+		window.location.href = site_root + 'index.php?option=com_tjreports&view=reports&reportToBuild='+reportToBuild+'&client='+client+'&reportId='+reportId+"&Itemid="+Itemid;
+	}
+	else
+	{
+		window.location.href = site_root + 'index.php?option=com_tjreports&view=reports&savedQuery=1&reportToBuild='+queryId[0]+'&client='+client+'&queryId='+queryId[1]+'&reportId='+reportId+"&Itemid="+Itemid;
+	}
+}
+
+function loadReport(reportToLoad,mid)
+{
+		var path = site_root + "index.php?option=com_tjreports&task=reports.getreport";
+
+		// Report to load is id.
+		var data = 'reportToLoad=' + reportToLoad;
+
+		jQuery.ajax({
+		url: path,
+		type: 'post',
+		data : data,
+		dataType: 'json',
+		error: function()
+				{
+					console.log('Problem with AJAX Request while loading report');
+					return false;
+				},
+		success: function(resp)
+		{
+			reportToLoad = resp.plugin;
+			clientt = resp.client;
+			var clientArray = [];
+			clientArray.push(clientt);
+
+			 // Add current client to first and append others.
+
+			var res = client.split(",");
+			for(var i in res){
+				if(res[i] == clientt){
+					res.splice(i,1);
+					break;
+				}
+			}
+
+			for(var i = 0; i < res.length; i++){
+				clientArray.push(res[i]);
+			}
+
+			clients = clientArray.toString();
+
+			reportId = resp.id;
+			var action = document.adminForm.action;
+			var newAction = action+'&reportToBuild='+reportToLoad+'&client='+clients+'&reportId='+reportId+'&Itemid='+mid;
+			window.location.href = newAction;
+
+		}});
+}
+
+function cleardate()
+{
+	techjoomla.jQuery("#attempt_begin").val('');
+	techjoomla.jQuery("#attempt_end").val('');
+	getFilterdata(-1, '', 'dateSearch');
+}
+
+	techjoomla.jQuery(document).click(function(e)
+	{
+		if (!techjoomla.jQuery(e.target).closest('#ul-columns-name').length && e.target.id != 'show-hide-cols-btn')
+		{
+			techjoomla.jQuery(".ColVis_collection").hide();
+		}
+	});
 
 techjoomla.jQuery(document).ready(function(){
+
 		/*
 		* get char remianing for short desc
 		*/
+
+		getPaginationBar();
+
+		techjoomla.jQuery('.ColVis_collection input').click(function(){
+
+			if (techjoomla.jQuery(".ColVis_collection input:checkbox:checked").length > 0)
+			{
+				getFilterdata(-1, '', 'hideShowCols');
+			}
+			else
+			{
+				var msg = Joomla.JText._('COM_TJREPORTS_REPORTS_CANNOT_SELECT_NONE');
+				alert(msg);
+				return false;
+			}
+		});
+
 		techjoomla.jQuery( "#jform_short_desc" ).keyup(function(event) {
 			var desc_length = techjoomla.jQuery("#jform_short_desc").val().length;
 			var characters = lesson_characters_allowed;
@@ -153,120 +253,7 @@ function getVideosubFormat(thiselement)
 	techjoomla.jQuery('[id^="video_subformat_"]',format_lesson_form).hide();
 	techjoomla.jQuery('#video_subformat_'+thiselementval,format_lesson_form).show();
 }
-/*respective input to show depending on lesson format...
-function lesson_format(formatid,form_id)
-{
-	var format_lesson_form	= techjoomla.jQuery('#lesson-format-form_'+form_id);
-	seteditformformat(formatid,format_lesson_form);
-}
 
-
-function seteditformformat(formatid,format_lesson_form)
-{
-
-	// make the format link active
-	techjoomla.jQuery('.format_types a',format_lesson_form).removeClass('active');
-	/*var format_datatype	= formatid.toLowerCase().replace(/^[\u00C0-\u1FFF\u2C00-\uD7FF\w]|\s[\u00C0-\u1FFF\u2C00-\uD7FF\w]/g, function(letter){
-							return letter.toUpperCase();});
-
-	techjoomla.jQuery('a.' + formatid, format_lesson_form).addClass('active');
-
-	//populate the hidden filed with selected format
-	techjoomla.jQuery('#jform_format',format_lesson_form).val(formatid);
-
-	techjoomla.jQuery('#lesson_format',format_lesson_form).show();
-	techjoomla.jQuery('#lesson_format .lesson_format',format_lesson_form).hide();
-
-	if(formatid == 'scorm'){
-		techjoomla.jQuery('#lesson_format .lesson_format[id="'+formatid+'"] #passing_score',format_lesson_form).show();
-		techjoomla.jQuery('#lesson_format .lesson_format[id="'+formatid+'"] #grademethod',format_lesson_form).show();
-	}
-
-	if( formatid == 'tjscorm' || formatid == 'tinCan'){
-		formatid= 'scorm';
-		techjoomla.jQuery('#lesson_format .lesson_format[id="'+formatid+'"] #passing_score',format_lesson_form).hide();
-		techjoomla.jQuery('#lesson_format .lesson_format[id="'+formatid+'"] #grademethod',format_lesson_form).hide();
-	}
-	techjoomla.jQuery('#lesson_format .lesson_format[id="'+formatid+'"]',format_lesson_form).show();
-}
-
-/*Get the all the plugins for selected format
- * formatid can be video, tincanlrs or document
- * form_id is the unique id appended to id of each lesson form
- *
-function get_lesson_format(formatid,form_id)
-{
-	var format_lesson_form	= techjoomla.jQuery('#lesson-format-form_'+form_id);
-	techjoomla.jQuery.ajax({
-		url: "index.php?option=com_tjlms&task=modules.getSubFormats&lesson_format="+formatid,
-		type: "GET",
-		dataType: "json",
-		beforeSend: function() {
-			techjoomla.jQuery('.loading',format_lesson_form).show();
-		},
-		success: function(data) {
-			if(data.result == 1)
-			{
-				if(data.html == '')
-				{
-					techjoomla.jQuery('#'+formatid+' .lesson_format_msg',format_lesson_form).show();
-				}
-				else
-				{
-					formatdata = data.html;
-					datahtml = '<select id="lesson_format'+formatid+'_subformat" name="lesson_format['+formatid+'_subformat]" class="class_'+formatid+'_subformat" onchange="getsubFormat(this,\''+formatid+'\');">';
-					for (i=0;i<formatdata.length;i++)
-					{
-						datahtml += '<option value="'+formatdata[i].id+'" selected>'+formatdata[i].name+'</option>';
-					}
-					datahtml += '</select>';
-					techjoomla.jQuery('#'+formatid+'_subformat_options',format_lesson_form).html(datahtml);
-
-					if(formatdata.length == 1){
-						techjoomla.jQuery('#'+formatid+'_subformat_options',format_lesson_form).parent().hide();
-					}
-					else{
-						techjoomla.jQuery('#'+formatid+'_subformat_options',format_lesson_form).parent().show();
-					}
-					getsubFormat(techjoomla.jQuery('#lesson_format'+formatid+'_subformat',format_lesson_form),formatid);
-				}
-			}
-			else
-			{
-				console.log('something went wrong11');
-				//show_lessonform_error(1,'something went wrong',lessonform);
-			}
-		},
-		error: function() {
-			console.log('something went wrong');
-			//show_lessonform_error(1,'something went wrong',lessonform);
-		},
-		complete: function(xhr) {
-			techjoomla.jQuery('.loading',format_lesson_form).hide();
-		}
-
-	});
-	// make the format link active
-	techjoomla.jQuery('.format_types a',format_lesson_form).removeClass('active');
-	var format_datatype	= formatid.toLowerCase().replace(/^[\u00C0-\u1FFF\u2C00-\uD7FF\w]|\s[\u00C0-\u1FFF\u2C00-\uD7FF\w]/g, function(letter){
-							return letter.toUpperCase();});
-
-	techjoomla.jQuery('a.' + formatid, format_lesson_form).addClass('active');
-
-	//populate the hidden filed with selected format
-	techjoomla.jQuery('#jform_format',format_lesson_form).val(formatid);
-
-	techjoomla.jQuery('#lesson_format',format_lesson_form).show();
-	techjoomla.jQuery('#lesson_format .lesson_format',format_lesson_form).hide();
-
-	if( formatid == 'tjscorm' || formatid == 'tinCan'){
-		formatid= 'scorm';
-		techjoomla.jQuery('#lesson_format .lesson_format[id="'+formatid+'"] #passing_score',format_lesson_form).hide();
-		techjoomla.jQuery('#lesson_format .lesson_format[id="'+formatid+'"] #grademethod',format_lesson_form).hide();
-	}
-	techjoomla.jQuery('#lesson_format .lesson_format[id="'+formatid+'"]',format_lesson_form).show();
-}
-*/
 function remove_file(id)
 {
 
@@ -402,7 +389,7 @@ function getReportdata(page, colToShow, limit, sortCol, sortOrder, action, allow
 		{
 			if (isNaN(filterValue))
 			{
-				var msg = Joomla.JText._('COM_TJLMS_NO_NEGATIVE_NUMBER');
+				var msg = Joomla.JText._('COM_TJREPORTS_NO_NEGATIVE_NUMBER');
 				alert(msg);
 
 				return false;
@@ -442,6 +429,11 @@ function getReportdata(page, colToShow, limit, sortCol, sortOrder, action, allow
 		type: "POST",
 		dataType: "json",
 		data:{filterValue:filter, filterName:filterTitle, limit:limit, page:page, colToShow:colToShow, sortCol:sortCol, sortOrder:sortOrder,action:action,reportToBuild:reportToBuild,allow_permission:allow_permission,reportId:reportId},
+		error: function()
+		{
+			console.log('Problem with AJAX Request while getting the reports');
+			return false;
+		},
 		success: function(data)
 		{
 			techjoomla.jQuery('#report-containing-div').html('');
@@ -490,7 +482,7 @@ function getFilterdata(page, event, action, sortCol, sortOrder)
 	}
 
 	if (colToShow.length === 0) {
-		msg = Joomla.JText._('COM_TJLMS_REPORTS_CANNOT_SELECT_NONE');
+		msg = Joomla.JText._('COM_TJREPORTS_REPORTS_CANNOT_SELECT_NONE');
 		alert(msg);
 		return false;
 	}
@@ -606,6 +598,11 @@ function getPaginationBar(action, totalRows)
 					type: "POST",
 					dataType: "json",
 					data:{queryName:queryName,current_user:current_user,client:client,reportId:reportId},
+					error: function()
+					{
+						console.log('Problem with AJAX Request while Saving the Query');
+						return false;
+					},
 					success: function(data)
 					{
 						if (data == 1)
@@ -797,4 +794,33 @@ function opentjlmsSqueezeBox(link)
 	var wwidth = width-(width*0.10);
 	var hheight = height-(height*0.10);
 	parent.SqueezeBox.open(link, { handler: 'iframe', size: {x: wwidth, y: hheight},classWindow: 'tjlms-modal'});
+}
+
+function deleteQuery(queryId)
+{
+	var delete_msg = Joomla.JText._('COM_TJREPORTS_DELETE_CONFIRMATION_MESSAGE');
+	var check = confirm(delete_msg);
+	if( check == true )
+	{
+		var qid=parseInt(queryId);
+			jQuery.ajax({
+				url: site_root+'index.php?option=com_tjreports&task=reports.deleteQuery',
+				dataType: 'json',
+				type: 'POST',
+				data: {'cid':qid} ,
+				error: function()
+				{
+					console.log('Problem with AJAX Request in deleteQuery');
+					return false;
+				},
+				success: function (resp)
+				{
+					window.location.reload();
+				}
+			});
+	}
+	else
+	{
+		window.location.reload();
+	}
 }

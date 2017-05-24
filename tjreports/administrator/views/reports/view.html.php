@@ -142,6 +142,8 @@ class TjreportsViewReports extends JViewLegacy
 			class='icon-download'></span>" . JText::_('COM_TJREPORTS_CSV_EXPORT') . "</a>";
 		$bar->appendButton('Custom', $button);
 
+		JToolBarHelper::cancel('tjreport.cancel', 'JTOOLBAR_CANCEL');
+
 /*
 		foreach ($this->enableReportPlugins as $eachPlugin) :
 				$button = "<a class='btn button report-btn' id='" . $eachPlugin->element . "'

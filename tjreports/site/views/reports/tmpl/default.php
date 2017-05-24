@@ -32,9 +32,15 @@ if ($reportId)
 	$allow_permission = $user->authorise('core.viewall', 'com_tjreports.tjreport.' . $reportId);
 }
 
-if(empty($report))
+// Check is there only one report present
+
+if (count($this->options) == 1)
 {
-	$this->items ="";
+	$document->addScriptDeclaration('var is_single_report = 1');
+}
+else
+{
+	$document->addScriptDeclaration('var is_single_report = 0');
 }
 
 $currentQuery = $report . '_' . $queryId;
@@ -49,18 +55,20 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 ?>
 
 <script>
-	techjoomla.jQuery(document).click(function(e)
+	techjoomla.jQuery(document).ready(function()
 	{
-		if (!techjoomla.jQuery(e.target).closest('#ul-columns-name').length && e.target.id != 'show-hide-cols-btn')
+		if(is_single_report)
 		{
-			techjoomla.jQuery(".ColVis_collection").hide();
+			jQuery(".dropdown-list").hide();
+		}
+
+		if(reportId == 0)
+		{
+			loadReport(<?php echo (int)$this->options[0]->value ?>,<?php echo  (int)$menuItem->id ?>);
 		}
 	});
-
-	techjoomla.jQuery(document).ready(function(){
-		getPaginationBar();
-	});
 </script>
+
 	<?php
 		jimport('joomla.application.module.helper');
 		$modules = JModuleHelper::getModules('manager-menu');
@@ -94,38 +102,62 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 	?>
 	<!--// JHtmlsidebar for menu ends-->
 
+ 
 	<form action="<?php echo JRoute::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm">
 		<div>
-			<div class="row margint20">
-				<div class="col-md-10 col-lg-10 text-semibold">
-					<div>
-						<div class="col-md-6">
-							<span>
+			<div class="row">
+				<div class="span5 dropdown-list">
 								<?php echo JText::_("COM_TJREPORTS_AVAILABLE_REPORT_LIST"); ?>
-							</span>
-							<span>
 								<?php
 									if (!empty($this->options)): ?>
-									<div>
 										<?php echo JHtml::_('select.genericlist', $this->options, "filter_selectplugin", 'class="" size="1" onchange="loadReport(this.value,' . $menuItem->id . ');" name="filter_selectplugin"', "value", "text",  $reportId);
 											?>
-									</div>
 								<?php endif; ?>
-							</span>
-						</div>
-						<div class="col-md-6">
-							<?php
-							if(!empty($reportId)):
-								echo "<a class='btn' class='button'
-										type='submit' onclick=\"Joomla.submitbutton('reports.csvexport');\" href='#'><span title='Export'
-									class='icon-download'></span>" . JText::_('COM_TJREPORTS_CSV_EXPORT') . "</a>";
-							endif
-							?>
+				</div>
+				<div class="span3">
+						<div class="show-hide-cols ">
+							<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>">
+							<ul id="ul-columns-name" class="ColVis_collection" style="display:none">
+
+								<?php if (!empty($this->colToshow)):	?>
+									<?php  $this->colToshow = $this->colToshow; ?>
+								<?php endif; ?>
+
+								<?php foreach ($this->colNames as $constant => $colName): ?>
+									<li class="span5 offset1">
+										<label>
+											<?php $disabled = ''; ?>
+											<?php if ($colName == 'id'): ?>
+												<?php $disabled = 'disabled'; ?>
+											<?php endif; ?>
+
+											<?php $checked = 'checked="checked"'; ?>
+											<?php if (!empty($this->colToshow)):	?>
+												<?php if (!in_array($colName, $this->colToshow)): ?>
+													<?php $checked = ''; ?>
+												<?php endif; ?>
+											<?php endif; ?>
+
+											<input type="checkbox" <?php echo $checked; ?> name="<?php echo $colName;?>" <?php echo $disabled; ?> id="<?php echo $colName;	?>">
+												<span><?php echo JText::_($constant);	?></span>
+										</label>
+									</li>
+								<?php endforeach; ?>
+							</ul>
 						</div>
 					</div>
-				</div>
+				<div class="span2">
+					<?php
+						$report_path=JRoute::_('index.php?option=com_tjreports&task=reports.csvexport');
 
-				<div class="col-md-2 col-lg-2 pull-right">
+						if(!empty($reportId)):
+						echo "<a class='btn' class='button'
+						type='submit'  href='$report_path'><span title='Export'
+						class='icon-download'></span>" . JText::_('COM_TJREPORTS_CSV_EXPORT') . "</a>";
+						endif
+					?>
+				</div>
+				<div class="span2">
 					<div id="reportPagination" class="pull-right ">
 						<select id="list_limit" name="list[limit]" class="input-mini chzn-done" onchange="getFilterdata(0, '','paginationLimit')">
 							<option value="5" >5</option>
@@ -141,7 +173,7 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 					</div>
 				</div>
 			</div>
-			<hr>
+			<br>
 			<div>
 				<div class="report-top-bar row">
 					<?php if (empty($this->items)):	?>
@@ -152,55 +184,39 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 							</div>
 						</div>
 					<?php else: ?>
-					<div class="col-md-2 col-sm-3 col-xs-12">
-						<div class="show-hide-cols ">
-							<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>">
-							<ul id="ul-columns-name" class="ColVis_collection" style="display:none">
-
-								<?php if (!empty($this->colToshow)):	?>
-									<?php  $this->colToshow = $this->colToshow; ?>
-								<?php endif; ?>
-
-								<?php foreach ($this->colNames as $constant => $colName): ?>
-									<li>
-										<label>
-											<?php $disabled = ''; ?>
-											<?php if ($colName == 'id'): ?>
-												<?php $disabled = 'disabled'; ?>
-											<?php endif; ?>
-
-											<?php $checked = 'checked="checked"'; ?>
-											<?php if (!empty($this->colToshow)):	?>
-												<?php if (!in_array($colName, $this->colToshow)): ?>
-													<?php $checked = ''; ?>
-												<?php endif; ?>
-											<?php endif; ?>
-
-											<input type="checkbox" <?php echo $checked; ?> name="<?php echo $colName;	?>" <?php echo $disabled; ?> id="<?php echo $colName;	?>">
-												<span><?php echo JText::_($constant);	?></span>
-										</label>
-									</li>
-								<?php endforeach; ?>
-							</ul>
-						</div>
 					</div>
 
-					<div class="col-sm-2 col-xs-12">
+					<div>
+					<div class="col-sm-8 col-xs-12 offset1">
 						<?php
 						if (!empty($this->saveQueriesList)): ?>
 							<div>
 									<?php echo JHtml::_('select.genericlist', $this->saveQueriesList, "filter_saveQuery", 'class="" size="1" onchange="getQueryResult(this.value,'. $menuItem->id .');" name="filter_saveQuery"', "value", "text", $currentQuery);
 									?>
-							</div>
+							
+							</div><br>
 						<?php endif; ?>
 					</div>
+					<div class="span2 offset1">
+							<button type="button" title="<?php echo "Clear"; ?>" onClick="window.location.reload();">Clear</button>
+					</div>
+
+					<?php if($queryId)
+					{ ?>
+						<div class="span2">
+<button class= "btn btn-danger" onClick="deleteQuery(<?php echo $queryId; ?>);return false;">Delete</button>
+						</div>
+					<?php } 
+					?>
+					
 
 					<div class="col-md-3 col-sm-3 col-xs-12">
 						<div>
 							<input type="text" name="queryName" placeholder="Title for the Query"  style="display:none !important" id="queryName" />
-							<input type="button" class="btn btn-primary" id="saveQuery" onclick="saveThisQuery();" value="<?php echo JText::_('COM_TJREPORTS_SAVE_THIS_QUERY'); ?>" />
+							<input type="button" class="btn btn-primary" id="saveQuery" onclick="saveThisQuery();" style="display:none !important" value="<?php echo JText::_('COM_TJREPORTS_SAVE_THIS_QUERY'); ?>" />
 						</div>
 					</div>
+					<br>
 					<div class="col-md-5 col-sm-4 col-xs-12">
 						<?php if ($report == 'attemptreport'): ?>
 							<!--
@@ -253,113 +269,4 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 		</div>
 	</form>
 </div>
-
-<script>
-
-function getColNames()
-{
-	techjoomla.jQuery('.ColVis_collection').toggle();
-}
-
-function getQueryResult(id, Itemid)
-{
-	var queryId = id.split("_");
-
-	if (queryId=="")
-	{
-		window.location.href = 'index.php?option=com_tjreports&view=reports&reportToBuild='+reportToBuild+'&client='+client+'&reportId='+reportId+"&Itemid="+Itemid;
-	}
-	else
-	{
-		window.location.href = 'index.php?option=com_tjreports&view=reports&savedQuery=1&reportToBuild='+queryId[0]+'&client='+client+'&queryId='+queryId[1]+'&reportId='+reportId+"&Itemid="+Itemid;
-	}
-}
-
-techjoomla.jQuery(document).ready(function()
-{
-	switch('<?php echo $report; ?>')
-	{
-		case 'userreport':
-			techjoomla.jQuery('#userreport').addClass('active btn-primary');
-			break;
-		case 'studentcoursereport':
-			techjoomla.jQuery('#studentcoursereport').addClass('active btn-primary');
-			break;
-		case 'lessonreport':
-			techjoomla.jQuery('#lessonreport').addClass('active btn-primary');
-			break;
-		case 'coursereport':
-			techjoomla.jQuery('#coursereport').addClass('active btn-primary');
-			break;
-		case 'attemptreport':
-			techjoomla.jQuery('#attemptreport').addClass('active btn-primary');
-			break;
-	}
-
-	techjoomla.jQuery('.ColVis_collection input').click(function(){
-
-		if (techjoomla.jQuery(".ColVis_collection input:checkbox:checked").length > 0)
-		{
-			getFilterdata(-1, '', 'hideShowCols');
-		}
-		else
-		{
-			var msg = Joomla.JText._('COM_TJREPORTS_REPORTS_CANNOT_SELECT_NONE');
-			alert(msg);
-			return false;
-		}
-	});
-});
-
-function loadReport(reportToLoad,mid)
-{
-		var path = window.location.pathname + "?option=com_tjreports&task=reports.getreport";
-
-		// Report to load is id.
-		var data = 'reportToLoad=' + reportToLoad;
-
-		jQuery.ajax({
-		url: path,
-		type: 'post',
-		data : data,
-		dataType: 'json',
-
-		success: function(resp)
-		{
-			reportToLoad = resp.plugin;
-			clientt = resp.client;
-			var clientArray = [];
-			clientArray.push(clientt);
-
-			 // Add current client to first and append others.
-
-			var res = client.split(",");
-			for(var i in res){
-				if(res[i] == clientt){
-					res.splice(i,1);
-					break;
-				}
-			}
-
-			for(var i = 0; i < res.length; i++){
-				clientArray.push(res[i]);
-			}
-
-			clients = clientArray.toString();
-
-			reportId = resp.id;
-			var action = document.adminForm.action;
-			var newAction = action+'&reportToBuild='+reportToLoad+'&client='+clients+'&reportId='+reportId+'&Itemid='+mid;
-			window.location.href = newAction;
-
-		}});
-}
-
-function cleardate()
-{
-	techjoomla.jQuery("#attempt_begin").val('');
-	techjoomla.jQuery("#attempt_end").val('');
-	getFilterdata(-1, '', 'dateSearch');
-}
-</script>
 

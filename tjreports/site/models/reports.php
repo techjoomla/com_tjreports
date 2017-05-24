@@ -22,6 +22,49 @@ jimport('joomla.application.component.modellist');
 class TjreportsModelReports extends JModelList
 {
 	/**
+	 * Method to auto-populate the model state.
+	 *
+	 * This method should only be called once per instantiation and is designed
+	 * to be called on the first call to the getState() method unless the model
+	 * configuration flag to ignore the request is set.
+	 *
+	 * Note. Calling getState in this method will result in recursion.
+	 *
+	 * @param   string  $ordering   An optional ordering field.
+	 * @param   string  $direction  An optional direction (asc|desc).
+	 *
+	 * @return  void
+	 *
+	 * @since   12.2
+	 */
+	protected function populateState($ordering = 'ordering', $direction = 'ASC')
+	{
+		$input = JFactory::getApplication();
+
+		// List state information
+
+		$input = JFactory::getApplication()->input;
+
+		$value = $input->get('client', "", "STRING");
+		$this->setState('client', $value);
+
+		$value = $input->get('allow_permission', '', 'INT');
+		$this->setState('allow_permission', $value);
+
+		$value = $input->get('reportId', '', 'INT');
+		$this->setState('reportId', $value);
+
+		$value = $input->get('savedQuery', '0', 'INT');
+		$this->setState('savedQuery', $value);
+
+		$value = $input->get('queryId', '0', 'INT');
+		$this->setState('queryId', $value);
+
+		$value = $input->get('reportToBuild', '', 'STRING');
+		$this->setState('reportToBuild', $value);
+	}
+
+	/**
 	 * Build an SQL query to load the list data.
 	 *
 	 * @param   ARRAY   $filters      The Filters which are used
@@ -50,29 +93,29 @@ class TjreportsModelReports extends JModelList
 		if (!$allow_permission)
 		{
 			// If allow_permission not yet set take value from function get input from view.html
-			$allow_permission = $input->get('allow_permission', '', 'INT');
+			$allow_permission = $this->getState('allow_permission');
 		}
 
 		if (!$reportId)
 		{
 			// If reportId not yet set take value from function get input from view.html
-			$reportId = $input->get('reportId', '', 'INT');
+			$reportId = $this->getState('reportId');
 		}
 
 		// If reportname is not in url or input get it from state
-		$reportName = $input->get('reportToBuild', '', 'STRING');
+		$reportName = $this->getState('reportToBuild');
 
 		if (empty($reportName))
 		{
 			$reportName = $mainframe->getUserState('com_tjreports' . '.reportName', '');
 		}
 
-		$isSaveQuery = $input->get('savedQuery', '0', 'INT');
+		$isSaveQuery = $this->getState('savedQuery');
 
 		if ($isSaveQuery == 1)
 		{
 			// Get saved data
-			$queryId = $input->get('queryId', '0', 'INT');
+			$queryId = $this->getState('queryId');
 
 			if ($queryId != 0)
 			{
@@ -84,7 +127,7 @@ class TjreportsModelReports extends JModelList
 
 					$param = json_decode($queryData->param);
 
-					$colNames = $param->colToshow;
+					$colNames = (array) $param->colToshow;
 					$filters = $param->filters;
 					$filters = (array) $filters;
 					$sort = $param->sort;
@@ -177,8 +220,7 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function getColNames()
 	{
-		$input = JFactory::getApplication()->input;
-		$reportName = $input->get('reportToBuild', '', 'STRING');
+		$reportName = $this->getState('reportToBuild');
 
 		if (empty($reportName))
 		{
@@ -262,8 +304,7 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function getconfigColNames()
 	{
-		$input = JFactory::getApplication()->input;
-		$reportName = $input->get('reportToBuild', '', 'STRING');
+		$reportName = $this->getState('reportToBuild');
 		$user_id = JFactory::getUser()->id;
 
 		if (empty($reportName))
@@ -394,9 +435,11 @@ class TjreportsModelReports extends JModelList
 		$db = JFactory::getDBO();
 		$condtion = array(0 => '\'tjreports\'');
 		$condtionatype = join(',', $condtion);
+		$query = $db->getQuery(true);
 
-		$query = "SELECT extension_id as id,name,element,enabled as published FROM #__extensions WHERE folder in (" . $condtionatype . ") AND enabled=1";
-
+		$query->select($db->quoteName(array('extension_id','name','element','enabled'), array('id',null,null,'published')));
+		$query->from($db->quoteName('#__extensions'));
+		$query->where("folder in (" . $condtionatype . ") AND enabled=1");
 		$db->setQuery($query);
 		$reportPlugins = $db->loadobjectList();
 
@@ -435,7 +478,6 @@ class TjreportsModelReports extends JModelList
 		return $userFilter;
 	}
 
-
 	/**
 	 * Function to get all reports from tjreport
 	 *
@@ -450,12 +492,14 @@ class TjreportsModelReports extends JModelList
 		$query = $db->getQuery(true);
 		$user_id = JFactory::getUser()->id;
 
-		$input = JFactory::getApplication()->input;
-		$clients = $input->get('client', "", "STRING");
+		$client = $this->getState('client');
 
-		// Need alternative code for this
-		$clients = explode(",", $clients);
-		$clients = "'" . implode("','", $clients) . "'";
+		// Check for the client
+		if ($clients)
+		{
+			$clients = explode(",", $clients);
+			$clients = "'" . implode("','", $clients) . "'";
+		}
 
 		$query->select('r.title as text, r.id as value');
 		$query->from('#__tj_reports as r');
@@ -569,4 +613,5 @@ class TjreportsModelReports extends JModelList
 				return $savedcols;
 		}
 	}
+
 }

@@ -16,6 +16,8 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.view');
 require_once JPATH_SITE . '/components/com_tjreports/helpers/tjreports.php';
 require_once JPATH_SITE . '/components/com_tjreports/models/reports.php';
+require_once JPATH_COMPONENT . '/helpers/tjreports.php';
+
 
 // Import Csv export button
 jimport('techjoomla.tjtoolbar.button.csvexport');
@@ -32,6 +34,8 @@ class TjreportsViewReports extends JViewLegacy
 	protected $pagination;
 
 	protected $state;
+	
+	protected $extension;
 
 	/**
 	 * Execute and display a template script.
@@ -52,6 +56,14 @@ class TjreportsViewReports extends JViewLegacy
 			JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
 
 			return false;
+		}
+
+		$extension = JFactory::getApplication()->input->get('extension', '', 'word');
+
+		if ($extension)
+		{
+			TjreportsHelper::addSubmenu('reports');
+			$this->sidebar = JHtmlSidebar::render();
 		}
 
 		// Get saved data
@@ -84,7 +96,7 @@ class TjreportsViewReports extends JViewLegacy
 		$TjreportsHelper->getLanguageConstant();
 
 		// Get all enable plugins
-		$this->enableReportPlugins = $this->get('enableReportPlugins');
+		$this->enableReportPlugins=  $TjreportsModelReports->getenableReportPlugins();
 
 		$this->colToshow = array();
 
@@ -133,25 +145,31 @@ class TjreportsViewReports extends JViewLegacy
 	protected function addToolbar()
 	{
 		// Old code
-
+		$extension = JFactory::getApplication()->input->get('extension', '', 'word');
 		$bar = JToolBar::getInstance('toolbar');
 		JToolBarHelper::title(JText::_('COM_TJREPORTS_TITLE_REPORT'), 'list');
 
 		$button = "<a class='btn' class='button'
-			type='submit' onclick=\"Joomla.submitbutton('reports.csvexport');\" href='#'><span title='Export'
-			class='icon-download'></span>" . JText::_('COM_TJREPORTS_CSV_EXPORT') . "</a>";
-		$bar->appendButton('Custom', $button);
+				type='submit' onclick=\"Joomla.submitbutton('reports.csvexport');\" href='#'><span title='Export'
+				class='icon-download'></span>" . JText::_('COM_TJREPORTS_CSV_EXPORT') . "</a>";
+			$bar->appendButton('Custom', $button);
 
-		JToolBarHelper::cancel('tjreport.cancel', 'JTOOLBAR_CANCEL');
+		// list of plugin
 
-/*
-		foreach ($this->enableReportPlugins as $eachPlugin) :
-				$button = "<a class='btn button report-btn' id='" . $eachPlugin->element . "'
-							 onclick=\"loadReport('" . $eachPlugin->element . "'); \" ><span
-							class='icon-list'></span>" . JText::_($eachPlugin->name) . "</a>";
-				$bar->appendButton('Custom', $button);
-		endforeach;
-*/
+		if($extension)
+		{
+			foreach ($this->enableReportPlugins as $eachPlugin) :
+					$button = "<a class='btn button report-btn' id='" . $eachPlugin->element . "'
+				onclick=\"loadReport('" . $eachPlugin->element . "','". $extension. "'); \" ><span
+				class='icon-list'></span>" . JText::_($eachPlugin->name) . "</a>";
+					$bar->appendButton('Custom', $button);
+			endforeach;
+		}
+
+		else
+		{
+			JToolBarHelper::cancel('tjreport.cancel', 'JTOOLBAR_CANCEL');
+		}
 
 /*
  * 		// CSV export code for ajax based
@@ -175,3 +193,4 @@ class TjreportsViewReports extends JViewLegacy
 */
 	}
 }
+

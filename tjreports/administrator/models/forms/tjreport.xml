@@ -100,6 +100,14 @@
 			cols="100"
 			rows="8" />
 
+		<field name="datadenyset" type="radio"
+			label="COM_TJREPORTS_FORM_LBL_REPORT_DATA_DENY_SET"
+			description="COM_TJREPORTS_FORM_DESC_REPORT_DATA_DENY_SET"
+			class="inputbox radio btn-group btn-group-yesno" size="1" default="0">
+			<option value="1">COM_TJREPORTS_YES</option>
+			<option value="0">COM_TJREPORTS_NO</option>
+		</field>
+
 		<field name="default" type="radio"
 			label="COM_TJREPORTS_FORM_LBL_REPORT_DEFAULT"
 			description="COM_TJREPORTS_FORM_DESC_REPORT_DEFAULT"

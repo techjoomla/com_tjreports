@@ -83,6 +83,26 @@ class TjreportsControllerReports extends JControllerAdmin
 	public function csvexport()
 	{
 		$mainframe  = JFactory::getApplication();
+		$user = JFactory::getUser();
+
+		if (!$user->authorise('core.export', 'com_tjreports'))
+		{
+			if ($user->guest)
+			{
+				$return = base64_encode(JUri::getInstance());
+				$login_url_with_return = JRoute::_('index.php?option=com_users&view=login&return=' . $return);
+				$mainframe->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'notice');
+				$mainframe->redirect($login_url_with_return, 403);
+			}
+			else
+			{
+				$mainframe->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+				$mainframe->setHeader('status', 403, true);
+
+				return;
+			}
+		}
+
 		$input = JFactory::getApplication()->input;
 		$reportName = $input->get('reportToBuild', '', 'STRING');
 		$reportId = $input->get('reportId', '', 'INT');
@@ -140,8 +160,10 @@ class TjreportsControllerReports extends JControllerAdmin
 		{
 			$calHeading    = strtoupper($eachColumn);
 			$plgReport     = strtoupper($reportName);
-			$calHeading    = 'PLG_TJREPORTS_' . $plgReport . '_' . $calHeading;
-			$csvData_arr[] = JText::_($calHeading);
+
+			// Commented because taking the dynamically selected col to be exported above name above - Amit Udale
+			// 	$calHeading    = 'PLG_TJREPORTS_' . $plgReport . '_' . $calHeading;
+			$csvData_arr[] = '"' . $calHeading . '"';
 		}
 
 		$csvData .= implode(',', $csvData_arr);

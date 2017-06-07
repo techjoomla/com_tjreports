@@ -239,11 +239,57 @@ class TjreportsModelReports extends JModelList
 
 		$confirgcols = (array) ($configcolNames['colToshow']);
 
+		// Get all column name which plugin provides / superset
+		$dispatcher = JEventDispatcher::getInstance();
+		JPluginHelper::importPlugin('tjreports');
+		$plugcolNames = $dispatcher->trigger('plg' . $reportName . 'getColNames', array());
+
 		$colNames  = array_intersect($plugcolNames[0], $confirgcols);
+
+		$denyCol = (array) $this->datadenyset();
 
 		if (!empty($colNames))
 		{
-			return $colNames;
+			if (!empty($denyCol))
+			{
+				foreach ($colNames as $key => $value)
+				{
+					$colName[$value] = $value;
+				}
+
+				return $colName;
+			}
+			else
+			{
+				foreach ($plugcolNames as $plgcol)
+				{
+					foreach ($plgcol as $key => $value)
+					{
+						$colName[$value] = $value;
+					}
+				}
+
+				return $colName;
+			}
+		}
+		elseif (empty($colNames))
+		{
+			if ($plugcolNames)
+			{
+				foreach ($plugcolNames as $plgcol)
+				{
+					foreach ($plgcol as $key => $value)
+					{
+						$colName[$value] = $value;
+					}
+				}
+
+				return $colName;
+			}
+			else
+			{
+				return $confirgcols;
+			}
 		}
 
 		return false;
@@ -533,4 +579,39 @@ class TjreportsModelReports extends JModelList
 
 		return $options;
 	}
+
+/**
+	 * Get datadenyset result
+	 *
+	 * @return    object
+	 *
+	 * @since    1.0
+	 */
+	public function datadenyset()
+	{
+		$input = JFactory::getApplication()->input;
+		$reportName = $input->get('reportToBuild', '', 'STRING');
+		$user_id = JFactory::getUser()->id;
+		$reportId = $input->get('reportId', '', 'int');
+
+		if ($reportName && $user_id && $reportId)
+			{
+				$db        = JFactory::getDBO();
+				$query = $db->getQuery(true);
+				$query->select(array('param'));
+				$query->from($db->quoteName('#__tj_reports'));
+				$query->where('plugin =' . $db->quote($reportName));
+				$query->where($db->quoteName('id') . ' = ' . $db->quote($reportId));
+				$query->where($db->quoteName('userid') . ' = ' . $db->quote($user_id));
+				$query->where($db->quoteName('datadenyset') . ' = ' . $db->quote('1'));
+
+				$db->setQuery($query);
+				$denyDataSet = $db->loadAssoc();
+
+				$savedcols = json_decode($denyDataSet['param']);
+
+				return $savedcols;
+		}
+	}
+
 }

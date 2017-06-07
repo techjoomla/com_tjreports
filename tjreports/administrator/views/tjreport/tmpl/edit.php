@@ -81,6 +81,11 @@ jQuery('#myTabs li:eq(2) a').tab('show') // Select third tab (0-indexed)
 					<div class="control-label"><?php echo $this->form->getLabel('default'); ?></div>
 					<div class="controls"><?php echo $this->form->getInput('default'); ?></div>
 				</div>
+
+				<div class="control-group">
+					<div class="control-label"><?php echo $this->form->getLabel('datadenyset'); ?></div>
+					<div class="controls"><?php echo $this->form->getInput('datadenyset'); ?></div>
+				</div>
 			</div>
 
 			<div role="tabpanel" class="tab-pane" id="permissions">

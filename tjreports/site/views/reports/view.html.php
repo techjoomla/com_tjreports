@@ -39,10 +39,34 @@ class TjreportsViewReports extends JViewLegacy
 	public function display($tpl = null)
 	{
 		$canDo = TjreportsHelpersTjreports::getActions();
-		$user_id = JFactory::getUser()->id;
+		$user = JFactory::getUser();
+		$user_id = $user->id;
 		$input = JFactory::getApplication()->input;
 		$TjreportsModelReports = new TjreportsModelReports;
 		$app = JFactory::getApplication();
+		$mainframe  = JFactory::getApplication();
+
+		$user->authorise('core.view', 'com_tjreports');
+		$user->authorise('core.viewall', 'com_tjreports');
+
+		if (!($user->authorise('core.view', 'com_tjreports') || $user->authorise('core.viewall', 'com_tjreports')))
+		{
+			if ($user->guest)
+			{
+				$return = base64_encode(JUri::getInstance());
+				$login_url_with_return = JRoute::_('index.php?option=com_users&view=login&return=' . $return);
+				$app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'notice');
+				$app->redirect($login_url_with_return, 403);
+			}
+			else
+			{
+				$app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+				$app->setHeader('status', 403, true);
+
+				return;
+			}
+		}
+
 /*
 		if (!$canDo->get('view.reports'))
 		{
@@ -69,6 +93,8 @@ class TjreportsViewReports extends JViewLegacy
 
 		$this->options		= $this->get('reportoptions');
 
+		$this->isSuperUser = $user->authorise('core.viewall', 'com_tjreports');
+
 		$user       = JFactory::getUser();
 
 		if ($reportId)
@@ -78,6 +104,7 @@ class TjreportsViewReports extends JViewLegacy
 		}
 
 		$input->set('reportId', $reportId);
+		$mainframe->setUserState('com_tjreports' . '.reportId', $reportId);
 
 		// Get respected plugin data
 		$this->items		= $this->get('Data');

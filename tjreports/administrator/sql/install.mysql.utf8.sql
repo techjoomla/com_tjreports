@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `#__tj_reports` (
   `parent` int(11) NOT NULL,
   `default` tinyint(4) NOT NULL,
   `userid` int(11) NOT NULL,
+  `datadenyset` int(11),
   `param` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=57 ;
+) AUTO_INCREMENT=1 ;

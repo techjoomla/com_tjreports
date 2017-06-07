@@ -130,7 +130,6 @@ class TjreportsHelpersTjreports
 		JText::script('COM_TJREPORTS_ENTER_MARKS_GRT_TOTALMARKS');
 		JText::script('COM_TJREPORTS_END_DATE_CANTBE_GRT_TODAY');
 		JText::script('COM_TJREPORTS_SURE_PAID_TO_FREE');
-		JText::script('COM_TJREPORTS_SURE_PAID_TO_FREE');
 		JText::script('COM_TJREPORTS_DELETE_CONFIRMATION_MESSAGE');
 
 		// For date valiation

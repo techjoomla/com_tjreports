@@ -10,4 +10,4 @@ CREATE TABLE IF NOT EXISTS `#__tj_reports` (
   `datadenyset` int(11),
   `param` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=57 ;
+) DEFAULT CHARSET=latin1 AUTO_INCREMENT=57 ;

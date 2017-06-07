@@ -25,6 +25,7 @@ $queryId = $input->get('queryId', '', 'INT');
 $report = $input->get('reportToBuild','','string');
 $client = $input->get('client','','string');
 $reportId = $input->get('reportId','','INT');
+$extension=$input->get('extension','','string');
 
 if ($reportId)
 {
@@ -37,6 +38,7 @@ $document->addScriptDeclaration('var reportToBuild = "' . $report . '"');
 $document->addScriptDeclaration('var current_user = "' . $user_id . '"');
 $document->addScriptDeclaration('var client = "' . $client . '"');
 $document->addScriptDeclaration('var reportId = "' . $reportId . '"');
+$document->addScriptDeclaration('var extension = "' . $extension . '"');
 ?>
 
 <script>
@@ -62,7 +64,15 @@ $document->addScriptDeclaration('var reportId = "' . $reportId . '"');
 			ob_end_clean();
 			echo $layoutOutput;
 
-		?> <!--// JHtmlsidebar for menu ends-->
+		// <!--// JHtmlsidebar for menu ends-->
+		if (!empty($this->sidebar)):?>
+				<div id="j-sidebar-container" class="span2">
+					<?php echo $this->sidebar;?>
+				</div>
+				<div id="j-main-container" class="span10">
+		<?php else :?>
+				<div id="j-main-container">
+		<?php endif;?>
 
 		<form action="<?php echo JRoute::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm">
 			<div class="report-top-bar row-fluid">
@@ -193,11 +203,11 @@ function getQueryResult(id)
 
 	if(queryId=="")
 	{
-		window.location.href = 'index.php?option=com_tjreports&view=reports&reportToBuild='+reportToBuild+'&client='+client+'&reportId='+reportId;
+		window.location.href = 'index.php?option=com_tjreports&view=reports&reportToBuild='+reportToBuild+'&extension='+extension+'&reportId='+reportId;
 	}
 	else
 	{
-		window.location.href = 'index.php?option=com_tjreports&view=reports&savedQuery=1&reportToBuild='+queryId[0]+'&client='+client+'&queryId='+queryId[1]+'&reportId='+reportId;
+		window.location.href = 'index.php?option=com_tjreports&view=reports&savedQuery=1&reportToBuild='+queryId[0]+'&extension='+extension+'&queryId='+queryId[1]+'&reportId='+reportId;
 	}
 }
 
@@ -238,9 +248,15 @@ techjoomla.jQuery(document).ready(function()
 });
 
 function loadReport(reportToLoad)
+
 {
 	var action = document.adminForm.action;
 	var newAction = action+'&reportToBuild='+reportToLoad;
+
+	if (extension)
+	{
+		newAction = newAction +'&extension='+extension;
+	}
 	window.location.href = newAction;
 }
 

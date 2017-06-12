@@ -299,9 +299,7 @@ class TjreportsControllerReports extends JControllerAdmin
 		$insert_object->userid        = $current_user;
 		$insert_object->param         = $params;
 
-		$model = JModelLegacy::getInstance('Report', 'TjreportsModel');
-
-		if (!$model->save((array) $insert_object))
+		if (!$db->insertObject('#__tj_reports', $insert_object, 'id'))
 		{
 			echo $db->stderr();
 

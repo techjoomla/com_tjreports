@@ -18,7 +18,7 @@ $user_id = $user->id;
 
 $document->addScript(JURI::root().'/components/com_tjreports/assets/js/jquery.twbsPagination.js');
 $document->addScript(JURI::root().'/components/com_tjreports/assets/js/tjreports.js');
-$document->addScriptDeclaration('var site_root = "' . JUri::root() . '"');
+$document->addScriptDeclaration('var site_root = "' . JUri::base() . '"');
 
 $input = JFactory::getApplication()->input;
 $queryId = $input->get('queryId', '', 'INT');
@@ -59,7 +59,6 @@ $document->addScriptDeclaration('var extension = "' . $extension . '"');
 
 		<?php
 			ob_start();
-			include JPATH_BASE . '/components/com_tjreports/layouts/header.sidebar.php';
 			$layoutOutput = ob_get_contents();
 			ob_end_clean();
 			echo $layoutOutput;

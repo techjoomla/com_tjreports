@@ -237,6 +237,8 @@ class TjreportsModelReports extends JModelList
 		// Get all column name for default report
 		$configcolNames = (array) $this->getconfigColNames();
 
+		$configcolNames['colToshow'] = isset($configcolNames['colToshow']) ? $configcolNames['colToshow'] : '';
+
 		$confirgcols = (array) ($configcolNames['colToshow']);
 
 		// Get all column name which plugin provides / superset
@@ -492,7 +494,7 @@ class TjreportsModelReports extends JModelList
 		$query = $db->getQuery(true);
 		$user_id = JFactory::getUser()->id;
 
-		$client = $this->getState('client');
+		$clients = $this->getState('client');
 
 		// Check for the client
 		if ($clients)

@@ -62,7 +62,7 @@ class TjreportsControllerTjreport extends JControllerForm
 	* @return  JControllerLegacy  This object to support chaining.
 	*/
 
-	public function setRedirect(string $url, string $msg = null, string $type = null)
+	public function setRedirect($url, $msg = null,$type = null)
 	{
 		$extension = JFactory::getApplication()->input->get('extension', '', 'word');
 

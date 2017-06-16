@@ -26,7 +26,7 @@ class TjreportsHelper
 	 */
 	public static function addSubmenu($view='')
 	{
-		$extension = JFactory::getApplication()->input->get('extension', '', STRING);
+		$extension = JFactory::getApplication()->input->get('extension', '', 'STRING');
 		$full_client = $extension;
 		$app = JFactory::getApplication('administrator');
 

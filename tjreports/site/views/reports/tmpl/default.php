@@ -197,9 +197,9 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 							</div><br>
 						<?php endif; ?>
 					</div>
-					<div class="span2 offset1">
+					<div class="row offset1">
 							<button type="button" title="<?php echo "Clear"; ?>" onClick="window.location.reload();">Clear</button>
-					</div>
+
 
 					<?php if($queryId)
 					{ ?>
@@ -208,7 +208,7 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 						</div>
 					<?php } 
 					?>
-					
+					</div>
 
 					<div class="col-md-3 col-sm-3 col-xs-12">
 						<div>

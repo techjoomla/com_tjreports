@@ -400,9 +400,8 @@ class TjreportsControllerReports extends JControllerAdmin
 	*/
 	public function setUserType()
 	{
-		$userTypeId = JFactory::getApplication()->input->get('com_hierarchy.userTypeId', '', 'int');
-
-		$setUserType = JFactory::getApplication()->setUserState('com_hierarchy.setUserType', $userTypeId);
+		$userTypeId = JFactory::getApplication()->input->get('userTypeId', '', 'int');
+		$setUserType = JFactory::getApplication()->setUserState('setUserType', $userTypeId);
 
 		echo new JResponseJson($setUserType);
 		jexit();

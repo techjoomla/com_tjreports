@@ -80,7 +80,8 @@ $document->addScriptDeclaration('var extension = "' . $extension . '"');
 						<?php echo JText::_('COM_TJREPORTS_NO_REPORT'); ?>
 					</div>
 				<?php else: ?>
-					<div class="show-hide-cols span6">
+
+					<div class="show-hide-cols span5">
 						<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>"></button>
 						<ul id="ul-columns-name" class="ColVis_collection" style="display:none">
 
@@ -112,6 +113,7 @@ $document->addScriptDeclaration('var extension = "' . $extension . '"');
 							<?php endforeach; ?>
 						</ul>
 					</div>
+
 					<?php if (!empty($this->saveQueriesList)): ?>
 						<div class="span2">
 								<?php echo JHtml::_('select.genericlist', $this->saveQueriesList, "filter_saveQuery", 'class="" size="1" onchange="getQueryResult(this.value);" name="filter_saveQuery"', "value", "text", $currentQuery);
@@ -291,5 +293,9 @@ function cleardate()
 .report-top-bar
 {
 	margin-top:10px;
+}
+
+#report-table thead input {
+margin-bottom: 0px;
 }
 </style>

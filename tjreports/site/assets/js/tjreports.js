@@ -824,3 +824,23 @@ function deleteQuery(queryId)
 		window.location.reload();
 	}
 }
+
+function setUserType(userTypeId)
+{
+	var userTypeId=parseInt(userTypeId.value);
+		jQuery.ajax({
+			url: '?option=com_tjreports&task=reports.setUserType',
+			dataType: 'json',
+			type: 'POST',
+			data: {'userTypeId':userTypeId} ,
+			error: function()
+				{
+					console.log('Problem with AJAX Request while setting User type for manager report');
+					return false;
+				},
+			success: function (resp)
+			{
+				window.location.reload();
+			}
+		});
+}

@@ -389,21 +389,4 @@ class TjreportsControllerReports extends JControllerAdmin
 		echo new JResponseJson($result);
 		jexit();
 	}
-
-// This is useful for manager report
-/**
-	* Function used to delete reports
-	*
-	* @return  json
-	*
-	* @since  1.0
-	*/
-	public function setUserType()
-	{
-		$userTypeId = JFactory::getApplication()->input->get('userTypeId', '', 'int');
-		$setUserType = JFactory::getApplication()->setUserState('setUserType', $userTypeId);
-
-		echo new JResponseJson($setUserType);
-		jexit();
-	}
 }

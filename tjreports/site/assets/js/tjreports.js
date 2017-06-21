@@ -384,6 +384,12 @@ function getReportdata(page, colToShow, limit, sortCol, sortOrder, action, allow
 		filterValue = techjoomla.jQuery(this).val();
 		filterName = techjoomla.jQuery(this).attr('id');
 		filterName = filterName.replace('search-filter-','');
+		
+		if (filterName == 'userType')
+		{
+			filterTitle.push(filterName);
+			filter.push(filterValue);
+		}
 
 		if (filterName == 'id' || filterName == 'attempt')
 		{

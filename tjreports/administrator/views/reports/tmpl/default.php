@@ -81,7 +81,7 @@ $document->addScriptDeclaration('var extension = "' . $extension . '"');
 					</div>
 				<?php else: ?>
 
-					<div class="show-hide-cols span5">
+					<div class="show-hide-cols span2">
 						<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>"></button>
 						<ul id="ul-columns-name" class="ColVis_collection" style="display:none">
 
@@ -115,7 +115,7 @@ $document->addScriptDeclaration('var extension = "' . $extension . '"');
 					</div>
 
 					<?php if (!empty($this->saveQueriesList)): ?>
-						<div class="span2">
+						<div class="span3">
 								<?php echo JHtml::_('select.genericlist', $this->saveQueriesList, "filter_saveQuery", 'class="" size="1" onchange="getQueryResult(this.value);" name="filter_saveQuery"', "value", "text", $currentQuery);
 								?>
 						</div>
@@ -138,9 +138,9 @@ $document->addScriptDeclaration('var extension = "' . $extension . '"');
 						</div>
 					</div>
 
-					<div class="span3 pull-right">
-						<input type="text" name="queryName" placeholder="Title for the Query" class="pull-right" style="display:none" id="queryName" />
-						<input type="button" class="btn btn-primary pull-right" id="saveQuery" onclick="saveThisQuery();" value="<?php echo JText::_('COM_TJREPORTS_SAVE_THIS_QUERY'); ?>" />
+					<div class="span5 pull-right input-append">
+						<input type="text" name="queryName" placeholder="Title for the Query" class="" style="display:none" id="queryName" />
+						<input type="button" class="btn btn-primary" id="saveQuery" onclick="saveThisQuery();" value="<?php echo JText::_('COM_TJREPORTS_SAVE_THIS_QUERY'); ?>" />
 					</div>
 
 

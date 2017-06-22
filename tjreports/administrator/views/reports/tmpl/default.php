@@ -18,6 +18,8 @@ $user_id = $user->id;
 
 $document->addScript(JURI::root().'/components/com_tjreports/assets/js/jquery.twbsPagination.js');
 $document->addScript(JURI::root().'/components/com_tjreports/assets/js/tjreports.js');
+$document->addStyleSheet(JURI::root().'administrator/components/com_tjreports/assets/css/tjreports.css');
+
 $document->addScriptDeclaration('var site_root = "' . JUri::base() . '"');
 
 $input = JFactory::getApplication()->input;
@@ -111,6 +113,7 @@ $document->addScriptDeclaration('var extension = "' . $extension . '"');
 									</label>
 								</li>
 							<?php endforeach; ?>
+							<input type="checkbox" checked="checked" name="userType" id="userType">
 						</ul>
 					</div>
 
@@ -139,11 +142,13 @@ $document->addScriptDeclaration('var extension = "' . $extension . '"');
 					</div>
 
 					<div class="span5 pull-right input-append">
-						<input type="text" name="queryName" placeholder="Title for the Query" class="" style="display:none" id="queryName" />
+						<input type="text" name="queryName" placeholder="Title for the Query" style="display:none" id="queryName" />
 						<input type="button" class="btn btn-primary" id="saveQuery" onclick="saveThisQuery();" value="<?php echo JText::_('COM_TJREPORTS_SAVE_THIS_QUERY'); ?>" />
 					</div>
 
-
+				</div>
+				<div>
+					<button class="btn" type="button" title="Clear" onclick="window.location.reload();">Clear</button>
 				</div>
 
 				<?php if ($report == 'attemptreport'): ?>
@@ -268,34 +273,3 @@ function cleardate()
 	getFilterdata(-1, '', 'dateSearch');
 }
 </script>
-
-<style>
-.show-hide-cols
-{
-	position:relative;
-}
-
-.ColVis_collection
-{
-	list-style: none;
-	width: 150px;
-	padding: 8px 8px 4px 8px;
-	margin: 0;
-	border: 1px solid #ccc;
-	border: 1px solid rgba( 0, 0, 0, 0.4 );
-	background-color: #f3f3f3;
-	overflow: hidden;
-	display: block;
-	opacity: 1;
-	position: absolute;
-}
-
-.report-top-bar
-{
-	margin-top:10px;
-}
-
-#report-table thead input {
-margin-bottom: 0px;
-}
-</style>

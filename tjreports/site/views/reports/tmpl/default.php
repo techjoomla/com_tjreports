@@ -26,7 +26,7 @@ $queryId = $input->get('queryId', '', 'INT');
 $report = $input->get('reportToBuild','','string');
 $client = $input->get('client','','string');
 $reportId = $input->get('reportId','','INT');
-
+$allow_permission = null;
 if ($reportId)
 {
 	$allow_permission = $user->authorise('core.viewall', 'com_tjreports.tjreport.' . $reportId);
@@ -142,6 +142,7 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 										</label>
 									</li>
 								<?php endforeach; ?>
+								<input type="checkbox" checked="checked" name="userType" id="userType">
 							</ul>
 						</div>
 					</div>
@@ -186,7 +187,7 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 					</div>
 
 					<div>
-					<div class="col-sm-8 col-xs-12">
+					<div class="span12">
 						<?php
 						if (!empty($this->saveQueriesList)): ?>
 							<div>

@@ -246,7 +246,10 @@ class TjreportsModelReports extends JModelList
 		JPluginHelper::importPlugin('tjreports');
 		$plugcolNames = $dispatcher->trigger('plg' . $reportName . 'getColNames', array());
 
-		$colNames  = array_intersect($plugcolNames[0], $confirgcols);
+		if (isset($plugcolNames[0]))
+		{
+			$colNames  = array_intersect($plugcolNames[0], $confirgcols);
+		}
 
 		$denyCol = (array) $this->datadenyset();
 
@@ -583,12 +586,12 @@ class TjreportsModelReports extends JModelList
 	}
 
 /**
-	 * Get datadenyset result
-	 *
-	 * @return    object
-	 *
-	 * @since    1.0
-	 */
+	* Get datadenyset result
+	*
+	* @return    object
+	*
+	* @since    1.0
+	*/
 	public function datadenyset()
 	{
 		$input = JFactory::getApplication()->input;

@@ -84,7 +84,7 @@ function cleardate()
 techjoomla.jQuery(document).ready(function(){
 
 		/*
-		* get char remianing for short desc
+		*  get char remianing for short desc
 		*/
 
 		getPaginationBar();

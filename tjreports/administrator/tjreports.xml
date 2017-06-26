@@ -32,12 +32,11 @@
         <filename>index.html</filename>
         <filename>tjreports.php</filename>
         <filename>controller.php</filename>
-        <filename>router1.php</filename>
+        <filename>router.php</filename>
         <folder>views</folder>
         <folder>models</folder>
         <folder>controllers</folder>
         <folder>helpers</folder>
-        <folder>assets</folder>
     </files>
     <media destination="com_tjreports" folder="media">
         <folder>js</folder>

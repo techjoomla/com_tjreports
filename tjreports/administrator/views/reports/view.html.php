@@ -34,7 +34,7 @@ class TjreportsViewReports extends JViewLegacy
 	protected $pagination;
 
 	protected $state;
-
+	
 	protected $extension;
 
 	/**
@@ -46,38 +46,19 @@ class TjreportsViewReports extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		$extension = JFactory::getApplication()->input->get('extension', '', 'STRING');
-
-		$full_client = explode('.', $extension);
-
-		// Eg com_tjlms
-		$component = $full_client[0];
-		$eName = str_replace('com_', '', $component);
-		$file = JPath::clean(JPATH_ADMINISTRATOR . '/components/' . $component . '/helpers/' . $eName . '.php');
-
-		if (file_exists($file))
-		{
-			require_once $file;
-
-			$prefix = ucfirst(str_replace('com_', '', $component));
-			$cName = $prefix . 'Helper';
-
-			if (class_exists($cName))
-			{
-				$canDo = TjlmsHelper::getActions();
-
-				if (!$canDo->get('view.reports'))
-				{
-					JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
-
-					return false;
-				}
-			}
-		}
-
+		$canDo = TjreportsHelpersTjreports::getActions();
 		$user       = JFactory::getUser();
 		$user_id    = $user->id;
 		$input = JFactory::getApplication()->input;
+
+		if (!$canDo->get('view.reports'))
+		{
+			JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
+
+			return false;
+		}
+
+		$extension = JFactory::getApplication()->input->get('extension', '', 'word');
 
 		if ($extension)
 		{
@@ -115,7 +96,7 @@ class TjreportsViewReports extends JViewLegacy
 		$TjreportsHelper->getLanguageConstant();
 
 		// Get all enable plugins
-		$this->enableReportPlugins = $TjreportsModelReports->getenableReportPlugins();
+		$this->enableReportPlugins=  $TjreportsModelReports->getenableReportPlugins();
 
 		$this->colToshow = array();
 
@@ -173,13 +154,13 @@ class TjreportsViewReports extends JViewLegacy
 				class='icon-download'></span>" . JText::_('COM_TJREPORTS_CSV_EXPORT') . "</a>";
 			$bar->appendButton('Custom', $button);
 
-		// List of plugin
+		// list of plugin
 
-		if ($extension)
+		if($extension)
 		{
 			foreach ($this->enableReportPlugins as $eachPlugin) :
 					$button = "<a class='btn button report-btn' id='" . $eachPlugin->element . "'
-				onclick=\"loadReport('" . $eachPlugin->element . "','" . $extension . "'); \" ><span
+				onclick=\"loadReport('" . $eachPlugin->element . "','". $extension. "'); \" ><span
 				class='icon-list'></span>" . JText::_($eachPlugin->name) . "</a>";
 					$bar->appendButton('Custom', $button);
 			endforeach;
@@ -212,3 +193,4 @@ class TjreportsViewReports extends JViewLegacy
 */
 	}
 }
+

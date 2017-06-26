@@ -21,13 +21,12 @@ $user       = JFactory::getUser();
 $user_id    = $user->id;
 $document->addScript(JURI::base(true).'/components/com_tjreports/assets/js/jquery.twbsPagination.js');
 $document->addScript(JURI::base(true).'/components/com_tjreports/assets/js/tjreports.js');
-$document->addStyleSheet(JURI::base(true).'/components/com_tjreports/assets/css/tjreports.css');
 $input = JFactory::getApplication()->input;
 $queryId = $input->get('queryId', '', 'INT');
 $report = $input->get('reportToBuild','','string');
 $client = $input->get('client','','string');
 $reportId = $input->get('reportId','','INT');
-$allow_permission = null;
+
 if ($reportId)
 {
 	$allow_permission = $user->authorise('core.viewall', 'com_tjreports.tjreport.' . $reportId);
@@ -106,8 +105,9 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
  
 	<form action="<?php echo JRoute::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm">
 		<div>
-			<div class="row-fluid">
+			<div class="row">
 				<div class="span5 dropdown-list">
+								<?php echo JText::_("COM_TJREPORTS_AVAILABLE_REPORT_LIST"); ?>
 								<?php
 									if (!empty($this->options)): ?>
 										<?php echo JHtml::_('select.genericlist', $this->options, "filter_selectplugin", 'class="" size="1" onchange="loadReport(this.value,' . $menuItem->id . ');" name="filter_selectplugin"', "value", "text",  $reportId);
@@ -143,7 +143,6 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 										</label>
 									</li>
 								<?php endforeach; ?>
-								<input type="checkbox" checked="checked" name="userType" id="userType" style="display:none">
 							</ul>
 						</div>
 					</div>
@@ -188,7 +187,7 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 					</div>
 
 					<div>
-					<div class="span12">
+					<div class="col-sm-8 col-xs-12 offset1">
 						<?php
 						if (!empty($this->saveQueriesList)): ?>
 							<div>
@@ -198,9 +197,9 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 							</div><br>
 						<?php endif; ?>
 					</div>
-					<div class="row-fluid">
-							<button class="btn" type="button" title="<?php echo "Clear"; ?>" onClick="window.location.reload();">Clear</button>
-
+					<div class="span2 offset1">
+							<button type="button" title="<?php echo "Clear"; ?>" onClick="window.location.reload();">Clear</button>
+					</div>
 
 					<?php if($queryId)
 					{ ?>
@@ -209,10 +208,10 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 						</div>
 					<?php } 
 					?>
-					</div>
-					<br/>
+					
+
 					<div class="col-md-3 col-sm-3 col-xs-12">
-						<div class="input-append">
+						<div>
 							<input type="text" name="queryName" placeholder="Title for the Query"  style="display:none !important" id="queryName" />
 							<input type="button" class="btn btn-primary" id="saveQuery" onclick="saveThisQuery();" style="display:none !important" value="<?php echo JText::_('COM_TJREPORTS_SAVE_THIS_QUERY'); ?>" />
 						</div>

@@ -113,7 +113,7 @@ $document->addScriptDeclaration('var extension = "' . $extension . '"');
 									</label>
 								</li>
 							<?php endforeach; ?>
-							<input type="checkbox" checked="checked" name="userType" id="userType">
+							<input type="checkbox" checked="checked" name="userType" id="userType" style="display:none">
 						</ul>
 					</div>
 

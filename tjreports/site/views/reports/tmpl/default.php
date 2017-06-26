@@ -21,6 +21,7 @@ $user       = JFactory::getUser();
 $user_id    = $user->id;
 $document->addScript(JURI::base(true).'/components/com_tjreports/assets/js/jquery.twbsPagination.js');
 $document->addScript(JURI::base(true).'/components/com_tjreports/assets/js/tjreports.js');
+$document->addStyleSheet(JURI::base(true).'/components/com_tjreports/assets/css/tjreports.css');
 $input = JFactory::getApplication()->input;
 $queryId = $input->get('queryId', '', 'INT');
 $report = $input->get('reportToBuild','','string');
@@ -142,7 +143,7 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 										</label>
 									</li>
 								<?php endforeach; ?>
-								<input type="checkbox" checked="checked" name="userType" id="userType">
+								<input type="checkbox" checked="checked" name="userType" id="userType" style="display:none">
 							</ul>
 						</div>
 					</div>

@@ -12,6 +12,7 @@
 		<action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" />
 		<action name="core.viewall" title="JACTION_VIEWALL" description="COM_TJREPORTS_ACCESS_VIEWALL_DESC" />
 		<action name="core.view.own" title="JACTION_VIEW_OWN" description="COM_TJREPORTS_ACCESS_VIEW_OWN_DESC" />
+		<action name="view.reports" title="COM_TJREPORTS_JVIEW_REPORTS" description="COM_TJREPORTS_JVIEW_REPORTS_DESC" />
 		<action name="core.view.subscribe" title="JACTION_VIEW_SUBSCRIBE" description="COM_TJREPORTS_ACCESS_VIEW_SUBSCRIBE_DESC" />
 	</section>
 

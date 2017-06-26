@@ -18,6 +18,8 @@ $user_id = $user->id;
 
 $document->addScript(JURI::root().'/components/com_tjreports/assets/js/jquery.twbsPagination.js');
 $document->addScript(JURI::root().'/components/com_tjreports/assets/js/tjreports.js');
+$document->addStyleSheet(JURI::root().'administrator/components/com_tjreports/assets/css/tjreports.css');
+
 $document->addScriptDeclaration('var site_root = "' . JUri::base() . '"');
 
 $input = JFactory::getApplication()->input;
@@ -80,7 +82,8 @@ $document->addScriptDeclaration('var extension = "' . $extension . '"');
 						<?php echo JText::_('COM_TJREPORTS_NO_REPORT'); ?>
 					</div>
 				<?php else: ?>
-					<div class="show-hide-cols span6">
+
+					<div class="show-hide-cols span2">
 						<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>"></button>
 						<ul id="ul-columns-name" class="ColVis_collection" style="display:none">
 
@@ -110,10 +113,12 @@ $document->addScriptDeclaration('var extension = "' . $extension . '"');
 									</label>
 								</li>
 							<?php endforeach; ?>
+							<input type="checkbox" checked="checked" name="userType" id="userType" style="display:none">
 						</ul>
 					</div>
+
 					<?php if (!empty($this->saveQueriesList)): ?>
-						<div class="span2">
+						<div class="span3">
 								<?php echo JHtml::_('select.genericlist', $this->saveQueriesList, "filter_saveQuery", 'class="" size="1" onchange="getQueryResult(this.value);" name="filter_saveQuery"', "value", "text", $currentQuery);
 								?>
 						</div>
@@ -136,12 +141,14 @@ $document->addScriptDeclaration('var extension = "' . $extension . '"');
 						</div>
 					</div>
 
-					<div class="span3 pull-right">
-						<input type="text" name="queryName" placeholder="Title for the Query" class="pull-right" style="display:none" id="queryName" />
-						<input type="button" class="btn btn-primary pull-right" id="saveQuery" onclick="saveThisQuery();" value="<?php echo JText::_('COM_TJREPORTS_SAVE_THIS_QUERY'); ?>" />
+					<div class="span5 pull-right input-append">
+						<input type="text" name="queryName" placeholder="Title for the Query" style="display:none" id="queryName" />
+						<input type="button" class="btn btn-primary" id="saveQuery" onclick="saveThisQuery();" value="<?php echo JText::_('COM_TJREPORTS_SAVE_THIS_QUERY'); ?>" />
 					</div>
 
-
+				</div>
+				<div>
+					<button class="btn" type="button" title="Clear" onclick="window.location.reload();">Clear</button>
 				</div>
 
 				<?php if ($report == 'attemptreport'): ?>
@@ -266,30 +273,3 @@ function cleardate()
 	getFilterdata(-1, '', 'dateSearch');
 }
 </script>
-
-<style>
-.show-hide-cols
-{
-	position:relative;
-}
-
-.ColVis_collection
-{
-	list-style: none;
-	width: 150px;
-	padding: 8px 8px 4px 8px;
-	margin: 0;
-	border: 1px solid #ccc;
-	border: 1px solid rgba( 0, 0, 0, 0.4 );
-	background-color: #f3f3f3;
-	overflow: hidden;
-	display: block;
-	opacity: 1;
-	position: absolute;
-}
-
-.report-top-bar
-{
-	margin-top:10px;
-}
-</style>

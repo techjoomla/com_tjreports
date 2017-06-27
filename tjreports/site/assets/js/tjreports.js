@@ -60,7 +60,7 @@ function loadReport(reportToLoad,mid)
 
 			reportId = resp.id;
 			var action = document.adminForm.action;
-			var newAction = action+'&reportToBuild='+reportToLoad+'&client='+clients+'&reportId='+reportId+'&Itemid='+mid;
+			var newAction = action+'&reportToBuild='+reportToLoad+'&client='+clients+'&reportId='+reportId;
 			window.location.href = newAction;
 
 		}});

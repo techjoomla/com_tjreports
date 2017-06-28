@@ -246,7 +246,10 @@ class TjreportsModelReports extends JModelList
 		JPluginHelper::importPlugin('tjreports');
 		$plugcolNames = $dispatcher->trigger('plg' . $reportName . 'getColNames', array());
 
-		$colNames  = array_intersect($plugcolNames[0], $confirgcols);
+		if (isset($plugcolNames[0]))
+		{
+			$colNames  = array_intersect($plugcolNames[0], $confirgcols);
+		}
 
 		$denyCol = (array) $this->datadenyset();
 
@@ -522,7 +525,7 @@ class TjreportsModelReports extends JModelList
 		$db->setQuery($query);
 		$reports = $db->loadObjectList();
 
-		$options[] = JHTML::_('select.option', '', JText::_('COM_TJREPORTS_SELONE_REPORTS'));
+		$options[] = JHTML::_('select.option', 0, JText::_('COM_TJREPORTS_SELONE_REPORTS'));
 
 		foreach ($reports as $repo)
 		{
@@ -582,7 +585,7 @@ class TjreportsModelReports extends JModelList
 		return $options;
 	}
 
-/**
+	/**
 	 * Get datadenyset result
 	 *
 	 * @return    object
@@ -615,5 +618,4 @@ class TjreportsModelReports extends JModelList
 				return $savedcols;
 		}
 	}
-
 }

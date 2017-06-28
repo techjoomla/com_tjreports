@@ -20,8 +20,10 @@ $document   = JFactory::getDocument();
 $user       = JFactory::getUser();
 $user_id    = $user->id;
 $document->addScript(JURI::base(true).'/components/com_tjreports/assets/js/jquery.twbsPagination.js');
-$document->addScript(JURI::base(true).'/components/com_tjreports/assets/js/tjreports.js');
-$document->addStyleSheet(JURI::base(true).'/components/com_tjreports/assets/css/tjreports.css');
+
+JHtml::script(Juri::base().'/components/com_tjreports/assets/js/tjreports.js');
+JHtml::stylesheet(Juri::base().'/components/com_tjreports/assets/css/tjreports.css');
+
 $input = JFactory::getApplication()->input;
 $queryId = $input->get('queryId', '', 'INT');
 $report = $input->get('reportToBuild','','string');

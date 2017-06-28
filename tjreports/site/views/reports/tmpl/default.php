@@ -15,10 +15,11 @@ $mainframe  = JFactory::getApplication('admin');
 
 $link = 'index.php?option=com_tjreports&view=reports';
 $menu = $mainframe->getMenu();
-$menuItem = $menu->getItems( 'link', $link, true );
+$menuItem = $menu->getItems( 'link', $link, true);
 $document   = JFactory::getDocument();
-$user       = JFactory::getUser();
-$user_id    = $user->id;
+$user       = $this->user;
+$user_id    = $this->user_id;
+
 $document->addScript(JURI::base(true).'/components/com_tjreports/assets/js/jquery.twbsPagination.js');
 
 JHtml::script(Juri::base().'/components/com_tjreports/assets/js/tjreports.js');

@@ -67,16 +67,34 @@ class TjreportsViewReports extends JViewLegacy
 			}
 		}
 
-/*
-		if (!$canDo->get('view.reports'))
-		{
-			JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
-
-			return false;
-		}
-*/
-
 		$client = $input->get('client', '', 'STRING');
+
+		$full_client = explode(',', $client);
+
+		// Eg com_tjlms
+		$component = $full_client[0];
+		$eName = str_replace('com_', '', $component);
+		$file = JPath::clean(JPATH_ADMINISTRATOR . '/components/' . $component . '/helpers/' . $eName . '.php');
+
+		if (file_exists($file))
+		{
+			require_once $file;
+
+			$prefix = ucfirst(str_replace('com_', '', $component));
+			$cName = $prefix . 'Helper';
+
+			if (class_exists($cName))
+			{
+				$canDo = TjlmsHelper::getActions();
+
+				if (!$canDo->get('view.reports'))
+				{
+					JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
+
+					return false;
+				}
+			}
+		}
 
 		// Get all vendars from backend
 		if (empty($client))

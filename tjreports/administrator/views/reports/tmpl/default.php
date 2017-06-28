@@ -13,8 +13,8 @@ defined('_JEXEC') or die;
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 $mainframe  = JFactory::getApplication();
 $document = JFactory::getDocument();
-$user = JFactory::getUser();
-$user_id = $user->id;
+$user = $this->user;
+$user_id = $this->user_id;
 
 JHtml::script(Juri::root().'/components/com_tjreports/assets/js/jquery.twbsPagination.js');
 JHtml::script(Juri::root().'/components/com_tjreports/assets/js/tjreports.js');

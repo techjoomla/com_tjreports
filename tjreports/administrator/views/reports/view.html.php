@@ -46,7 +46,9 @@ class TjreportsViewReports extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		$extension = JFactory::getApplication()->input->get('extension', '', 'STRING');
+		// Check for view report permission from respective extension e.g : com_tjlms
+		$reportsModel = $this->getModel();
+		$extension = $reportsModel->getState('extension');
 
 		$full_client = explode('.', $extension);
 
@@ -64,7 +66,7 @@ class TjreportsViewReports extends JViewLegacy
 
 			if (class_exists($cName))
 			{
-				$canDo = TjlmsHelper::getActions();
+				$canDo = $cName::getActions();
 
 				if (!$canDo->get('view.reports'))
 				{
@@ -75,8 +77,8 @@ class TjreportsViewReports extends JViewLegacy
 			}
 		}
 
-		$user       = JFactory::getUser();
-		$user_id    = $user->id;
+		$this->user       = JFactory::getUser();
+		$this->user_id    = $this->user->id;
 		$input = JFactory::getApplication()->input;
 
 		if ($extension)
@@ -93,7 +95,7 @@ class TjreportsViewReports extends JViewLegacy
 
 		if ($reportId)
 		{
-			$allow_permission = $user->authorise('core.viewall', 'com_tjreports.tjreport.' . $reportId);
+			$allow_permission = $this->user->authorise('core.viewall', 'com_tjreports.tjreport.' . $reportId);
 			$input->set('allow_permission', $allow_permission);
 		}
 
@@ -108,7 +110,7 @@ class TjreportsViewReports extends JViewLegacy
 		$TjreportsModelReports = new TjreportsModelReports;
 
 		// Get saved queries by the logged in users
-		$this->saveQueries = $TjreportsModelReports->getSavedQueries($user_id, $reportToBuild);
+		$this->saveQueries = $TjreportsModelReports->getSavedQueries($this->user_id, $reportToBuild);
 
 		// Call helper function
 		$TjreportsHelper = new TjreportsHelpersTjreports;
@@ -164,7 +166,9 @@ class TjreportsViewReports extends JViewLegacy
 	protected function addToolbar()
 	{
 		// Old code
-		$extension = JFactory::getApplication()->input->get('extension', '', 'word');
+		$reportsModel = $this->getModel();
+		$extension = $reportsModel->getState('extension');
+
 		$bar = JToolBar::getInstance('toolbar');
 		JToolBarHelper::title(JText::_('COM_TJREPORTS_TITLE_REPORT'), 'list');
 

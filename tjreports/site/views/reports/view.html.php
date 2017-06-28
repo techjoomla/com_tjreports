@@ -39,8 +39,11 @@ class TjreportsViewReports extends JViewLegacy
 	public function display($tpl = null)
 	{
 		$canDo = TjreportsHelpersTjreports::getActions();
-		$user = JFactory::getUser();
-		$user_id = $user->id;
+		$this->user       = JFactory::getUser();
+		$this->user_id    = $this->user->id;
+
+		$user = $this->user;
+		$user_id = $this->user_id;
 		$input = JFactory::getApplication()->input;
 		$TjreportsModelReports = new TjreportsModelReports;
 		$app = JFactory::getApplication();
@@ -67,8 +70,8 @@ class TjreportsViewReports extends JViewLegacy
 			}
 		}
 
-		$client = $input->get('client', '', 'STRING');
-
+		$reportsModel = $this->getModel();
+		$client = $reportsModel->getState('client');
 		$full_client = explode(',', $client);
 
 		// Eg com_tjlms
@@ -85,7 +88,7 @@ class TjreportsViewReports extends JViewLegacy
 
 			if (class_exists($cName))
 			{
-				$canDo = TjlmsHelper::getActions();
+				$canDo = $cName::getActions();
 
 				if (!$canDo->get('view.reports'))
 				{

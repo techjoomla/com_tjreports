@@ -48,9 +48,9 @@ class TjreportsViewReports extends JViewLegacy
 	{
 		// Check for view report permission from respective extension e.g : com_tjlms
 		$reportsModel = $this->getModel();
-		$extension = $reportsModel->getState('extension');
+		$this->extension = $reportsModel->getState('extension');
 
-		$full_client = explode('.', $extension);
+		$full_client = explode('.', $this->extension);
 
 		// Eg com_tjlms
 		$component = $full_client[0];
@@ -81,7 +81,7 @@ class TjreportsViewReports extends JViewLegacy
 		$this->user_id    = $this->user->id;
 		$input = JFactory::getApplication()->input;
 
-		if ($extension)
+		if ($this->extension)
 		{
 			TjreportsHelper::addSubmenu('reports');
 			$this->sidebar = JHtmlSidebar::render();
@@ -166,8 +166,6 @@ class TjreportsViewReports extends JViewLegacy
 	protected function addToolbar()
 	{
 		// Old code
-		$reportsModel = $this->getModel();
-		$extension = $reportsModel->getState('extension');
 
 		$bar = JToolBar::getInstance('toolbar');
 		JToolBarHelper::title(JText::_('COM_TJREPORTS_TITLE_REPORT'), 'list');
@@ -178,11 +176,11 @@ class TjreportsViewReports extends JViewLegacy
 			$bar->appendButton('Custom', $button);
 
 		// List of plugin
-		if ($extension)
+		if ($this->extension)
 		{
 			foreach ($this->enableReportPlugins as $eachPlugin) :
 					$button = "<a class='btn button report-btn' id='" . $eachPlugin->element . "'
-				onclick=\"loadReport('" . $eachPlugin->element . "','" . $extension . "'); \" ><span
+				onclick=\"loadReport('" . $eachPlugin->element . "','" . $this->extension . "'); \" ><span
 				class='icon-list'></span>" . JText::_($eachPlugin->name) . "</a>";
 					$bar->appendButton('Custom', $button);
 			endforeach;

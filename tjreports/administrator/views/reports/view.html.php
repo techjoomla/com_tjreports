@@ -100,9 +100,11 @@ class TjreportsViewReports extends JViewLegacy
 		}
 
 		$input->set('reportId', $reportId);
+		$filterData  = $input->get('filters', '', 'ARRAY');
+		$model = $this->getModel();
 
 		// Get respected plugin data
-		$this->items		= $this->get('Data');
+		$this->items		= $model->getData($filterData);
 
 		// Get all columns of that report
 		$this->colNames	= $this->get('ColNames');

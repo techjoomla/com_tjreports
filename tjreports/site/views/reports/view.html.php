@@ -41,20 +41,16 @@ class TjreportsViewReports extends JViewLegacy
 		$canDo = TjreportsHelpersTjreports::getActions();
 		$this->user       = JFactory::getUser();
 		$this->user_id    = $this->user->id;
-
-		$user = $this->user;
-		$user_id = $this->user_id;
 		$input = JFactory::getApplication()->input;
 		$TjreportsModelReports = new TjreportsModelReports;
 		$app = JFactory::getApplication();
 		$mainframe  = JFactory::getApplication();
+		$this->user->authorise('core.view', 'com_tjreports');
+		$this->user->authorise('core.viewall', 'com_tjreports');
 
-		$user->authorise('core.view', 'com_tjreports');
-		$user->authorise('core.viewall', 'com_tjreports');
-
-		if (!($user->authorise('core.view', 'com_tjreports') || $user->authorise('core.viewall', 'com_tjreports')))
+		if (!($this->user->authorise('core.view', 'com_tjreports') || $this->user->authorise('core.viewall', 'com_tjreports')))
 		{
-			if ($user->guest)
+			if ($this->user->guest)
 			{
 				$return = base64_encode(JUri::getInstance());
 				$login_url_with_return = JRoute::_('index.php?option=com_users&view=login&return=' . $return);
@@ -114,7 +110,7 @@ class TjreportsViewReports extends JViewLegacy
 
 		$this->options		= $this->get('reportoptions');
 
-		$this->isSuperUser = $user->authorise('core.viewall', 'com_tjreports');
+		$this->isSuperUser = $this->user->authorise('core.viewall', 'com_tjreports');
 
 		$user       = JFactory::getUser();
 
@@ -135,7 +131,7 @@ class TjreportsViewReports extends JViewLegacy
 
 		// Get saved queries by the logged in users
 
-		$this->saveQueries = $TjreportsModelReports->getSavedQueries($user_id, $reportToBuild);
+		$this->saveQueries = $TjreportsModelReports->getSavedQueries($this->user_id, $reportToBuild);
 
 		// Call helper function
 		$TjreportsHelper = new TjreportsHelpersTjreports;

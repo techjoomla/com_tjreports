@@ -39,19 +39,18 @@ class TjreportsViewReports extends JViewLegacy
 	public function display($tpl = null)
 	{
 		$canDo = TjreportsHelpersTjreports::getActions();
-		$user = JFactory::getUser();
-		$user_id = $user->id;
+		$this->user       = JFactory::getUser();
+		$this->user_id    = $this->user->id;
 		$input = JFactory::getApplication()->input;
 		$TjreportsModelReports = new TjreportsModelReports;
 		$app = JFactory::getApplication();
 		$mainframe  = JFactory::getApplication();
+		$this->user->authorise('core.view', 'com_tjreports');
+		$this->user->authorise('core.viewall', 'com_tjreports');
 
-		$user->authorise('core.view', 'com_tjreports');
-		$user->authorise('core.viewall', 'com_tjreports');
-
-		if (!($user->authorise('core.view', 'com_tjreports') || $user->authorise('core.viewall', 'com_tjreports')))
+		if (!($this->user->authorise('core.view', 'com_tjreports') || $this->user->authorise('core.viewall', 'com_tjreports')))
 		{
-			if ($user->guest)
+			if ($this->user->guest)
 			{
 				$return = base64_encode(JUri::getInstance());
 				$login_url_with_return = JRoute::_('index.php?option=com_users&view=login&return=' . $return);
@@ -67,16 +66,34 @@ class TjreportsViewReports extends JViewLegacy
 			}
 		}
 
-/*
-		if (!$canDo->get('view.reports'))
+		$reportsModel = $this->getModel();
+		$client = $reportsModel->getState('client');
+		$full_client = explode(',', $client);
+
+		// Eg com_tjlms
+		$component = $full_client[0];
+		$eName = str_replace('com_', '', $component);
+		$file = JPath::clean(JPATH_ADMINISTRATOR . '/components/' . $component . '/helpers/' . $eName . '.php');
+
+		if (file_exists($file))
 		{
-			JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
+			require_once $file;
 
-			return false;
+			$prefix = ucfirst(str_replace('com_', '', $component));
+			$cName = $prefix . 'Helper';
+
+			if (class_exists($cName))
+			{
+				$canDo = $cName::getActions();
+
+				if (!$canDo->get('view.reports'))
+				{
+					JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
+
+					return false;
+				}
+			}
 		}
-*/
-
-		$client = $input->get('client', '', 'STRING');
 
 		// Get all vendars from backend
 		if (empty($client))
@@ -93,7 +110,7 @@ class TjreportsViewReports extends JViewLegacy
 
 		$this->options		= $this->get('reportoptions');
 
-		$this->isSuperUser = $user->authorise('core.viewall', 'com_tjreports');
+		$this->isSuperUser = $this->user->authorise('core.viewall', 'com_tjreports');
 
 		$user       = JFactory::getUser();
 
@@ -114,7 +131,7 @@ class TjreportsViewReports extends JViewLegacy
 
 		// Get saved queries by the logged in users
 
-		$this->saveQueries = $TjreportsModelReports->getSavedQueries($user_id, $reportToBuild);
+		$this->saveQueries = $TjreportsModelReports->getSavedQueries($this->user_id, $reportToBuild);
 
 		// Call helper function
 		$TjreportsHelper = new TjreportsHelpersTjreports;

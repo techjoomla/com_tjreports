@@ -34,7 +34,7 @@ class TjreportsViewReports extends JViewLegacy
 	protected $pagination;
 
 	protected $state;
-	
+
 	protected $extension;
 
 	/**
@@ -46,21 +46,42 @@ class TjreportsViewReports extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		$canDo = TjreportsHelpersTjreports::getActions();
-		$user       = JFactory::getUser();
-		$user_id    = $user->id;
-		$input = JFactory::getApplication()->input;
+		// Check for view report permission from respective extension e.g : com_tjlms
+		$reportsModel = $this->getModel();
+		$this->extension = $reportsModel->getState('extension');
 
-		if (!$canDo->get('view.reports'))
+		$full_client = explode('.', $this->extension);
+
+		// Eg com_tjlms
+		$component = $full_client[0];
+		$eName = str_replace('com_', '', $component);
+		$file = JPath::clean(JPATH_ADMINISTRATOR . '/components/' . $component . '/helpers/' . $eName . '.php');
+
+		if (file_exists($file))
 		{
-			JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
+			require_once $file;
 
-			return false;
+			$prefix = ucfirst(str_replace('com_', '', $component));
+			$cName = $prefix . 'Helper';
+
+			if (class_exists($cName))
+			{
+				$canDo = $cName::getActions();
+
+				if (!$canDo->get('view.reports'))
+				{
+					JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
+
+					return false;
+				}
+			}
 		}
 
-		$extension = JFactory::getApplication()->input->get('extension', '', 'word');
+		$this->user       = JFactory::getUser();
+		$this->user_id    = $this->user->id;
+		$input = JFactory::getApplication()->input;
 
-		if ($extension)
+		if ($this->extension)
 		{
 			TjreportsHelper::addSubmenu('reports');
 			$this->sidebar = JHtmlSidebar::render();
@@ -74,7 +95,7 @@ class TjreportsViewReports extends JViewLegacy
 
 		if ($reportId)
 		{
-			$allow_permission = $user->authorise('core.viewall', 'com_tjreports.tjreport.' . $reportId);
+			$allow_permission = $this->user->authorise('core.viewall', 'com_tjreports.tjreport.' . $reportId);
 			$input->set('allow_permission', $allow_permission);
 		}
 
@@ -89,14 +110,14 @@ class TjreportsViewReports extends JViewLegacy
 		$TjreportsModelReports = new TjreportsModelReports;
 
 		// Get saved queries by the logged in users
-		$this->saveQueries = $TjreportsModelReports->getSavedQueries($user_id, $reportToBuild);
+		$this->saveQueries = $TjreportsModelReports->getSavedQueries($this->user_id, $reportToBuild);
 
 		// Call helper function
 		$TjreportsHelper = new TjreportsHelpersTjreports;
 		$TjreportsHelper->getLanguageConstant();
 
 		// Get all enable plugins
-		$this->enableReportPlugins=  $TjreportsModelReports->getenableReportPlugins();
+		$this->enableReportPlugins = $TjreportsModelReports->getenableReportPlugins();
 
 		$this->colToshow = array();
 
@@ -145,7 +166,7 @@ class TjreportsViewReports extends JViewLegacy
 	protected function addToolbar()
 	{
 		// Old code
-		$extension = JFactory::getApplication()->input->get('extension', '', 'word');
+
 		$bar = JToolBar::getInstance('toolbar');
 		JToolBarHelper::title(JText::_('COM_TJREPORTS_TITLE_REPORT'), 'list');
 
@@ -154,13 +175,12 @@ class TjreportsViewReports extends JViewLegacy
 				class='icon-download'></span>" . JText::_('COM_TJREPORTS_CSV_EXPORT') . "</a>";
 			$bar->appendButton('Custom', $button);
 
-		// list of plugin
-
-		if($extension)
+		// List of plugin
+		if ($this->extension)
 		{
 			foreach ($this->enableReportPlugins as $eachPlugin) :
 					$button = "<a class='btn button report-btn' id='" . $eachPlugin->element . "'
-				onclick=\"loadReport('" . $eachPlugin->element . "','". $extension. "'); \" ><span
+				onclick=\"loadReport('" . $eachPlugin->element . "','" . $this->extension . "'); \" ><span
 				class='icon-list'></span>" . JText::_($eachPlugin->name) . "</a>";
 					$bar->appendButton('Custom', $button);
 			endforeach;
@@ -193,4 +213,3 @@ class TjreportsViewReports extends JViewLegacy
 */
 	}
 }
-

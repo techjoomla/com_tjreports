@@ -1,5 +1,32 @@
-
-
 .other-filters{
     padding: 0 14px;
+}
+
+.show-hide-cols
+{
+	position:relative;
+}
+
+.ColVis_collection
+{
+	list-style: none;
+	width: 150px;
+	padding: 8px 8px 4px 8px;
+	margin: 0;
+	border: 1px solid #ccc;
+	border: 1px solid rgba( 0, 0, 0, 0.4 );
+	background-color: #f3f3f3;
+	overflow: hidden;
+	display: block;
+	opacity: 1;
+	position: absolute;
+}
+
+.report-top-bar
+{
+	margin-top:10px;
+}
+
+#report-table thead input {
+margin-bottom: 0px;
 }

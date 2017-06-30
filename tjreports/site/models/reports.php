@@ -500,7 +500,8 @@ class TjreportsModelReports extends JModelList
 		$query = $db->getQuery(true);
 		$user_id = JFactory::getUser()->id;
 
-		$clients = $this->getState('client');
+		$input = JFactory::getApplication()->input;
+		$clients = $input->get('client', "", "STRING");
 
 		// Check for the client
 		if ($clients)

@@ -2,4 +2,20 @@
 	<layout title="COM_TJREPORTS" option="View">
 		<message><![CDATA[COM_TJREPORTS]]></message>
 	</layout>
+
+	<fields name="params">
+		<fieldset label="COM_TJREPORT_EXTENSIONS" name="tjreports">
+				<field
+							name="vendars"
+							type="sql"
+							query="SELECT extension_id, name FROM #__extensions where enabled=1 and type='component'"
+							key_field="name"
+							value_field="name"
+							multiple = "multiple"
+							default= ""
+							description="COM_TJREPORT_SELECT_EXTENSIONS_DESC"
+							label="COM_TJREPORTS_SELECT_EXTENSION"
+				/>
+		</fieldset>
+	</fields>
 </metadata>

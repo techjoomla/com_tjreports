@@ -98,8 +98,15 @@ class TjreportsViewReports extends JViewLegacy
 		// Get all vendars from backend
 		if (empty($client))
 		{
-			$params = JComponentHelper::getParams('com_tjreports');
+			$params = $app->getParams();
 			$client = $params->get('vendars');
+
+			// Check for multiple clients
+			if (is_array($client))
+			{
+				$client = implode(",", $client);
+			}
+
 			$input->set('client', $client);
 		}
 

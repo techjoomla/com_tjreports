@@ -27,7 +27,6 @@ $queryId = $input->get('queryId', '', 'INT');
 $report = $input->get('reportToBuild','','string');
 $client = $input->get('client','','string');
 $reportId = $input->get('reportId','','INT');
-$extension=$input->get('extension','','string');
 
 if ($reportId)
 {
@@ -40,7 +39,7 @@ $document->addScriptDeclaration('var reportToBuild = "' . $report . '"');
 $document->addScriptDeclaration('var current_user = "' . $user_id . '"');
 $document->addScriptDeclaration('var client = "' . $client . '"');
 $document->addScriptDeclaration('var reportId = "' . $reportId . '"');
-$document->addScriptDeclaration('var extension = "' . $extension . '"');
+//~ $document->addScriptDeclaration('var extension = "' . $extension . '"');
 ?>
 
 <script>
@@ -189,7 +188,7 @@ $document->addScriptDeclaration('var extension = "' . $extension . '"');
 					<input type="hidden" id="task" name="task" value="" />
 					<input type="hidden" name="boxchecked" value="0" />
 					<input type="hidden" name="totalRows" id="totalRows" value="<?php echo $this->items['total_rows']; ?>" />
-					<input type="hidden" name="extension" value="<?php echo $input->get('client','','word'); ?>">
+					<input type="hidden" name="client" value="<?php echo $input->get('client','','word'); ?>">
 
 					<?php echo JHtml::_('form.token'); ?>
 			<?php endif; ?>
@@ -208,11 +207,11 @@ function getQueryResult(id)
 
 	if(queryId=="")
 	{
-		window.location.href = 'index.php?option=com_tjreports&view=reports&reportToBuild='+reportToBuild+'&extension='+extension+'&reportId='+reportId;
+		window.location.href = 'index.php?option=com_tjreports&view=reports&reportToBuild='+reportToBuild+'&client='+client+'&reportId='+reportId;
 	}
 	else
 	{
-		window.location.href = 'index.php?option=com_tjreports&view=reports&savedQuery=1&reportToBuild='+queryId[0]+'&extension='+extension+'&queryId='+queryId[1]+'&reportId='+reportId;
+		window.location.href = 'index.php?option=com_tjreports&view=reports&savedQuery=1&reportToBuild='+queryId[0]+'&client='+client+'&queryId='+queryId[1]+'&reportId='+reportId;
 	}
 }
 
@@ -258,9 +257,9 @@ function loadReport(reportToLoad)
 	var action = document.adminForm.action;
 	var newAction = action+'&reportToBuild='+reportToLoad;
 
-	if (extension)
+	if (client)
 	{
-		newAction = newAction +'&extension='+extension;
+		newAction = newAction +'&client='+client;
 	}
 	window.location.href = newAction;
 }

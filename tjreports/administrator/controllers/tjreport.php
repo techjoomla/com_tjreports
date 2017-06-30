@@ -64,11 +64,11 @@ class TjreportsControllerTjreport extends JControllerForm
 
 	public function setRedirect($url, $msg = null,$type = null)
 	{
-		$extension = JFactory::getApplication()->input->get('extension', '', 'word');
+		$client = JFactory::getApplication()->input->get('client', '', 'word');
 
-		if ($extension)
+		if ($client)
 		{
-			$url .= '&extension=' . $extension;
+			$url .= '&client=' . $client;
 		}
 
 		parent::setRedirect($url, $msg, $type);

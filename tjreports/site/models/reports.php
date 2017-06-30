@@ -62,9 +62,6 @@ class TjreportsModelReports extends JModelList
 
 		$value = $input->get('reportToBuild', '', 'STRING');
 		$this->setState('reportToBuild', $value);
-
-		$value = $input->get('extension', "", "STRING");
-		$this->setState('extension', $value);
 	}
 
 	/**

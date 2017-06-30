@@ -99,7 +99,7 @@ class TjreportsViewReports extends JViewLegacy
 		if (empty($client))
 		{
 			$params = $app->getParams();
-			$client = $params->get('vendars');
+			$client = $params->get('clients');
 
 			// Check for multiple clients
 			if (is_array($client))

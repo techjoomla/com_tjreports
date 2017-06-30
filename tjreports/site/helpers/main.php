@@ -1133,7 +1133,7 @@ class ComtjreportsHelper
 		$option = $input->get('option', '');
 		$view   = $input->get('view', '');
 		$layout = $input->get('layout', '');
-		$extension = $input->get('extension', '');
+		$client = $input->get('client', '');
 
 		$config = JFactory::getConfig();
 		$debug = $config->get('debug');
@@ -1179,7 +1179,7 @@ class ComtjreportsHelper
 				}
 			}
 
-			if ($option == "com_categories" && ($extension == "com_tjlms" || $extension == "com_tmt.questions"))
+			if ($option == "com_categories" && ($client == "com_tjlms" || $client == "com_tmt.questions"))
 			{
 				$jsFilesArray[] = 'administrator/components/com_tjlms/assets/js/cat_helper.js';
 			}
@@ -1254,7 +1254,7 @@ class ComtjreportsHelper
 		$option = $input->get('option', '');
 		$view   = $input->get('view', '');
 		$layout = $input->get('layout', '');
-		$extension = $input->get('extension', '');
+		$client = $input->get('client', '');
 
 		$config = JFactory::getConfig();
 		$debug = $config->get('debug');

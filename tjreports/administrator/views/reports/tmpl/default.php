@@ -218,24 +218,10 @@ function getQueryResult(id)
 
 techjoomla.jQuery(document).ready(function()
 {
-	switch('<?php echo $report; ?>')
-	{
-		case 'userreport':
-			techjoomla.jQuery('#userreport').addClass('active btn-primary');
-			break;
-		case 'studentcoursereport':
-			techjoomla.jQuery('#studentcoursereport').addClass('active btn-primary');
-			break;
-		case 'lessonreport':
-			techjoomla.jQuery('#lessonreport').addClass('active btn-primary');
-			break;
-		case 'coursereport':
-			techjoomla.jQuery('#coursereport').addClass('active btn-primary');
-			break;
-		case 'attemptreport':
-			techjoomla.jQuery('#attemptreport').addClass('active btn-primary');
-			break;
-	}
+	var report = '<?php echo $report; ?>';
+
+	techjoomla.jQuery('#'+report).addClass('active btn-primary');
+
 
 	techjoomla.jQuery('.ColVis_collection input').click(function(){
 
@@ -253,7 +239,6 @@ techjoomla.jQuery(document).ready(function()
 });
 
 function loadReport(reportToLoad)
-
 {
 	var action = document.adminForm.action;
 	var newAction = action+'&reportToBuild='+reportToLoad;

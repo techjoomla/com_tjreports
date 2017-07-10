@@ -147,7 +147,8 @@ class TjreportsControllerReports extends JControllerAdmin
 																				$limit_start,
 																				$sortCol,
 																				$sortOrder,
-																				$created_by
+																				$created_by,
+																				$csv = 1
 																			)
 									);
 

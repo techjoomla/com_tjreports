@@ -130,40 +130,10 @@ class ReportsViewBase extends JViewLegacy
 		}
 
 		$this->model->loadLanguage($this->pluginName);
-
-		//~ // Set default values if not passed in request
-		//~ $list_limit = $app->get('list_limit', 0);
-//~
-		//~ $initializeVars = array(
-			//~ 'filters' => array(), 'displayFilters' => array(), 'sortable' => array(), 'showHideColumns' => array(), 'colToshow' => array(),
-			//~ 'items' => array(), 'filter_order' => '', 'filter_order_Dir' => '', 'limit' => $list_limit, 'limitstart' => 0, 'total_rows' => 0,
-			//~ 'headerLevel' => 1, 'reportId' => 0, 'extension' => '',
-			//~ 'messages' => array(), 'styles' => array(), 'scripts' => array(),
-		//~ );
-//~
-		//~ foreach ($initializeVars as $key => $value)
-		//~ {
-			//~ if (!isset($this->data[$key]))
-			//~ {
-				//~ $this->data[$key] = $value;
-			//~ }
-		//~ }
-
 		$this->items      = $this->model->getItems();
 		$this->state      = $this->get('State');
 		$this->pagination = $this->get('pagination');
 		$this->tjrData    = $this->model->getReportData();
-
-		// Get Report data
-		//$dispatcher->trigger('getTJRData', array(&$this->data));
-
-		// Pagination
-		//~ $limit = $this->data['limit'];
-		//~ $limitstart = $this->data['limitstart'];
-		//~ $total = $this->data['total_rows'];
-		//~ $this->pagination = new JPagination($total, $limitstart, $limit);
-
-
 
 		return true;
 	}
@@ -184,6 +154,5 @@ class ReportsViewBase extends JViewLegacy
 		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $name);
 
 		return JModelLegacy::getInstance($name, 'TjreportsModel', $config);
-
 	}
 }

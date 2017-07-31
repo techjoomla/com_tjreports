@@ -78,6 +78,7 @@ class TjreportsViewReports extends ReportsViewBase
 			$this->enableReportPlugins = $this->model->getenableReportPlugins($extension);
 
 			foreach ($this->enableReportPlugins as $eachPlugin) :
+				$this->model->loadLanguage($eachPlugin->element);
 				$btnclass = ($this->pluginName == $eachPlugin->element) ? " active btn-primary " : "";
 				$button = "<a class='btn button report-btn " . $btnclass . "' id='" . $eachPlugin->element . "'
 				onclick=\"tjrContentUI.report.loadReport('" . $eachPlugin->element . "','" . $extension . "'); \" ><span

@@ -315,9 +315,9 @@ class TjreportsModelReports extends JModelList
 	/**
 	 * Sort Columns which are not possible by Sql Order by
 	 *
-	 * @param   MIX  $items Items want to sort
+	 * @param   MIX  $items  Items want to sort
 	 *
-	 * @return  MIX Sorted columns
+	 * @return  MIX  Sorted columns
 	 *
 	 * @since    2.0
 	 */

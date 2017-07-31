@@ -23,57 +23,6 @@ jimport('joomla.application.component.controlleradmin');
 class TjreportsControllerReports extends JControllerAdmin
 {
 	/**
-	 * Function used to get filtered data
-	 *
-	 * @return  jexit
-	 *
-	 * @since   1.0.0
-	 */
-	public function getFilterData()
-	{
-		header('Cache-Control: no-cache, must-revalidate');
-		header('Content-type: application/json');
-		$input = JFactory::getApplication()->input;
-		$post  = $input->post;
-
-		$filterData  = $post->get('filterValue', '', 'ARRAY');
-		$filterTitle = $post->get('filterName', '', 'ARRAY');
-
-		$limit     = $post->get('limit', '20', 'INT');
-		$page      = $post->get('page', '0', 'INT');
-		$sortCol   = $post->get('sortCol', '', 'STRING');
-		$sortOrder = $post->get('sortOrder', '', 'STRING');
-		$colNames  = $post->get('colToShow', '', 'ARRAY');
-		$action    = $post->get('action', '', 'STRING');
-		$allow_permission    = $post->get('allow_permission', '', 'INT');
-
-		$limit_start = 0;
-
-		if ($page > 0)
-		{
-			$limit_start = $limit * ($page - 1);
-		}
-
-		$filters = array();
-		$count   = count($filterData);
-		$i       = 0;
-
-		for ($i = 0; $i <= $count - 1; $i++)
-		{
-			if (isset($filterTitle[$i]) && isset($filterData[$i]))
-			{
-				$filters[$filterTitle[$i]] = $filterData[$i];
-			}
-		}
-
-		$model = $this->getModel('reports');
-		$data  = $model->getData($filters, $colNames, $limit, $limit_start, $sortCol, $sortOrder, $action);
-
-		echo json_encode($data, true);
-		jexit();
-	}
-
-	/**
 	 * Function used to export data in csv format
 	 *
 	 * @return  jexit
@@ -82,7 +31,7 @@ class TjreportsControllerReports extends JControllerAdmin
 	 */
 	public function csvexport()
 	{
-		$mainframe  = JFactory::getApplication();
+		$app  = JFactory::getApplication();
 		$user = JFactory::getUser();
 
 		if (!$user->authorise('core.export', 'com_tjreports'))
@@ -91,87 +40,56 @@ class TjreportsControllerReports extends JControllerAdmin
 			{
 				$return = base64_encode(JUri::getInstance());
 				$login_url_with_return = JRoute::_('index.php?option=com_users&view=login&return=' . $return);
-				$mainframe->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'notice');
-				$mainframe->redirect($login_url_with_return, 403);
+				$app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'notice');
+				$app->redirect($login_url_with_return, 403);
 			}
 			else
 			{
-				$mainframe->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
-				$mainframe->setHeader('status', 403, true);
+				$app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+				$app->setHeader('status', 403, true);
 
 				return;
 			}
 		}
 
-		$input = JFactory::getApplication()->input;
-		$reportName = $input->get('reportToBuild', '', 'STRING');
-		$reportId = $input->get('reportId', '', 'INT');
+		$input 	= JFactory::getApplication()->input;
+		$pluginName = $input->post->get('reportToBuild');
 
-		if (empty($reportName))
+		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $pluginName);
+		$model = JModelLegacy::getInstance($pluginName, 'TjreportsModel');
+
+		$model->loadLanguage($pluginName);
+		$data  = $model->getReportData();
+		$data['items']  = $model->getItems();
+
+		$csvData     = null;
+		$csvData_arr = $colTitleArray = array();
+
+		foreach($data['colToshow'] as $index=>$detail)
 		{
-			$reportName = $mainframe->getUserState('com_tjreports' . '.reportName', '');
-		}
-
-		if (empty($reportId))
-		{
-			$reportId = $mainframe->getUserState('com_tjreports' . '.reportId', '');
-		}
-
-		$colNames      = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_colNames', '');
-		$filters       = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_filters', '');
-		$sortCol       = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_sortCol', 'asc');
-		$sortOrder     = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_sortOrder', 'asc');
-		$rows_to_fetch = 'all';
-		$limit_start   = 0;
-		$action        = 'csv';
-
-		$created_by = 0;
-		$user = JFactory::getUser();
-
-		$allow_permission = $input->get('allow_permission', '', 'INT');
-
-		if (!empty($reportId))
-		{
-			if (!$allow_permission)
+			if (strpos($index, '::'))
 			{
-				$created_by = $user->id;
+				foreach ($detail as $subKey => $subDetail)
+				{
+					$keyDetails   = explode('::', $subKey);
+					$subTextTitle = 'PLG_TJREPORTS_' . strtoupper($pluginName . '_' . $keyDetails[2] . '_' . $keyDetails[3] . '_TITLE');
+					$colTitleArray[] 	  = JText::sprintf($subTextTitle, $keyDetails[1]) ;
+				}
+			}
+			else
+			{
+				$colKey = $detail;
+				$colTitle = 'PLG_TJREPORTS_' . strtoupper($pluginName . '_' . $colKey . '_TITLE');
+				$colTitleArray[] = JText::_($colTitle);
 			}
 		}
 
-		$dispatcher = JDispatcher::getInstance();
-		JPluginHelper::importPlugin('tjreports');
-		$data = $dispatcher->trigger('plg' . $reportName . 'GetData', array(
-																				$filters,
-																				$colNames,
-																				$rows_to_fetch,
-																				$limit_start,
-																				$sortCol,
-																				$sortOrder,
-																				$created_by
-																			)
-									);
-
-		$data = $data[0];
-
-		$csvData     = null;
-		$csvData_arr = array();
-
-		foreach ($data['colToshow'] as $eachColumn)
-		{
-			$calHeading    = strtoupper($eachColumn);
-			$plgReport     = strtoupper($reportName);
-
-			// Commented because taking the dynamically selected col to be exported above name above - Amit Udale
-			// 	$calHeading    = 'PLG_TJREPORTS_' . $plgReport . '_' . $calHeading;
-			$csvData_arr[] = '"' . $calHeading . '"';
-		}
-
-		$csvData .= implode(',', $csvData_arr);
+		$csvData .= implode(',', $colTitleArray);
 		$csvData .= "\n";
 		echo $csvData;
 
 		$csvData  = '';
-		$filename = "tjreports_" . $reportName . "_report_" . date("Y-m-d_H-i", time());
+		$filename = "tjreports_" . $pluginName . "_report_" . date("Y-m-d_H-i", time());
 
 		// Set CSV headers
 		header("Content-type: text/csv");
@@ -179,35 +97,33 @@ class TjreportsControllerReports extends JControllerAdmin
 		header("Pragma: no-cache");
 		header("Expires: 0");
 
-		foreach ($data['items'] as $key => $value)
+		foreach((array) $data['items'] as $itemKey => $item)
 		{
-			$csvData      = '';
-			$csvData_arr1 = array();
+			$itemCSV = array();
 
-			foreach ($value as $index => $finalValue)
+			foreach ($data['colToshow'] as $arrayKey => $key)
 			{
-				if (in_array($index, $data['colToshow']))
+				if (is_array($key))
 				{
-					// Remove double Quotes from the data
-					$finalValue       = str_replace('"', '', $finalValue);
+					foreach($key as $subkey => $subVal)
+					{
+						$final_text_value = $this->filterValue($item[$arrayKey][$subkey]);
 
-					// Remove single Quotes from the data
-					$finalValue       = str_replace("'", '', $finalValue);
-
-					// Remove tabs and newlines from the data
-					$finalValue2      = preg_replace('/(\r\n|\r|\n)+/', " ", $finalValue);
-
-					// Remove extra spaces from the data
-					$final_text_value = preg_replace('/\s+/', " ", $finalValue2);
+						// Add data in the Quotes and asign it in the csv array
+						$itemCSV[] = '"' . $final_text_value . '"';
+					}
+				}
+				else
+				{
+					$final_text_value = $this->filterValue($item[$key]);
 
 					// Add data in the Quotes and asign it in the csv array
-					$csvData_arr1[] = '"' . $final_text_value . '"';
+					$itemCSV[] = '"' . $final_text_value . '"';
 				}
 			}
 
 			// TRIGGER After csv body add extra fields
-			$csvData = implode(',', $csvData_arr1);
-			echo $csvData . "\n";
+			echo implode(',', $itemCSV) . "\n";
 		}
 
 		jexit();
@@ -222,59 +138,25 @@ class TjreportsControllerReports extends JControllerAdmin
 	 */
 	public function saveQuery()
 	{
-		$db        = JFactory::getDBO();
-		$mainframe  = JFactory::getApplication();
-		$input = JFactory::getApplication()->input;
-		$reportName = $input->get('reportToBuild', '', 'STRING');
-		$current_user = $input->get('current_user', '', 'INT');
+		$db        		= JFactory::getDBO();
+		$input 			= JFactory::getApplication()->input;
+		$post			= $input->post->getArray();
+		$current_user 	= JFactory::getUser()->id;
 
 		// Take only first element as url might have more than on client
-
-		$clients_str = $input->get('client', '', 'STRING');
-		$clients = explode(",", $clients_str);
-
-		$client = $clients[0];
-
-		$reportId = $input->get('reportId', '0', 'INT');
-
-		if (empty($reportName))
-		{
-			$reportName = $mainframe->getUserState('com_tjreports' . '.reportName', '');
-		}
-
-		$colNames      = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_colNames', '');
-		$filters       = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_filters', '');
-		$sortCol       = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_sortCol', '');
-		$sortOrder     = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_sortOrder', '');
-		$rows_to_fetch = 'all';
-		$limit_start   = 0;
-
-		$post = $input->post;
-
-		$sort = array();
-
-		if (!empty($sortCol) && !empty($sortOrder))
-		{
-			$sort[] = $sortCol;
-			$sort[] = $sortOrder;
-		}
-
 		$currentTime = new JDate('now');
-		$queryName = $post->get('queryName', '', 'STRING');
 
 		$res = array();
-		$res['colToshow']          = $colNames;
-		$res['sort']          = $sort;
-		$res['filters']          = $filters;
-		$res['privacy']          = '';
-		$res['created_on']          = $currentTime;
-		$res['last_accessed_on']          = $currentTime;
-		$res['hash']          = '';
+		$res['data']          		= $post;
+		$res['privacy']        		= '';
+		$res['created_on']     		= $currentTime;
+		$res['last_accessed_on']	= $currentTime;
+		$res['hash']          		= '';
 
 		$params = json_encode($res);
 
-		$alias = $queryName;
-		$alias = trim($alias);
+		$queryName 	= $db->escape($post['queryName']);
+		$alias 		= trim($queryName);
 
 		if ($alias)
 		{
@@ -290,23 +172,26 @@ class TjreportsControllerReports extends JControllerAdmin
 
 		$insert_object                = new stdClass;
 		$insert_object->id            = '';
-		$insert_object->title          = $queryName;
+		$insert_object->title         = $queryName;
 		$insert_object->alias         = $alias;
-		$insert_object->plugin        = $reportName;
-		$insert_object->client        = $client;
-		$insert_object->parent        = $reportId;
+		$insert_object->plugin        = $db->escape($post['reportToBuild']);
+		$insert_object->client        = $db->escape($post['client']);
+		$insert_object->parent        = (int) $db->escape($post['reportId']);
 		$insert_object->default       = 0;
 		$insert_object->userid        = $current_user;
 		$insert_object->param         = $params;
 
+		$result = array('success' => true);
+
 		if (!$db->insertObject('#__tj_reports', $insert_object, 'id'))
 		{
-			echo $db->stderr();
+			$result['error'] = $db->stderr();
+			$result['success'] = false;
 
 			return false;
 		}
 
-		echo json_encode(1);
+		echo json_encode($result);
 		jexit();
 	}
 
@@ -389,4 +274,34 @@ class TjreportsControllerReports extends JControllerAdmin
 		echo new JResponseJson($result);
 		jexit();
 	}
+
+	/**
+	* Function used to delete reports
+	*
+	* @param   ARRAY  $data   The data to filter
+	*
+	* @return  boolean
+	*
+	* @since  1.0
+	*/
+	private function filterValue($data)
+	{
+		// Remove double Quotes from the data
+		$finalValue       = strip_tags($data);
+
+		// Remove double Quotes from the data
+		$finalValue       = str_replace('"', '', $finalValue);
+
+		// Remove single Quotes from the data
+		$finalValue       = str_replace("'", '', $finalValue);
+
+		// Remove tabs and newlines from the data
+		$finalValue      = preg_replace('/(\r\n|\r|\n)+/', " ", $finalValue);
+
+		// Remove extra spaces from the data
+		$finalValue = preg_replace('/\s+/', " ", $finalValue);
+
+		return $finalValue;
+	}
 }
+

@@ -12,6 +12,7 @@
 
 // No direct access
 defined('_JEXEC') or die;
+
 jimport('joomla.application.component.modellist');
 
 /**
@@ -21,6 +22,174 @@ jimport('joomla.application.component.modellist');
  */
 class TjreportsModelReports extends JModelList
 {
+	// Default ordering of Data
+	protected $default_order = '';
+
+	// Default ordering direction
+	protected $default_order_dir = 'ASC';
+
+	// Number of TH Rows required in the table
+	protected $headerLevel = 1;
+
+	// Add custom messages
+	protected $messages = array();
+
+	// Columns which are not possible to sort by SQl Order by
+	protected $sortableWoQuery = array();
+
+	/**
+	 * Methods to get all data after processing
+	 *
+	 * @return ARRAY Data of report
+	 *
+	 * @since   2.0
+	 */
+	public function getReportData()
+	{
+		$data = array();
+		$data['headerLevel']      = $this->getHeaderLevel();
+		$data['displayFilters']   = $this->displayFilters();
+		$data['headerColumns']    = $this->getHeaderColumns();
+		$data['showHideColumns']  = $this->getShowHideColumns();
+		$data['colToshow']        = $this->getState('colToshow');
+		$data['messages']         = $this->getTJRMessages();
+		$data['sortable']         = $this->getSortableColumns();
+
+		return $data;
+	}
+
+	/**
+	 * Get table header columns name, Must be overriden by child class
+	 *
+	 * @return ARRAY Keys of data
+	 *
+	 * @since   2.0
+	 * */
+	public function getHeaderColumns()
+	{
+		return array();
+	}
+
+	/**
+	 * Get number of Table header level
+	 *
+	 * @return INT Number of TH levels
+	 *
+	 * @since   2.0
+	 * */
+	public function getHeaderLevel()
+	{
+		return $this->headerLevel;
+	}
+
+	/**
+	 * Get Columns name that a User can switch to hide & show
+	 *
+	 * @return ARRAY Column array
+	 *
+	 * @since   2.0
+	 * */
+	public function getShowHideColumns()
+	{
+		return $this->headerColumns();
+	}
+
+	/**
+	 * Get Columns name that a User can switch to hide & show
+	 *
+	 * @return ARRAY Column array
+	 *
+	 * @since   2.0
+	 * */
+	public function getColumnsToShow()
+	{
+		return $this->headerColumns();
+	}
+
+	/**
+	 * Get Columns name that a User can sort
+	 *
+	 * @return ARRAY Column array
+	 *
+	 * @since   2.0
+	 * */
+	public function getSortableColumns()
+	{
+		return $this->headerColumns();
+	}
+
+	/**
+	 * Get Custom messages for the report
+	 *
+	 * @return  ARRAY Column array
+	 *
+	 * @since   2.0
+	 * */
+	public function getTJRMessages()
+	{
+		return $this->messages;
+	}
+
+	/**
+	 * Sets Custom messages for the report.
+	 *
+	 * @param   string  $message  Message.
+	 *
+	 * @return  Void
+	 *
+	 * @since   2.0
+	 * @throws  RuntimeException
+	 */
+	public function setTJRMessages($message)
+	{
+		array_push($this->messages, $message);
+	}
+
+	/**
+	 * Get filters of Report, Child class should override to add their filter
+	 *
+	 * @return   MIX  Should return array of array
+	 *
+	 * @since    2.0
+	 */
+	protected function displayFilters()
+	{
+		/*
+		return array(
+			array(
+				'column_key' => array(
+					'html' => '<input type="text" name="filter[column_key]" ' .
+						'onkeydown="tjrContentUI.report.submitOnEnter(event);" value="' .
+						( isset($filters['column_key']) ? $filters['column_key'] : '')
+						. '" />',
+					'type' => 'custom',
+					'searchin' => 'DATE(lt.last_accessed_on)<= %s'
+				)
+			)
+		);
+		 */
+		return array();
+	}
+
+	/**
+	 * Gets an array of Assoc from the results of database query.
+	 *
+	 * @param   string   $query       The query.
+	 * @param   integer  $limitstart  Offset.
+	 * @param   integer  $limit       The number of records.
+	 *
+	 * @return  object[]  An array of results.
+	 *
+	 * @since   3.0
+	 * @throws  RuntimeException
+	 */
+	protected function _getList($query, $limitstart = 0, $limit = 0)
+	{
+		$this->getDbo()->setQuery($query, $limitstart, $limit);
+
+		return $this->getDbo()->loadAssocList();
+	}
+
 	/**
 	 * Method to auto-populate the model state.
 	 *
@@ -37,328 +206,178 @@ class TjreportsModelReports extends JModelList
 	 *
 	 * @since   12.2
 	 */
-	protected function populateState($ordering = 'ordering', $direction = 'ASC')
+	protected function populateState($ordering = '', $direction = 'ASC')
 	{
-		$input = JFactory::getApplication();
+		// List state information
+		$app = JFactory::getApplication();
+		$input = JFactory::getApplication()->input;
+
+		$colToshow = $input->get('colToshow', array());
+
+		if (empty($colToshow))
+		{
+			$colToshow = (array) $this->headerColumns();
+		}
+
+		$this->setState('colToshow', $colToshow);
+
+		$filters    = $input->get('filters', array(), 'ARRAY');
+		$this->setState('filters', $filters);
 
 		// List state information
+		$value = $input->get('limit', $app->get('list_limit', 0), 'uint');
+		$this->setState('list.limit', $value);
 
-		$input = JFactory::getApplication()->input;
+		$value = $input->get('limitstart', 0, 'uint');
+		$this->setState('list.start', $value);
 
-		$value = $input->get('client', "", "STRING");
-		$this->setState('client', $value);
+		// Ordering
+		$this->default_order = $input->get('filter_order', $this->default_order);
 
-		$value = $input->get('allow_permission', '', 'INT');
-		$this->setState('allow_permission', $value);
+		// If last sorted by column is hidden sort by first visible column
+		if (!in_array($this->default_order, $colToshow))
+		{
+			$this->default_order = reset($colToshow);
+		}
 
-		$value = $input->get('reportId', '', 'INT');
-		$this->setState('reportId', $value);
+		$this->setState('list.ordering', $this->default_order);
 
-		$value = $input->get('savedQuery', '0', 'INT');
-		$this->setState('savedQuery', $value);
+		// Ordering Direction
+		$this->default_order_dir = $input->get('filter_order_Dir', $this->default_order_dir);
 
-		$value = $input->get('queryId', '0', 'INT');
-		$this->setState('queryId', $value);
+		if (!in_array(strtoupper($this->default_order_dir), array('ASC', 'DESC', '')))
+		{
+			$this->default_order_dir = 'ASC';
+		}
 
-		$value = $input->get('reportToBuild', '', 'STRING');
-		$this->setState('reportToBuild', $value);
+		$this->setState('list.direction', $this->default_order_dir);
 	}
 
 	/**
-	 * Build an SQL query to load the list data.
+	 * Add all classes that are used
 	 *
-	 * @param   ARRAY   $filters      The Filters which are used
-	 * @param   ARRAY   $colNames     The columns which need to show
-	 * @param   int     $rowsTofetch  Total number of rows to fetch
-	 * @param   int     $limit_start  Fetch record fron nth row
-	 * @param   STRING  $sortCol      The column which has to be sorted
-	 * @param   STRING  $sortOrder    The order of sorting
-	 * @param   STRING  $action       Which action has cal this function
+	 * @param   MIX  &$query  Query object
 	 *
-	 * @return    JDatabaseQuery
+	 * @return  object
 	 *
 	 * @since    1.0
 	 */
-	public function getData($filters = array(), $colNames = array(), $rowsTofetch = 20, $limit_start = 0,  $sortCol = '', $sortOrder = '', $action = '')
+	protected function addAdditionalWhere(&$query)
 	{
-		$input = JFactory::getApplication()->input;
-		$post  = $input->post;
-		$mainframe  = JFactory::getApplication();
-		$user       = JFactory::getUser();
+		$db  			= JFactory::getDBO();
+		$filters 		= (array) $this->getState('filters');
+		$displayFilters = (array) $this->displayFilters();
+		$colToshow		= (array) $this->getState('colToshow');
+		$filterLevel    = count($displayFilters);
 
-		// This takes post value from post request of ajax call
-		$allow_permission    = $post->get('allow_permission', '', 'INT');
-		$reportId    = $post->get('reportId', '', 'INT');
-
-		if (!$allow_permission)
+		if ($filterLevel == 2)
 		{
-			// If allow_permission not yet set take value from function get input from view.html
-			$allow_permission = $this->getState('allow_permission');
+			$topLevelFilters = array_keys($displayFilters[1]);
+			$colToshow       = array_merge($colToshow, $topLevelFilters);
 		}
 
-		if (!$reportId)
+		// Loop through different levels of filters
+		foreach ($displayFilters as $key => $displayFilter)
 		{
-			// If reportId not yet set take value from function get input from view.html
-			$reportId = $this->getState('reportId');
-		}
-
-		// If reportname is not in url or input get it from state
-		$reportName = $this->getState('reportToBuild');
-
-		if (empty($reportName))
-		{
-			$reportName = $mainframe->getUserState('com_tjreports' . '.reportName', '');
-		}
-
-		$isSaveQuery = $this->getState('savedQuery');
-
-		if ($isSaveQuery == 1)
-		{
-			// Get saved data
-			$queryId = $this->getState('queryId');
-
-			if ($queryId != 0)
+			foreach ($displayFilter as $key => $dispFilter)
 			{
-				$queryData = $this->getQueryData($queryId);
-
-				if (!empty($queryData))
+				// Check if any of the filter is set
+				if (!empty($filters[$key]) && in_array($key, $colToshow))
 				{
-					$reportName = $queryData->plugin;
-
-					$param = json_decode($queryData->param);
-
-					$colNames = (array) $param->colToshow;
-					$filters = $param->filters;
-					$filters = (array) $filters;
-					$sort = $param->sort;
-
-					$sortCol = '';
-					$sortOrder = '';
-
-					if (!empty($sort))
+					if (!isset($dispFilter['searchin']))
 					{
-						$sortCol = $sort[0];
-						$sortOrder = $sort[1];
+						continue;
+					}
+
+					$columnName = $dispFilter['searchin'];
+
+					if (isset($dispFilter['type']))
+					{
+						if ($dispFilter['type'] == 'custom')
+						{
+							$query->where(sprintf($dispFilter['searchin'], $db->quote($filters[$key])));
+						}
+						else
+						{
+							$query->where($db->quoteName($columnName) . '=' . $db->quote($filters[$key]));
+						}
+					}
+					else
+					{
+						$search = $db->Quote('%' . $db->escape($filters[$key], true) . '%');
+						$query->where($db->quoteName($columnName) . ' LIKE (' . $search . ')');
 					}
 				}
 			}
 		}
-
-		if (empty($colNames))
-		{
-			$colNames = $this->getColNames();
-		}
-
-		$this->setAllUserPreference($reportName, $sortCol, $sortOrder, $colNames, $filters);
-
-		// Get all fields
-		$colNames      = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_colNames', '');
-		$filters       = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_filters', '');
-		$sortCol       = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_sortCol', '');
-		$sortOrder     = $mainframe->getUserState('com_tjreports' . '.' . $reportName . '_table_sortOrder', '');
-
-		$created_by = 0;
-
-		if (!empty($reportId))
-		{
-			if (!$allow_permission)
-			{
-				$created_by = $user->id;
-			}
-		}
-
-		$dispatcher = JDispatcher::getInstance();
-		JPluginHelper::importPlugin('tjreports');
-		$data = $dispatcher->trigger('plg' . $reportName . 'RenderPluginHTML', array
-																					(
-																						$filters, $colNames, $rowsTofetch, $limit_start, $sortCol, $sortOrder, $action, $created_by, ''
-																					)
-									);
-
-		if (isset($data[0]) && !empty($data[0]))
-		{
-			return $data[0];
-		}
-
-		return false;
 	}
 
 	/**
-	 * Save user preferences
+	 * Sort Columns which are not possible by Sql Order by
 	 *
-	 * @param   STRING  $reportName  The name of the report
-	 * @param   STRING  $sortCol     The column which has to be sorted
-	 * @param   STRING  $sortOrder   The order of sorting
-	 * @param   ARRAY   $colNames    The columns which need to show
-	 * @param   ARRAY   $filters     The Filters which are used
+	 * @param   MIX  $items Items want to sort
 	 *
-	 * @return    JDatabaseQuery
+	 * @return  MIX Sorted columns
 	 *
-	 * @since    1.0
+	 * @since    2.0
 	 */
-	public function setAllUserPreference($reportName, $sortCol, $sortOrder, $colNames, $filters)
+	protected function sortCustomColumns($items)
 	{
-		$mainframe = JFactory::getApplication();
+		$totalRows = $this->getTotal();
 
-		$mainframe->setUserState('com_tjreports' . '.reportName', $reportName);
-		$mainframe->setUserState('com_tjreports' . '.' . $reportName . '_table_colNames', $colNames);
-		$mainframe->setUserState('com_tjreports' . '.' . $reportName . '_table_filters', $filters);
+		// Add the list ordering clause.
+		$sortKey    = $this->getState('list.ordering', $this->default_order);
+		$limit      = $this->getState('list.limit', 0);
+		$limitstart = $this->getState('list.limitstart', 0);
 
-		if (!empty($sortCol) && !empty($sortOrder))
+		// Apply sorting and Limit if sorted column is not table
+		if (!empty($items) && !empty($sortKey)
+			&& in_array($sortKey, $this->sortableWoQuery) && $limit)
 		{
-			$mainframe->setUserState('com_tjreports' . '.' . $reportName . '_table_sortCol', $sortCol);
-			$mainframe->setUserState('com_tjreports' . '.' . $reportName . '_table_sortOrder', $sortOrder);
+			$orderDir   = $this->getState('list.direction', $this->default_order_dir);
+			$this->multi_d_sort($items, $sortKey, $orderDir);
+
+			$limitstart = isset($limitstart) ? (int) $limitstart : 0;
+			$limitstart = (($limitstart * $limit) < $totalRows) ? $limitstart : 0;
+
+			$this->getState('list.limitstart', $limitstart);
+
+			$items = array_splice($items, $limitstart, $limit);
 		}
+
+		return $items;
 	}
 
 	/**
-	 * Get all columns names
+	 * Converts second to H:M:S format
 	 *
-	 * @return    object
+	 * @param   STRING  $seconds    Total numbers of seconds
+	 * @param   STRING  $separator  Seperator
+	 *
+	 * @return  STRING
 	 *
 	 * @since    1.0
 	 */
-	public function getColNames()
+	protected function formatTime($seconds, $separator=':')
 	{
-		$reportName = $this->getState('reportToBuild');
-
-		if (empty($reportName))
-		{
-			$mainframe  = JFactory::getApplication();
-			$reportName = $mainframe->getUserState('com_tjreports' . '.reportName', '');
-		}
-
-		// Get all column name which plugin provides / superset
-
-		$dispatcher = JDispatcher::getInstance();
-		JPluginHelper::importPlugin('tjreports');
-		$plugcolNames = $dispatcher->trigger('plg' . $reportName . 'getColNames', array());
-
-		// Get all column name for default report
-		$configcolNames = (array) $this->getconfigColNames();
-
-		$configcolNames['colToshow'] = isset($configcolNames['colToshow']) ? $configcolNames['colToshow'] : '';
-
-		$confirgcols = (array) ($configcolNames['colToshow']);
-
-		// Get all column name which plugin provides / superset
-		$dispatcher = JEventDispatcher::getInstance();
-		JPluginHelper::importPlugin('tjreports');
-		$plugcolNames = $dispatcher->trigger('plg' . $reportName . 'getColNames', array());
-
-		if (isset($plugcolNames[0]))
-		{
-			$colNames  = array_intersect($plugcolNames[0], $confirgcols);
-		}
-
-		$denyCol = (array) $this->datadenyset();
-
-		if (!empty($colNames))
-		{
-			if (!empty($denyCol))
-			{
-				foreach ($colNames as $key => $value)
-				{
-					$colName[$value] = $value;
-				}
-
-				return $colName;
-			}
-			else
-			{
-				foreach ($plugcolNames as $plgcol)
-				{
-					foreach ($plgcol as $key => $value)
-					{
-						$colName[$value] = $value;
-					}
-				}
-
-				return $colName;
-			}
-		}
-		elseif (empty($colNames))
-		{
-			if ($plugcolNames)
-			{
-				foreach ($plugcolNames as $plgcol)
-				{
-					foreach ($plgcol as $key => $value)
-					{
-						$colName[$value] = $value;
-					}
-				}
-
-				return $colName;
-			}
-			else
-			{
-				return $confirgcols;
-			}
-		}
-
-		return false;
+		return sprintf("%02d%s%02d%s%02d", floor($seconds / 3600), $separator, ($seconds / 60) % 60, $separator, $seconds % 60);
 	}
 
 	/**
-	 * Get configurated column names
+	 * SOrt given array with the provided column and provided order
 	 *
-	 * @return    object
+	 * @param   ARRAY   &$array  array of data
+	 * @param   STRING  $column  column name
+	 * @param   STRING  $order   order in which array has to be sort
 	 *
-	 * @since    1.0
+	 * @return  ARRAY
+	 *
+	 * @since   1.0
 	 */
-	public function getconfigColNames()
+	private function multi_d_sort(&$array, $column, $order)
 	{
-		$reportName = $this->getState('reportToBuild');
-		$user_id = JFactory::getUser()->id;
-
-		if (empty($reportName))
-		{
-			$mainframe  = JFactory::getApplication();
-			$reportName = $mainframe->getUserState('com_tjreports' . '.reportName', '');
-		}
-
-		if (!empty($reportName))
-		{
-			$db        = JFactory::getDBO();
-			$query = $db->getQuery(true);
-			$savedcols = "";
-
-			// Check is this uses has default config for this report
-			$query->select('tj.param');
-			$query->from('#__tj_reports tj');
-			$query->where('tj.plugin =' . $db->quote($reportName));
-			$query->where('tj.userid = ' . $user_id);
-			$query->where("tj.`default` = " . 1);
-			$db->setQuery($query);
-			$savedcols = $db->loadAssoc();
-
-			if (empty($savedcols))
-			{
-				// Get parent config is default is not set
-
-				$query = $db->getQuery(true);
-
-				$query->select('tjr.param');
-				$query->from('#__tj_reports as tjr');
-				$query->where('tjr.plugin =' . $db->quote($reportName));
-				$query->where("tjr.`default` = " . 1);
-				$query->where("tjr.`userid` = " . 0);
-				$query->where("tjr.`parent` = " . 0);
-				$db->setQuery($query);
-				$savedcols = $db->loadAssoc();
-
-				$savedcols = json_decode($savedcols['param']);
-
-				return $savedcols;
-			}
-
-			$savedcols = json_decode($savedcols['param']);
-
-			return $savedcols;
-		}
-
-		return false;
+		$order = ($order == 'desc') ? SORT_DESC : SORT_ASC;
+		array_multisort(array_column($array, $column), $order, $array);
 	}
 
 	/**
@@ -403,27 +422,14 @@ class TjreportsModelReports extends JModelList
 	public function getQueryData($queryId)
 	{
 		$ol_user = JFactory::getUser()->id;
-		$db        = JFactory::getDBO();
-		$query = $db->getQuery(true);
-/*
-		if (!empty($colToSelect))
-		{
-			$colToSelect = implode(',', $colToSelect);
-			$query->select($colToSelect);
-		}
-		else
-		{
-*/
-			$query->select('*');
-	/*
-		}
-*/
+		$query   = $this->_db->getQuery(true);
+		$query->select('*');
 		$query->from('#__tj_reports');
-		$query->where('userid=' . $ol_user);
-		$query->where('id=' . $queryId);
+		$query->where('userid=' . (int) $ol_user);
+		$query->where('id=' . (int) $queryId);
 
-		$db->setQuery($query);
-		$queryData = $db->loadObject();
+		$this->_db->setQuery($query);
+		$queryData = $this->_db->loadObject();
 
 		return $queryData;
 	}
@@ -600,22 +606,54 @@ class TjreportsModelReports extends JModelList
 		$reportId = $input->get('reportId', '', 'int');
 
 		if ($reportName && $user_id && $reportId)
-			{
-				$db        = JFactory::getDBO();
-				$query = $db->getQuery(true);
-				$query->select(array('param'));
-				$query->from($db->quoteName('#__tj_reports'));
-				$query->where('plugin =' . $db->quote($reportName));
-				$query->where($db->quoteName('id') . ' = ' . $db->quote($reportId));
-				$query->where($db->quoteName('userid') . ' = ' . $db->quote($user_id));
-				$query->where($db->quoteName('datadenyset') . ' = ' . $db->quote('1'));
+		{
+			$db        = JFactory::getDBO();
+			$query = $db->getQuery(true);
+			$query->select(array('param'));
+			$query->from($db->quoteName('#__tj_reports'));
+			$query->where('plugin =' . $db->quote($reportName));
+			$query->where($db->quoteName('id') . ' = ' . $db->quote($reportId));
+			$query->where($db->quoteName('userid') . ' = ' . $db->quote($user_id));
+			$query->where($db->quoteName('datadenyset') . ' = ' . $db->quote('1'));
 
-				$db->setQuery($query);
-				$denyDataSet = $db->loadAssoc();
+			$db->setQuery($query);
+			$denyDataSet = $db->loadAssoc();
 
-				$savedcols = json_decode($denyDataSet['param']);
+			$savedcols = json_decode($denyDataSet['param']);
 
-				return $savedcols;
+			return $savedcols;
 		}
+	}
+
+	/**
+	 * Method to load language of TjReport Plugin
+	 *
+	 * @param   string  $name       Plugin Name
+	 * @param   string  $type       Plugin Type
+	 * @param   string  $extension  Extension Name
+	 * @param   string  $basePath   The basepath to use
+	 *
+	 * @return  Void
+	 *
+	 * @since   3.0
+	 */
+	public function loadLanguage($name, $type = 'tjreports', $extension = '', $basePath = JPATH_ADMINISTRATOR)
+	{
+		if (empty($extension))
+		{
+			$extension = 'Plg_' . $type . '_' . $name;
+		}
+
+		$extension = strtolower($extension);
+		$lang      = JFactory::getLanguage();
+
+		// If language already loaded, don't load it again.
+		if ($lang->getPaths($extension))
+		{
+			return true;
+		}
+
+		return $lang->load($extension, $basePath, null, false, true)
+			|| $lang->load($extension, JPATH_PLUGINS . '/' . $type . '/' . $name, null, false, true);
 	}
 }

@@ -90,7 +90,7 @@ class ReportsViewBase extends JViewLegacy
 			{
 				$data = (array) $param['data'];
 
-				$postFilters = array('colToshow', 'filters', 'limit', 'list_limit');
+				$postFilters = array('colToshow', 'filters', 'limit', 'list_limit', 'client');
 
 				foreach ($postFilters as $postFilter)
 				{

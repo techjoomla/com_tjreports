@@ -124,7 +124,7 @@ jQuery.extend(tjrContentUI.report, {
 	getQueryResult: function(id)
 	{
 		var url = tjrContentUI.base_url + 'index.php?option=com_tjreports&view=reports';
-		var params = {'reportToBuild':'reportToBuild','extension':'client','reportId':'reportId','queryId':'queryId'};
+		var params = {'reportToBuild':'reportToBuild','client':'client','reportId':'reportId','queryId':'queryId'};
 
 			jQuery.each(params, function(id,val){
 				console.log(id,val);
@@ -296,17 +296,6 @@ jQuery.extend(tjrContentUI.utility, {
 		}
 	},
 });
-
-//~ tjrContentUI.tableOrdering = function( order, dir, task, form ) {
-	//~ if ( typeof form  === 'undefined' )
-	//~ {
-		//~ form = document.getElementById( 'adminForm' );
-	//~ }
-//~
-	//~ form.filter_order.value = order;
-	//~ form.filter_order_Dir.value = dir;
-	//~ tjrContentUI.report.submitTJRData();
-//~ };
 
 jQuery(document).click(function(e)
 {

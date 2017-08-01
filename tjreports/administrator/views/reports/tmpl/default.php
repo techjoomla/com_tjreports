@@ -175,9 +175,10 @@ defined('_JEXEC') or die;
 												foreach ($detail as $subKey => $subDetail)
 												{
 													$keyDetails   = explode('::', $subKey);
+
 													$subTextTitle = 'PLG_TJREPORTS_' . strtoupper($this->pluginName . '_' . $keyDetails[2] . '_' . $keyDetails[3] . '_TITLE');
 
-													echo '<th>';
+													echo '<th class="subdetails ' . $keyDetails[2] . ' ' . $keyDetails[3] . '">';
 
 													$colTitle = JText::sprintf($subTextTitle, $keyDetails[1]) ;
 
@@ -207,7 +208,7 @@ defined('_JEXEC') or die;
 													$colTitle = 'PLG_TJREPORTS_' . strtoupper($this->pluginName . '_' . $colKey . '_TITLE');
 												}
 
-												echo '<th>';
+												echo '<th class="' . $colKey  . '">';
 
 												if (in_array($colKey, $tjrData['sortable']))
 												{
@@ -259,12 +260,13 @@ defined('_JEXEC') or die;
 										{
 											foreach($key as $subkey => $subVal)
 											{
-												echo '<td>' .  $item[$arrayKey][$subkey] .'</td>';
+												$keyDetails   = explode('::', $subkey);
+												echo '<td class="subdetails ' . $keyDetails[2] . ' ' . $keyDetails[3] . '">' .  $item[$arrayKey][$subkey] .'</td>';
 											}
 										}
 										else
 										{
-											echo '<td>'. $item[$key] .'</td>';
+											echo '<td class="' . $key . '">'. $item[$key] .'</td>';
 										}
 									}
 

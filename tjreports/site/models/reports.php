@@ -340,7 +340,7 @@ class TjreportsModelReports extends JModelList
 			$limitstart = isset($limitstart) ? (int) $limitstart : 0;
 			$limitstart = (($limitstart * $limit) < $totalRows) ? $limitstart : 0;
 
-			$this->getState('list.limitstart', $limitstart);
+			$this->setState('list.limitstart', $limitstart);
 
 			$items = array_splice($items, $limitstart, $limit);
 		}

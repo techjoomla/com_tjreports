@@ -28,7 +28,6 @@ class TjreportsHelper
 	{
 		$extension = JFactory::getApplication()->input->get('extension', '', 'STRING');
 		$full_client = $extension;
-		$app = JFactory::getApplication('administrator');
 
 		// Set ordering.
 		$mainframe = JFactory::getApplication();

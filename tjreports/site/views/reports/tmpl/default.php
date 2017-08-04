@@ -105,7 +105,6 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 	?>
 	<!--// JHtmlsidebar for menu ends-->
 
- 
 	<form action="<?php echo JRoute::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm">
 		<div>
 			<div class="row-fluid">
@@ -148,6 +147,7 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 									</li>
 								<?php endforeach; ?>
 								<input type="checkbox" checked="checked" name="userType" id="userType" style="display:none">
+								<input type="checkbox" checked="checked" name="title" id="title" style="display:none">
 							</ul>
 						</div>
 					</div>
@@ -178,7 +178,7 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 					</div>
 				</div>
 			</div>
-		
+
 			<div>
 				<div class="report-top-bar row">
 					<?php if (empty($this->items)):	?>
@@ -207,9 +207,9 @@ $document->addScriptDeclaration('var allow_permission = "' . $allow_permission .
 						<div class="span2">
 							<button class= "btn btn-danger btn-small" onClick="deleteQuery(<?php echo $queryId; ?>);return false;"><i class="icon-trash"></i></button>
 						</div>
-						<?php } 
+						<?php }
 					?>
-						
+
 						<br><br>
 						<?php endif; ?>
 					</div>

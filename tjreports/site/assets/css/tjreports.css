@@ -1,34 +1,12 @@
-
-
-.other-filters{
-    padding: 0 14px;
-}
-
-.show-hide-cols
-{
-	position:relative;
-}
-
-.ColVis_collection
-{
-	list-style: none;
-	width: 150px;
-	padding: 8px 8px 4px 8px;
-	margin: 0;
-	border: 1px solid #ccc;
-	border: 1px solid rgba( 0, 0, 0, 0.4 );
-	background-color: #f3f3f3;
-	overflow: hidden;
-	display: block;
-	opacity: 1;
-	position: absolute;
-}
-
-.report-top-bar
-{
-	margin-top:10px;
-}
-
-#report-table thead input {
-margin-bottom: 0px;
-}
+.other-filters{padding: 0 14px;}
+.show-hide-cols{position:relative;}
+.ColVis_collection{list-style: none;/* width: 150px; */padding: 8px 8px 4px 8px;margin: 0;border: 1px solid #ccc;border: 1px solid rgba( 0, 0, 0, 0.4 );background-color: #F9F9F9;overflow: hidden;display: block;opacity: 1;position: absolute; z-index: 1;}
+.report-top-bar{ margin-top:10px;}
+#report-table thead input { margin-bottom: 0px;}
+table#report-table thead th a {display: inline-block; width: 100%;}
+ul#ul-columns-name li input {margin-top: 0;}
+ul#ul-columns-name li:hover label {background-color: #F0F0F0;}
+ul#ul-columns-name li label {margin-bottom: 0; padding-top: 2px; padding-bottom: 2px;}
+div#report-containing-div {min-height:450px;}
+div#reports-container input.tjrsmall-input {width: 120px; font-size: 12px;}
+div#reports-container .form-inline-header .controls {padding-right: 5px;}

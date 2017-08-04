@@ -13,30 +13,15 @@
 // No direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.view');
-require_once JPATH_SITE . '/components/com_tjreports/helpers/tjreports.php';
-require_once JPATH_SITE . '/components/com_tjreports/models/reports.php';
-require_once JPATH_COMPONENT . '/helpers/tjreports.php';
-
-
-// Import Csv export button
-jimport('techjoomla.tjtoolbar.button.csvexport');
+require_once __DIR__ . '/view.base.php';
 
 /**
  * View class for a list of Tjreports.
  *
  * @since  1.0.0
  */
-class TjreportsViewReports extends JViewLegacy
+class TjreportsViewReports extends ReportsViewBase
 {
-	protected $items;
-
-	protected $pagination;
-
-	protected $state;
-
-	protected $extension;
-
 	/**
 	 * Execute and display a template script.
 	 *
@@ -46,112 +31,16 @@ class TjreportsViewReports extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		// Check for view report permission from respective extension e.g : com_tjlms
-		$reportsModel = $this->getModel();
-		$this->extension = $reportsModel->getState('extension');
+		$input  = JFactory::getApplication()->input;
+		$result = $this->processData();
 
-		$full_client = explode('.', $this->extension);
-
-		// Eg com_tjlms
-		$component = $full_client[0];
-		$eName = str_replace('com_', '', $component);
-		$file = JPath::clean(JPATH_ADMINISTRATOR . '/components/' . $component . '/helpers/' . $eName . '.php');
-
-		if (file_exists($file))
+		if (!$result)
 		{
-			require_once $file;
-
-			$prefix = ucfirst(str_replace('com_', '', $component));
-			$cName = $prefix . 'Helper';
-
-			if (class_exists($cName))
-			{
-				$canDo = $cName::getActions();
-
-				if (!$canDo->get('view.reports'))
-				{
-					JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
-
-					return false;
-				}
-			}
-		}
-
-		$this->user       = JFactory::getUser();
-		$this->user_id    = $this->user->id;
-		$input = JFactory::getApplication()->input;
-
-		if ($this->extension)
-		{
-			TjreportsHelper::addSubmenu('reports');
-			$this->sidebar = JHtmlSidebar::render();
-		}
-
-		// Get saved data
-		$queryId = $input->get('queryId', '0', 'INT');
-		$client = $input->get('client', '', 'STRING');
-		$reportToBuild = $input->get('reportToBuild', '', 'STRING');
-		$reportId = $input->get('reportId', '', 'INT');
-
-		if ($reportId)
-		{
-			$allow_permission = $this->user->authorise('core.viewall', 'com_tjreports.tjreport.' . $reportId);
-			$input->set('allow_permission', $allow_permission);
-		}
-
-		$input->set('reportId', $reportId);
-
-		// Get respected plugin data
-		$this->items		= $this->get('Data');
-
-		// Get all columns of that report
-		$this->colNames	= $this->get('ColNames');
-
-		$TjreportsModelReports = new TjreportsModelReports;
-
-		// Get saved queries by the logged in users
-		$this->saveQueries = $TjreportsModelReports->getSavedQueries($this->user_id, $reportToBuild);
-
-		// Call helper function
-		$TjreportsHelper = new TjreportsHelpersTjreports;
-		$TjreportsHelper->getLanguageConstant();
-
-		// Get all enable plugins
-		$this->enableReportPlugins = $TjreportsModelReports->getenableReportPlugins();
-
-		$this->colToshow = array();
-
-		if ($queryId != 0)
-		{
-			$model = $this->getModel();
-			$colToSelect = array('colToshow');
-
-			$QueryData = $model->getQueryData($queryId);
-
-			$param = json_decode($QueryData->param);
-			$this->colToshow = $param->colToshow;
-		}
-
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-		{
-			throw new Exception(implode("\n", $errors));
+			return false;
 		}
 
 		$this->addToolbar();
-
-		if (!empty($this->saveQueries))
-		{
-			$saveQueries = array();
-			$saveQueries[] = JHTML::_('select.option', '', JText::_('COM_TJREPORTS_SELONE_QUERY'));
-
-			foreach ($this->saveQueries as $eachQuery)
-			{
-				$saveQueries[] = JHTML::_('select.option', $eachQuery->plugin . '_' . $eachQuery->id, $eachQuery->title);
-			}
-
-			$this->saveQueriesList = $saveQueries;
-		}
+		$this->addDocumentHeaderData();
 
 		parent::display($tpl);
 	}
@@ -166,50 +55,79 @@ class TjreportsViewReports extends JViewLegacy
 	protected function addToolbar()
 	{
 		// Old code
-
+		$extension = JFactory::getApplication()->input->get('client', '', 'word');
 		$bar = JToolBar::getInstance('toolbar');
 		JToolBarHelper::title(JText::_('COM_TJREPORTS_TITLE_REPORT'), 'list');
 
 		$button = "<a class='btn' class='button'
-				type='submit' onclick=\"Joomla.submitbutton('reports.csvexport');\" href='#'><span title='Export'
+				type='submit' onclick=\"Joomla.submitbutton('reports.csvexport'); jQuery('#task').val('');\" href='#'><span title='Export'
 				class='icon-download'></span>" . JText::_('COM_TJREPORTS_CSV_EXPORT') . "</a>";
 			$bar->appendButton('Custom', $button);
 
 		// List of plugin
-		if ($this->extension)
+		if ($extension)
 		{
+			JFactory::getApplication()->input->set('extension', $extension);
+			JLoader::import('administrator.components.com_tjreports.helpers.tjreports', JPATH_SITE);
+			TjreportsHelper::addSubmenu('reports');
+			$this->sidebar = JHtmlSidebar::render();
+
+			$model	= $this->getModel();
+
+			// Get all enable plugins
+			$this->enableReportPlugins = $this->model->getenableReportPlugins($extension);
+
 			foreach ($this->enableReportPlugins as $eachPlugin) :
-					$button = "<a class='btn button report-btn' id='" . $eachPlugin->element . "'
-				onclick=\"loadReport('" . $eachPlugin->element . "','" . $this->extension . "'); \" ><span
+				$this->model->loadLanguage($eachPlugin->element);
+				$btnclass = ($this->pluginName == $eachPlugin->element) ? " active btn-primary " : "";
+				$button = "<a class='btn button report-btn " . $btnclass . "' id='" . $eachPlugin->element . "'
+				onclick=\"tjrContentUI.report.loadReport('" . $eachPlugin->element . "','" . $extension . "'); \" ><span
 				class='icon-list'></span>" . JText::_($eachPlugin->name) . "</a>";
 					$bar->appendButton('Custom', $button);
 			endforeach;
 		}
-
 		else
 		{
 			JToolBarHelper::cancel('tjreport.cancel', 'JTOOLBAR_CANCEL');
 		}
+	}
 
-/*
- * 		// CSV export code for ajax based
-		$this->extra_sidebar = '';
+	/**
+	 * Add the script and Style.
+	 *
+	 * @return  Void
+	 *
+	 * @since	1.6
+	 */
+	protected function addDocumentHeaderData()
+	{
+		JHtml::_('formbehavior.chosen', 'select');
+		$document = JFactory::getDocument();
+		$document->addScript(JURI::root() . '/components/com_tjreports/assets/js/tjrContentService.js');
+		$document->addScript(JURI::root() . '/components/com_tjreports/assets/js/tjrContentUI.js');
+		$document->addStylesheet(JURI::root() . '/components/com_tjreports/assets/css/tjreports.css');
+		$document->addScriptDeclaration('tjrContentUI.base_url = "' . Juri::base() . '"');
+		$document->addScriptDeclaration('tjrContentUI.root_url = "' . Juri::root() . '"');
+		JText::script('JERROR_ALERTNOAUTHOR');
 
-		require_once JPATH_SITE . '/helpers/tjreports.php';
-		$state	= $this->get('State');
-		$bar = JToolBar::getInstance('toolbar');
-		JToolBarHelper::title(JText::_('COM_TJREPORTS_TITLE'), 'list');
-
-		if (!empty($this->items))
+		if (method_exists($this->model, 'getScripts'))
 		{
-			$message = array();
-			$message['success'] = JText::_("COM_TJREPORTS_EXPORT_FILE_SUCCESS");
-			$message['error'] = JText::_("COM_TJREPORTS_EXPORT_FILE_ERROR");
-			$message['inprogress'] = JText::_("COM_TJREPORTS_EXPORT_FILE_NOTICE");
-			$bar->appendButton('CsvExport', $message);
+			$plgScripts = (array) $this->model->getScripts();
+
+			foreach ($plgScripts as $script)
+			{
+				$document->addScript($script);
+			}
 		}
 
-		$this->extra_sidebar = '';
-*/
+		if (method_exists($this->model, 'getStyles'))
+		{
+			$styles = (array) $this->model->getStyles();
+
+			foreach ($styles as $style)
+			{
+				$document->addStylesheet($style);
+			}
+		}
 	}
 }

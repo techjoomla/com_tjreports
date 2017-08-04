@@ -14,14 +14,12 @@ defined('_JEXEC') or die;
 	<?php
 	JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 
-	$tjrData        = $this->tjrData;
-	$headerLevel    = $tjrData['headerLevel'];
-	$displayFilters = $tjrData['displayFilters'];
+	$headerLevel    = $this->headerLevel;
 	$listOrder      = $this->state->get('list.ordering');
 	$listDirn       = $this->state->get('list.direction');
 	$totalCount = 0;
 
-	foreach ($tjrData['colToshow'] as $key=>$data)
+	foreach ($this->colToshow as $key=>$data)
 	{
 		if (is_array($data))
 		{
@@ -32,7 +30,6 @@ defined('_JEXEC') or die;
 			$totalCount++;
 		}
 	}
-	//~ echo '<pre>'.print_r($data,true).'</pre>';
 	?>
 	<div class="<?php echo COM_TJLMS_WRAPPER_DIV ?>">
 	<?php
@@ -53,7 +50,7 @@ defined('_JEXEC') or die;
 
 			<form action="<?php echo JRoute::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm" onsubmit="return tjrContentUI.report.submitForm();">
 				<div class="report-top-bar row-fluid">
-					<div class="span12">
+					<div class="span12 form-inline-header">
 						<?php
 						$class1 = !empty($this->savedQueries) ? 'span2' : 'span4';
 						?>
@@ -61,30 +58,23 @@ defined('_JEXEC') or die;
 							<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="tjrContentUI.report.getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>" />
 							<ul id="ul-columns-name" class="ColVis_collection" style="display:none">
 								<?php
-								foreach ($tjrData['showHideColumns'] as $detail)
+								foreach ($this->showHideColumns as $colKey)
 								{
-									$colTitle 	= $checked 	= '';
+									$checked 	= '';
 
-									if (is_array($detail))
+									if (isset($this->columns[$colKey]['title']))
 									{
-										$colKey   = $detail['key'];
-										$colTitle = isset($detail['title']) ? $detail['title'] : '';
+										$colTitle = $this->columns[$colKey]['title'];
 									}
 									else
-									{
-										$colKey   = $detail;
-									}
-
-									if (!$colTitle)
 									{
 										$colTitle = 'PLG_TJREPORTS_' . strtoupper($this->pluginName . '_' . $colKey . '_TITLE');
 									}
 
-									if (in_array($colKey, $tjrData['colToshow']))
+									if (in_array($colKey, $this->colToshow))
 									{
 										$checked 	= 'checked="checked"';
 									}
-
 									?>
 									<li>
 										<label>
@@ -124,26 +114,28 @@ defined('_JEXEC') or die;
 						?>
 
 						<div class="js-stools-container-list hidden-phone hidden-tablet span4">
-							<div class="ordering-select hidden-phone">
-							<?php
-							$totalHeadRows = count($displayFilters);
-							if ($totalHeadRows > 1)
-							{
-								$topFilters = array_pop($displayFilters);
-
-								foreach($topFilters as $topFilter)
-								{
-									if (!empty($topFilter['html']))
+							<div class="ordering-select hidden-phone" id="topFilters">
+								<?php
+									$displayFilters = $this->userFilters;
+									$totalHeadRows = count($displayFilters);
+									if ($totalHeadRows > 1)
 									{
-									?>
-									<div class="js-stools-field-list">
-										<?php echo $topFilter['html'];?>
-									</div>
-									<?php
+										$this->filters  = array_pop($displayFilters);
+										echo $this->loadTemplate('filters');
+
+										if ($this->srButton)
+										{
+											?>
+											<div class="btn-group filter-btn-block control-group">
+												<button class="btn hasTooltip" onclick="tjrContentUI.report.submitTJRData(); return false;" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT')?>"><i class="icon-search"></i>
+												</button>
+												<button class="btn hasTooltip" type="button" title="<?php echo JText::_('JSEARCH_FILTER_CLEAR')?>" onclick="tjrContentUI.report.resetSubmitTJRData(); return false;"><i class="icon-remove"></i>
+												</button>
+											</div>
+											<?php
+										}
 									}
-								}
-							}
-							?>
+								?>
 							</div>
 						</div>
 						<!-- js-stools-container-list hidden-phone hidden-tablet span4 -->
@@ -166,23 +158,34 @@ defined('_JEXEC') or die;
 								{
 									echo '<tr>';
 
-									foreach($tjrData['colToshow'] as $index=>$detail)
+									foreach($this->colToshow as $index=>$detail)
 									{
 										if ($i == 1)
 										{
 											if (strpos($index, '::'))
 											{
+												$indexArray   = explode('::', $index);
+												$contentTitle = $indexArray[0];
+												$contentId    = $indexArray[0];
+
 												foreach ($detail as $subKey => $subDetail)
 												{
 													$keyDetails   = explode('::', $subKey);
 
-													$subTextTitle = 'PLG_TJREPORTS_' . strtoupper($this->pluginName . '_' . $keyDetails[2] . '_' . $keyDetails[3] . '_TITLE');
+													if (!isset($this->columns[$subKey]['title']))
+													{
+														$subTextTitle = 'PLG_TJREPORTS_' . strtoupper($this->pluginName . '_' . $keyDetails[0] . '_' . $keyDetails[1] . '_TITLE');
+													}
+													else
+													{
+														$subTextTitle = $this->columns[$subKey]['title'];
+													}
 
-													echo '<th class="subdetails ' . $keyDetails[2] . ' ' . $keyDetails[3] . '">';
+													echo '<th class="subdetails ' . $keyDetails[0] . ' ' . $keyDetails[1] . '">';
 
 													$colTitle = JText::sprintf($subTextTitle, $keyDetails[1]) ;
 
-													if (in_array($subKey, $tjrData['sortable']))
+													if (in_array($subKey, $this->sortable))
 													{
 														echo $sortHtml = JHtml::_('grid.sort', $colTitle, $subKey, $listDirn, $listOrder);
 														// str_replace('Joomla.tableOrdering', 'tjrContentUI.tableOrdering', $sortHtml);
@@ -197,20 +200,20 @@ defined('_JEXEC') or die;
 											}
 											else
 											{
-												if (is_array($detail) && !empty($detail['title']))
+												$colKey = $detail;
+
+												if (!isset($this->columns[$colKey]['title']))
 												{
-													$colKey = $detail['key'];
-													$colTitle = $detail['title'];
+													$colTitle = 'PLG_TJREPORTS_' . strtoupper($this->pluginName . '_' . $colKey . '_TITLE');
 												}
 												else
 												{
-													$colKey = $detail;
-													$colTitle = 'PLG_TJREPORTS_' . strtoupper($this->pluginName . '_' . $colKey . '_TITLE');
+													$colTitle = $this->columns[$colKey]['title'];
 												}
 
 												echo '<th class="' . $colKey  . '">';
 
-												if (in_array($colKey, $tjrData['sortable']))
+												if (in_array($colKey, $this->sortable))
 												{
 													echo $sortHtml = JHtml::_('grid.sort', $colTitle, $colKey, $listDirn, $listOrder);
 													// str_replace('Joomla.tableOrdering', 'tjrContentUI.tableOrdering', $sortHtml);
@@ -220,9 +223,10 @@ defined('_JEXEC') or die;
 													echo JText::_($colTitle);
 												}
 
-												if (isset($filters[$colKey]['html']))
+												if (isset($filters[$colKey]))
 												{
-													echo $filters[$colKey]['html'];
+													$this->filters  = array($colKey => $filters[$colKey]);
+													echo $this->loadTemplate('filters');
 												}
 
 												echo '</th>';
@@ -254,14 +258,14 @@ defined('_JEXEC') or die;
 								{
 									echo '<tr>';
 
-									foreach ($tjrData['colToshow'] as $arrayKey => $key)
+									foreach ($this->colToshow as $arrayKey => $key)
 									{
 										if (is_array($key))
 										{
 											foreach($key as $subkey => $subVal)
 											{
 												$keyDetails   = explode('::', $subkey);
-												echo '<td class="subdetails ' . $keyDetails[2] . ' ' . $keyDetails[3] . '">' .  $item[$arrayKey][$subkey] .'</td>';
+												echo '<td class="subdetails ' . $keyDetails[0] . ' ' . $keyDetails[1] . '">' .  $item[$arrayKey][$subkey] .'</td>';
 											}
 										}
 										else
@@ -282,13 +286,13 @@ defined('_JEXEC') or die;
 								}
 
 								// Any message to display
-								if (!empty($tjrData['messages']))
+								if (!empty($this->messages))
 								{
 									echo '
 									<tr>
 										<td colspan="' . $totalCount . '">
 											<div class="alert alert-warning">
-												' . implode('<br>', (array) $tjrData['messages']) . '
+												' . implode('<br>', (array) $this->messages) . '
 											</div>
 										</td>
 									</tr>';
@@ -302,7 +306,7 @@ defined('_JEXEC') or die;
 					<div id="pagination">
 						<?php
 						echo $footerLinks = $this->pagination->getListFooter();
-						// str_replace("Joomla.submitform();", "tjrContentUI.report.submitTJRData('pageChange');", $footerLinks);
+						// str_replace("Joomla.submitform();", "tjrContentUI.report.submitfilter('pageChange');", $footerLinks);
 						?>
 					</div>
 

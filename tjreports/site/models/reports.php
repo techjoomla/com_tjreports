@@ -29,33 +29,42 @@ class TjreportsModelReports extends JModelList
 	protected $default_order_dir = 'ASC';
 
 	// Number of TH Rows required in the table
-	protected $headerLevel = 1;
+	public $headerLevel = 1;
 
 	// Add custom messages
-	protected $messages = array();
+	public $messages = array();
+
+	// Add custom messages
+	public $columns = array();
 
 	// Columns which are not possible to sort by SQl Order by
-	protected $sortableWoQuery = array();
+	public $sortableWoQuery = array();
+
+	// Columns which are not possible to sort by SQl Order by
+	public $showhideCols = array();
+
+	// Columns which are not possible to sort by SQl Order by
+	public $sortableColumns = array();
+
+	// Columns which are not possible to sort by SQl Order by
+	private $defaultColToShow = array();
+
+	// Columns which are not possible to sort by SQl Order by
+	public $showSearchResetButton = true;
 
 	/**
-	 * Methods to get all data after processing
+	 * Constructor.
 	 *
-	 * @return ARRAY Data of report
+	 * @param   array  $config  An optional associative array of configuration settings.
 	 *
-	 * @since   2.0
+	 * @see     JModelLegacy
+	 * @since   1.6
 	 */
-	public function getReportData()
+	public function __construct($config = array())
 	{
-		$data = array();
-		$data['headerLevel']      = $this->getHeaderLevel();
-		$data['displayFilters']   = $this->displayFilters();
-		$data['headerColumns']    = $this->getHeaderColumns();
-		$data['showHideColumns']  = $this->getShowHideColumns();
-		$data['colToshow']        = $this->getState('colToshow');
-		$data['messages']         = $this->getTJRMessages();
-		$data['sortable']         = $this->getSortableColumns();
+		$this->initData();
 
-		return $data;
+		parent::__construct($config);
 	}
 
 	/**
@@ -65,57 +74,37 @@ class TjreportsModelReports extends JModelList
 	 *
 	 * @since   2.0
 	 * */
-	public function getHeaderColumns()
+	private function initData()
 	{
-		return array();
-	}
+		$columns      = $this->columns;
+		$columnsKeys  = array_keys($columns);
+		$this->defaultColToShow = $this->sortableColumns 	= $this->showhideCols = array_combine($columnsKeys, $columnsKeys);
+		$this->sortableWoQuery = array();
 
-	/**
-	 * Get number of Table header level
-	 *
-	 * @return INT Number of TH levels
-	 *
-	 * @since   2.0
-	 * */
-	public function getHeaderLevel()
-	{
-		return $this->headerLevel;
-	}
+		foreach ($columns as $key => $column)
+		{
+			if ((isset($column['not_show_hide']) && $column['not_show_hide'])
+				|| (strpos($key, '::') !== false && !isset($column['not_show_hide'])))
+			{
+				unset($this->showhideCols[$key]);
+			}
 
-	/**
-	 * Get Columns name that a User can switch to hide & show
-	 *
-	 * @return ARRAY Column array
-	 *
-	 * @since   2.0
-	 * */
-	public function getShowHideColumns()
-	{
-		return $this->headerColumns();
-	}
+			if ((isset($column['disable_sorting']) && $column['disable_sorting'])
+				|| (strpos($key, '::') !== false && !isset($column['disable_sorting'])))
+			{
+				unset($this->sortableColumns[$key]);
+			}
 
-	/**
-	 * Get Columns name that a User can switch to hide & show
-	 *
-	 * @return ARRAY Column array
-	 *
-	 * @since   2.0
-	 * */
-	public function getColumnsToShow()
-	{
-		return $this->headerColumns();
-	}
+			if (!isset($column['table_column']) || !in_array($key, $this->sortableColumns))
+			{
+				array_push($this->sortableWoQuery, $key);
+			}
 
-	/**
-	 * Get Columns name that a User can sort
-	 *
-	 * @return ARRAY Column array
-	 *
-	 * @since   2.0
-	 * */
-	public function getSortableColumns()
-	{
-		return $this->headerColumns();
+			if (!isset($column['title']) || (strpos($key, '::') !== false))
+			{
+				unset($this->defaultColToShow[$key]);
+			}
+		}
 	}
 
 	/**
@@ -152,7 +141,7 @@ class TjreportsModelReports extends JModelList
 	 *
 	 * @since    2.0
 	 */
-	protected function displayFilters()
+	public function displayFilters()
 	{
 		/*
 		return array(
@@ -216,7 +205,7 @@ class TjreportsModelReports extends JModelList
 
 		if (empty($colToshow))
 		{
-			$colToshow = (array) $this->headerColumns();
+			$colToshow = $this->defaultColToShow;
 		}
 
 		$this->setState('colToshow', $colToshow);
@@ -254,17 +243,16 @@ class TjreportsModelReports extends JModelList
 	}
 
 	/**
-	 * Add all classes that are used
+	 * Method to get a JDatabaseQuery object for retrieving the data set from a database.
 	 *
-	 * @param   MIX  &$query  Query object
+	 * @return  JDatabaseQuery  A JDatabaseQuery object to retrieve the data set.
 	 *
-	 * @return  object
-	 *
-	 * @since    1.0
+	 * @since   1.6
 	 */
-	protected function addAdditionalWhere(&$query)
+	protected function getListQuery()
 	{
 		$db  			= JFactory::getDBO();
+		$query 			= $db->getQuery(true);
 		$filters 		= (array) $this->getState('filters');
 		$displayFilters = (array) $this->displayFilters();
 		$colToshow		= (array) $this->getState('colToshow');
@@ -276,13 +264,22 @@ class TjreportsModelReports extends JModelList
 			$colToshow       = array_merge($colToshow, $topLevelFilters);
 		}
 
+		// Select columns which are directly linked to table columns
+		foreach ($colToshow as $columnName)
+		{
+			if (!is_array($columnName) && !empty($this->columns[$columnName]['table_column']))
+			{
+				$query->select($db->quoteName($this->columns[$columnName]['table_column'], $columnName));
+			}
+		}
+
 		// Loop through different levels of filters
 		foreach ($displayFilters as $key => $displayFilter)
 		{
 			foreach ($displayFilter as $key => $dispFilter)
 			{
 				// Check if any of the filter is set
-				if (!empty($filters[$key]) && in_array($key, $colToshow))
+				if ((!empty($filters[$key]) || substr($dispFilter['search_type'], -6) === '.range') && in_array($key, $colToshow))
 				{
 					if (!isset($dispFilter['searchin']))
 					{
@@ -291,7 +288,22 @@ class TjreportsModelReports extends JModelList
 
 					$columnName = $dispFilter['searchin'];
 
-					if (isset($dispFilter['type']))
+					if (substr($dispFilter['search_type'], -6) === '.range')
+					{
+						$fromCol = $columnName . '_from';
+						$toCol   = $columnName . '_to';
+
+						if (!empty($filters[$fromCol]))
+						{
+							$query->where($dispFilter['searchin'] . ' > ' . $db->quote($filters[$fromCol]));
+						}
+
+						if (!empty($filters[$toCol]))
+						{
+							$query->where($dispFilter['searchin'] . ' < ' . $db->quote($filters[$toCol]));
+						}
+					}
+					elseif (isset($dispFilter['type']))
 					{
 						if ($dispFilter['type'] == 'custom')
 						{
@@ -310,6 +322,8 @@ class TjreportsModelReports extends JModelList
 				}
 			}
 		}
+
+		return $query;
 	}
 
 	/**

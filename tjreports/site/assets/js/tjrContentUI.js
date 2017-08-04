@@ -50,7 +50,7 @@ jQuery.extend(tjrContentUI.report, {
 					tjrContentUI.report.getColNames();
 				}
 
-				var elements = jQuery(containerSel + ".field-calendar");
+				var elements = jQuery(containerSel + " .field-calendar");
 				for (i = 0; i < elements.length; i++) {
 					JoomlaCalendar.init(elements[i]);
 				}
@@ -60,6 +60,14 @@ jQuery.extend(tjrContentUI.report, {
 				}
 			}
 		);
+	},
+	resetSubmitTJRData : function(){
+		jQuery(':input','#topFilters')
+		 .not(':button, :submit, :reset, input:hidden')
+		 .val('')
+		 .removeAttr('checked')
+		 .removeAttr('selected');
+		tjrContentUI.report.submitTJRData();
 	},
 	validate: function() {
 		return true;

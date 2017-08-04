@@ -133,7 +133,18 @@ class ReportsViewBase extends JViewLegacy
 		$this->items      = $this->model->getItems();
 		$this->state      = $this->get('State');
 		$this->pagination = $this->get('pagination');
-		$this->tjrData    = $this->model->getReportData();
+
+		$this->headerLevel     = $this->model->headerLevel;
+		$this->columns         = $this->model->columns;
+		$this->showHideColumns = $this->model->showhideCols;
+		$this->sortable        = $this->model->sortableColumns;
+		$this->srButton        = $this->model->showSearchResetButton;
+
+		$this->colToshow       = $this->model->getState('colToshow');
+		$this->filterValues    = $this->model->getState('filters');
+
+		$this->userFilters     = $this->model->displayFilters();
+		$this->messages        = $this->model->getTJRMessages();
 
 		return true;
 	}

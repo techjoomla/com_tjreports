@@ -59,27 +59,50 @@ class TjreportsControllerReports extends JControllerAdmin
 		$model = JModelLegacy::getInstance($pluginName, 'TjreportsModel');
 
 		$model->loadLanguage($pluginName);
-		$data  = $model->getReportData();
-		$data['items']  = $model->getItems();
+		$items     = $model->getItems();
+		$columns   = $model->columns;
+		$colToshow = $model->getState('colToshow');
 
 		$csvData     = null;
 		$csvData_arr = $colTitleArray = array();
 
-		foreach($data['colToshow'] as $index=>$detail)
+		foreach ($colToshow as $index => $detail)
 		{
 			if (strpos($index, '::'))
 			{
+				$indexArray   = explode('::', $index);
+				$contentTitle = $indexArray[1];
+				$contentId    = $indexArray[0];
+
 				foreach ($detail as $subKey => $subDetail)
 				{
 					$keyDetails   = explode('::', $subKey);
-					$subTextTitle = 'PLG_TJREPORTS_' . strtoupper($pluginName . '_' . $keyDetails[2] . '_' . $keyDetails[3] . '_TITLE');
-					$colTitleArray[] 	  = JText::sprintf($subTextTitle, $keyDetails[1]) ;
+
+					if (!isset($columns[$subKey]['title']))
+					{
+						$subTextTitle = 'PLG_TJREPORTS_' . strtoupper($this->pluginName . '_' . $keyDetails[0] . '_' . $keyDetails[1] . '_TITLE');
+					}
+					else
+					{
+						$subTextTitle = $columns[$subKey]['title'];
+					}
+
+					$colTitleArray[] = $contentTitle . ' ' . JText::sprintf($subTextTitle, $contentTitle, $contentId);
 				}
 			}
 			else
 			{
 				$colKey = $detail;
-				$colTitle = 'PLG_TJREPORTS_' . strtoupper($pluginName . '_' . $colKey . '_TITLE');
+
+				if (!isset($columns[$colKey]['title']))
+				{
+					$colTitle = 'PLG_TJREPORTS_' . strtoupper($this->pluginName . '_' . $colKey . '_TITLE');
+				}
+				else
+				{
+					$colTitle = $columns[$colKey]['title'];
+				}
+
 				$colTitleArray[] = JText::_($colTitle);
 			}
 		}
@@ -97,15 +120,16 @@ class TjreportsControllerReports extends JControllerAdmin
 		header("Pragma: no-cache");
 		header("Expires: 0");
 
-		foreach((array) $data['items'] as $itemKey => $item)
+		// Loop through items
+		foreach ((array) $items as $itemKey => $item)
 		{
 			$itemCSV = array();
 
-			foreach ($data['colToshow'] as $arrayKey => $key)
+			foreach ($colToshow as $arrayKey => $key)
 			{
 				if (is_array($key))
 				{
-					foreach($key as $subkey => $subVal)
+					foreach ($key as $subkey => $subVal)
 					{
 						$final_text_value = $this->filterValue($item[$arrayKey][$subkey]);
 
@@ -258,13 +282,13 @@ class TjreportsControllerReports extends JControllerAdmin
 		}
 	}
 
-/**
-	* Function used to delete reports
-	*
-	* @return  boolean
-	*
-	* @since  1.0
-	*/
+	/**
+	 * Function used to delete reports
+	 *
+	 * @return  boolean
+	 *
+	 * @since  1.0
+	 */
 	public function deleteQuery()
 	{
 		$cid = JFactory::getApplication()->input->get('cid', '', 'array');
@@ -276,14 +300,14 @@ class TjreportsControllerReports extends JControllerAdmin
 	}
 
 	/**
-	* Function used to delete reports
-	*
-	* @param   ARRAY  $data   The data to filter
-	*
-	* @return  boolean
-	*
-	* @since  1.0
-	*/
+	 * Function used to delete reports
+	 *
+	 * @param   ARRAY  $data  The data to filter
+	 *
+	 * @return  boolean
+	 *
+	 * @since  1.0
+	 */
 	private function filterValue($data)
 	{
 		// Remove double Quotes from the data
@@ -304,4 +328,3 @@ class TjreportsControllerReports extends JControllerAdmin
 		return $finalValue;
 	}
 }
-

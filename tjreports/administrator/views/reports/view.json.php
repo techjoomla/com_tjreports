@@ -13,7 +13,7 @@
 // No direct access
 defined('_JEXEC') or die;
 
-require_once(__DIR__ . '/view.base.php');
+require_once __DIR__ . '/view.base.php';
 
 /**
  * View class for a list of Tjreports.

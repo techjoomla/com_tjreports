@@ -192,7 +192,7 @@ defined('_JEXEC') or die;
 													}
 													else
 													{
-														echo JText::_($colTitle);
+														echo '<div class="header_title">' . JText::_($colTitle) . '</div>';
 													}
 
 													echo '</th>';
@@ -220,7 +220,7 @@ defined('_JEXEC') or die;
 												}
 												else
 												{
-													echo JText::_($colTitle);
+													echo '<div class="header_title">' . JText::_($colTitle) . '</div>';
 												}
 
 												if (isset($filters[$colKey]))

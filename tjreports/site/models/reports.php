@@ -34,23 +34,26 @@ class TjreportsModelReports extends JModelList
 	// Add custom messages
 	public $messages = array();
 
-	// Add custom messages
+	// Columns array contain columns data
 	public $columns = array();
 
 	// Columns which are not possible to sort by SQl Order by
 	public $sortableWoQuery = array();
 
-	// Columns which are not possible to sort by SQl Order by
+	// Columns that a user can select to display
 	public $showhideCols = array();
 
-	// Columns which are not possible to sort by SQl Order by
+	// Columns which are sortable with or without query statement
 	public $sortableColumns = array();
 
-	// Columns which are not possible to sort by SQl Order by
+	// Columns which will be displayed by default
 	private $defaultColToShow = array();
 
-	// Columns which are not possible to sort by SQl Order by
+	// Whether to display Search & Reset button or not
 	public $showSearchResetButton = true;
+
+	// Used for to limit query
+	protected $canLimitQuery = false;
 
 	/**
 	 * Constructor.
@@ -68,7 +71,7 @@ class TjreportsModelReports extends JModelList
 	}
 
 	/**
-	 * Get table header columns name, Must be overriden by child class
+	 * Get table header columns name
 	 *
 	 * @return ARRAY Keys of data
 	 *
@@ -83,7 +86,7 @@ class TjreportsModelReports extends JModelList
 
 		foreach ($columns as $key => $column)
 		{
-			if ((isset($column['not_show_hide']) && $column['not_show_hide'])
+			if ((isset($column['not_show_hide']) && $column['not_show_hide'] === true)
 				|| (strpos($key, '::') !== false && !isset($column['not_show_hide'])))
 			{
 				unset($this->showhideCols[$key]);
@@ -100,7 +103,8 @@ class TjreportsModelReports extends JModelList
 				array_push($this->sortableWoQuery, $key);
 			}
 
-			if (!isset($column['title']) || (strpos($key, '::') !== false))
+			if (!isset($column['title']) || (strpos($key, '::') !== false) ||
+				(isset($column['not_show_hide']) && $column['not_show_hide'] === false))
 			{
 				unset($this->defaultColToShow[$key]);
 			}
@@ -117,6 +121,24 @@ class TjreportsModelReports extends JModelList
 	public function getTJRMessages()
 	{
 		return $this->messages;
+	}
+
+	/**
+	 * Get variables can be set in db for report queries
+	 *
+	 * @return  ARRAY fields array
+	 *
+	 * @since   2.0
+	 * */
+	public function getValidRequestVars()
+	{
+		$validVars = array(
+			'colToshow' => 'ARRAY', 'filters' => 'ARRAY',
+			'limit' => 'INT', 'limitstart' => 'INT',
+			'filter_order' => 'STRING', 'filter_order_Dir' => 'STRING'
+		);
+
+		return $validVars;
 	}
 
 	/**
@@ -174,7 +196,14 @@ class TjreportsModelReports extends JModelList
 	 */
 	protected function _getList($query, $limitstart = 0, $limit = 0)
 	{
-		$this->getDbo()->setQuery($query, $limitstart, $limit);
+		if ($this->canLimitQuery)
+		{
+			$this->getDbo()->setQuery($query, $limitstart, $limit);
+		}
+		else
+		{
+			$this->getDbo()->setQuery($query, 0, 0);
+		}
 
 		return $this->getDbo()->loadAssocList();
 	}
@@ -269,7 +298,14 @@ class TjreportsModelReports extends JModelList
 		{
 			if (!is_array($columnName) && !empty($this->columns[$columnName]['table_column']))
 			{
-				$query->select($db->quoteName($this->columns[$columnName]['table_column'], $columnName));
+				if (isset($this->columns[$columnName]['not_quote_column']))
+				{
+					$query->select($this->columns[$columnName]['table_column']);
+				}
+				else
+				{
+					$query->select($db->quoteName($this->columns[$columnName]['table_column'], $columnName));
+				}
 			}
 		}
 
@@ -323,6 +359,16 @@ class TjreportsModelReports extends JModelList
 			}
 		}
 
+		// Add the list ordering clause.
+		$sortKey  = $this->getState('list.ordering', $this->default_order);
+		$orderDir = $this->getState('list.direction', $this->default_order_dir);
+
+		if (!empty($sortKey) && !in_array($sortKey, $this->sortableWoQuery))
+		{
+			$query->order($sortKey . ' ' . $orderDir);
+			$this->canLimitQuery = true;
+		}
+
 		return $query;
 	}
 
@@ -342,7 +388,7 @@ class TjreportsModelReports extends JModelList
 		// Add the list ordering clause.
 		$sortKey    = $this->getState('list.ordering', $this->default_order);
 		$limit      = $this->getState('list.limit', 0);
-		$limitstart = $this->getState('list.limitstart', 0);
+		$limitstart = $this->getState('list.start', 0);
 
 		// Apply sorting and Limit if sorted column is not table
 		if (!empty($items) && !empty($sortKey)
@@ -354,7 +400,7 @@ class TjreportsModelReports extends JModelList
 			$limitstart = isset($limitstart) ? (int) $limitstart : 0;
 			$limitstart = (($limitstart * $limit) < $totalRows) ? $limitstart : 0;
 
-			$this->setState('list.limitstart', $limitstart);
+			$this->setState('list.start', $limitstart);
 
 			$items = array_splice($items, $limitstart, $limit);
 		}
@@ -578,31 +624,20 @@ class TjreportsModelReports extends JModelList
 	}
 
 	/**
-	 * Function to get all usergroups
+	 * Displays a list of user groups.
 	 *
-	 * @return  objectList
+	 * @param   boolean  $includeSuperAdmin  true to include super admin groups, false to exclude them
 	 *
-	 * @since 1.0.0
+	 * @return  array  An array containing a list of user groups.
+	 *
+	 * @since   2.5
 	 */
-	public function getUserGroupFilter()
+	public function getUserGroupFilter($includeSuperAdmin = true)
 	{
-		// Initialize variables.
-		$db    = JFactory::getDbo();
-		$query = $db->getQuery(true);
+		$groups  = JHtml::_('user.groups', $includeSuperAdmin);
+		array_unshift($groups, JHtml::_('select.option', '', JText::_('JGLOBAL_FILTER_GROUPS_LABEL')));
 
-		$query->select('r.title as text, r.id as value');
-		$query->from('#__usergroups as r');
-		$db->setQuery($query);
-		$reports = $db->loadObjectList();
-
-		$options[] = JHTML::_('select.option', '', JText::_('COM_TJREPORTS_FILTER_SELECT_USERGROUP'));
-
-		foreach ($reports as $repo)
-		{
-			$options[] = JHtml::_('select.option', $repo->value, $repo->text);
-		}
-
-		return $options;
+		return $groups;
 	}
 
 	/**

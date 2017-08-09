@@ -61,15 +61,15 @@ class ReportsViewBase extends JViewLegacy
 		$this->client     = $input->get('client', '', 'STRING');
 		$this->queryId    = $input->get('queryId', 0, 'INT');
 
-		$this->model = $this->getModel($this->pluginName);
-		$this->setModel($this->model, true);
-
-		if (!$canDo->get('view.reports'))
+		if (!$canDo->get('view.reports') || !$this->pluginName)
 		{
 			JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
 
 			return false;
 		}
+
+		$this->model = $this->getModel($this->pluginName);
+		$this->setModel($this->model, true);
 
 		$this->reportId = $input->get('reportId', 0, 'INT');
 
@@ -84,19 +84,17 @@ class ReportsViewBase extends JViewLegacy
 		if ($type == 'html' && $this->queryId)
 		{
 			$queryData  = $this->model->getQueryData($this->queryId);
-			$param 		= json_decode($queryData->param, true);
 
-			if (isset($param['data']))
+			if (!empty($queryData->param))
 			{
-				$data = (array) $param['data'];
+				$param 		= json_decode($queryData->param, true);
+				$postFilters = $this->model->getValidRequestVars();
 
-				$postFilters = array('colToshow', 'filters', 'limit', 'list_limit');
-
-				foreach ($postFilters as $postFilter)
+				foreach ($postFilters as $postFilter => $filterType)
 				{
-					if (isset($data[$postFilter]))
+					if (isset($param[$postFilter]))
 					{
-						$input->set($postFilter, $data[$postFilter]);
+						$input->set($postFilter, $param[$postFilter]);
 					}
 				}
 			}

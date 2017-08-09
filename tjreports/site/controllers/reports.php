@@ -59,6 +59,7 @@ class TjreportsControllerReports extends JControllerAdmin
 		$model = JModelLegacy::getInstance($pluginName, 'TjreportsModel');
 
 		$model->loadLanguage($pluginName);
+		$input->set('limit', 0);
 		$items     = $model->getItems();
 		$columns   = $model->columns;
 		$colToshow = $model->getState('colToshow');
@@ -167,18 +168,6 @@ class TjreportsControllerReports extends JControllerAdmin
 		$post			= $input->post->getArray();
 		$current_user 	= JFactory::getUser()->id;
 
-		// Take only first element as url might have more than on client
-		$currentTime = new JDate('now');
-
-		$res = array();
-		$res['data']          		= $post;
-		$res['privacy']        		= '';
-		$res['created_on']     		= $currentTime;
-		$res['last_accessed_on']	= $currentTime;
-		$res['hash']          		= '';
-
-		$params = json_encode($res);
-
 		$queryName 	= $db->escape($post['queryName']);
 		$alias 		= trim($queryName);
 
@@ -194,16 +183,21 @@ class TjreportsControllerReports extends JControllerAdmin
 			}
 		}
 
-		$insert_object                = new stdClass;
-		$insert_object->id            = '';
-		$insert_object->title         = $queryName;
-		$insert_object->alias         = $alias;
-		$insert_object->plugin        = $db->escape($post['reportToBuild']);
-		$insert_object->client        = $db->escape($post['client']);
-		$insert_object->parent        = (int) $db->escape($post['reportId']);
-		$insert_object->default       = 0;
-		$insert_object->userid        = $current_user;
-		$insert_object->param         = $params;
+		$model 			= $this->getModel('reports');
+		$validVars 		= $model->getValidRequestVars();
+		$reportData		= $input->post->getArray($validVars);
+		$reportParams	= json_encode($reportData);
+
+		$insert_object          = new stdClass;
+		$insert_object->id      = '';
+		$insert_object->title   = $queryName;
+		$insert_object->alias   = $alias;
+		$insert_object->plugin  = $db->escape($post['reportToBuild']);
+		$insert_object->client  = $db->escape($post['client']);
+		$insert_object->parent  = (int) $db->escape($post['reportId']);
+		$insert_object->default = 0;
+		$insert_object->userid  = $current_user;
+		$insert_object->param   = $reportParams;
 
 		$result = array('success' => true);
 

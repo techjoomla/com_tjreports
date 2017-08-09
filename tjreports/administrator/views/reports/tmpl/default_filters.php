@@ -10,7 +10,6 @@
 // no direct access
 defined('_JEXEC') or die;
 
-
 $displayFilters = $this->filters;
 $filters = $this->filterValues;
 
@@ -23,8 +22,8 @@ foreach($displayFilters as $searchKey => $filter)
 	if($searchType == 'text')
 	{
 		$filterHtml = '<input type="text" name="filters[' . $searchKey . ']" class="input input-mini filter-input" ' .
-					  'onkeydown="tjrContentUI.report.submitOnEnter(event);" ' .
-					  'value="' . $searchValue . '" />';
+					  'onkeydown="tjrContentUI.report.submitOnEnter(event);"  onblur="tjrContentUI.report.submitTJRData();"' .
+					  'value="' . htmlspecialchars($searchValue) . '" />';
 	}
 	elseif($searchType == 'select' && isset($filter['select_options']))
 	{
@@ -63,7 +62,7 @@ foreach($displayFilters as $searchKey => $filter)
 			}
 
 			$filterHtml  .= '<div class="filter-search controls">'
-				. JHtml::_('calendar', $searchValue, 'filters['. $fieldKey . ']', 'filters_' . $fieldKey , $dateFormat, $fieldAttr)
+				. JHtml::_('calendar', htmlspecialchars($searchValue), 'filters['. $fieldKey . ']', 'filters_' . $fieldKey , $dateFormat, $fieldAttr)
 				. '</div>'
 			;
 		}

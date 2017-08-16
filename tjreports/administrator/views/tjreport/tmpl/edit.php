@@ -10,38 +10,55 @@
 defined('_JEXEC') or die;
 JHtml::_('behavior.formvalidator');
 $input = JFactory::getApplication()->input;
+
+$showParent = true;
+if($this->form->getValue('id'))
+{
+	if(!$this->form->getValue('parent'))
+	{
+		$showParent = false;
+	}
+
+	$this->form->setFieldAttribute('client','readonly','readonly');
+	$this->form->setFieldAttribute('parent','readonly','readonly');
+}
+else
+{
+	$this->form->setFieldAttribute('parent','required','required');
+}
+
+JFactory::getDocument()->addScriptDeclaration('
+	Joomla.submitbutton = function(task)
+	{
+		if (task == "tjreport.cancel" || document.formvalidator.isValid(document.getElementById("adminForm")))
+		{
+			if (task != "tjreport.cancel" && jQuery("#jform_param").val())
+			{
+				try{
+					JSON.parse(jQuery("#jform_param").val(), null, 4)
+				}catch(e){
+					alert(Joomla.JText._("COM_TJREPORTS_INVALID_JSON_VALUE"));
+					return false;
+				}
+			}
+			if (!jQuery("#jform_id").val())
+			{
+				jQuery("#jform_parent").val(0);
+			}
+			jQuery("#permissions-sliders select").attr("disabled", "disabled");
+			Joomla.submitform(task, document.getElementById("adminForm"));
+		}
+	};
+');
 ?>
-<script>
-	jQuery('#myTabs a').click(function (e) {
-		e.preventDefault()
-	jQuery(this).tab('show')
-})
-
-
-jQuery('#myTabs a[href="#profile"]').tab('show') // Select tab by name
-jQuery('#myTabs a:first').tab('show') // Select first tab
-jQuery('#myTabs a:last').tab('show') // Select last tab
-jQuery('#myTabs li:eq(2) a').tab('show') // Select third tab (0-indexed)
-
-</script>
-
 <form action="<?php echo JRoute::_('index.php?option=com_tjreports&layout=edit&id=' . (int) $this->item->id); ?>"
-    method="post" name="adminForm" id="adminForm" class="form-validate">
+    method="post" name="adminForm" id="adminForm" class="form-validate tjreportForm">
 
+	<div class="form-horizontal" id="tjreportContainer">
+		<fieldset class="adminform">
+			<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'general')); ?>
 
-<div class="form-horizontal">
-
-	<fieldset class="adminform">
-
-		<!-- Nav tabs -->
-		<ul class="nav nav-tabs" role="tablist">
-		<li role="presentation" class="active"><a href="#details" aria-controls="details" role="tab" data-toggle="tab">Details</a> </li>
-		<li role="presentation"><a href="#permissions" aria-controls="permissions" role="tab" data-toggle="tab">Permissions</a></li>
-		</ul>
-
-		<!-- Tab panes -->
-		<div class="tab-content">
-			<div role="tabpanel" class="tab-pane active" id="details">
+			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'general', JText::_('COM_TJREPORTS_FEILDSET_DETAILS')); ?>
 				<div class="control-group" style="display:none">
 					<div class="control-label"><?php echo $this->form->getLabel('id'); ?></div>
 					<div class="controls"><?php echo $this->form->getInput('id'); ?></div>
@@ -66,15 +83,24 @@ jQuery('#myTabs li:eq(2) a').tab('show') // Select third tab (0-indexed)
 					<div class="control-label"><?php echo $this->form->getLabel('client'); ?></div>
 					<div class="controls"><?php echo $this->form->getInput('client'); ?></div>
 				</div>
-
+				<?php if($showParent) {?>
 				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('pluginlist'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('pluginlist'); ?></div>
+					<div class="control-label"><?php echo $this->form->getLabel('parent'); ?></div>
+					<div class="controls"><?php echo $this->form->getInput('parent'); ?></div>
 				</div>
-
+				<?php } ?>
 				<div class="control-group">
 					<div class="control-label"><?php echo $this->form->getLabel('param'); ?></div>
 					<div class="controls"><?php echo $this->form->getInput('param'); ?></div>
+				</div>
+
+				<div class="control-group <?php echo $this->form->getValue('id') ? '' :'hide'?>">
+					<div class="control-label">&nbsp;</div>
+					<div class="controls">
+						<button onclick="tjrContentUI.tjreport.getParams(true); return false;" class="btn">
+							<?php echo JText::_('COM_TJREPORTS_LOAD_DEFAULT_PARAMS') ?>
+						</button>
+					</div>
 				</div>
 
 				<div class="control-group">
@@ -83,102 +109,22 @@ jQuery('#myTabs li:eq(2) a').tab('show') // Select third tab (0-indexed)
 				</div>
 
 				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('datadenyset'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('datadenyset'); ?></div>
+					<div class="control-label"><?php echo $this->form->getLabel('plugin'); ?></div>
+					<div class="controls"><?php echo $this->form->getInput('plugin'); ?></div>
 				</div>
-			</div>
+			<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-			<div role="tabpanel" class="tab-pane" id="permissions">
-					<div class="control-group">
-						<div class="controls"><?php echo $this->form->getInput('rules'); ?></div>
-					</div>
-			</div>
-		</div>
+			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'rules', JText::_('COM_CONTENT_FIELDSET_RULES')); ?>
+				<div class="control-group">
+					<div class="controls"><?php echo $this->form->getInput('rules'); ?></div>
+				</div>
+			<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-	</fieldset>
+			<?php echo JHtml::_('bootstrap.endTabSet'); ?>
+		</fieldset>
 
-</div>
-
-    <input type="hidden" name="jform[parent]" value="" id="jform_parent" />
-    
+	</div>
     <input type="hidden" name="extension" value="<?php echo $input->get('extension') ?>" id="jform_parent" />
-
-    <input type="hidden" name="jform[plugin]" value="" id="jform_plugin" />
-
-    <input type="hidden" name="task" value="tjreport.edit" />
+    <input type="hidden" id="task" name="task" value="tjreport.edit" />
     <?php echo JHtml::_('form.token'); ?>
 </form>
-
-<script>
-
-jQuery( "#jform_client" ).change(function(e) {
-
-		var userid = jQuery('#jform_userid_id').val();
-		var client = jQuery('#jform_client').val();
-		var user = jQuery('#jform_userid').val();
-
-		if(user == "")
-		{
-			alert("Please select user");
-			jQuery("#jform_client option:first").attr('selected','selected');
-			e.preventDefault();
-		}
-
-		var path = window.location.pathname + "?option=com_tjreports&task=tjreport.getplugins";
-
-		jQuery("#jform_pluginlist option").remove();
-		jQuery("#jform_param").val('');
-
-		if(userid.length != 0 && client !="")
-		{
-			var data = 'user_id=' + userid+'&client=' + client;
-
-			jQuery.ajax({
-			url: path,
-			type: 'post',
-			data : data,
-			dataType: 'json',
-
-			success: function(resp)
-			{
-				// Append option to plugin dropdown list.
-				var list = jQuery("#jform_pluginlist");
-				list.append(new Option("<?php  echo JText::_('COM_TJREPORTS_FORM_DEFAULT_OPTION');  ?>"),0);
-					jQuery.each(resp, function(index, item) {
-					list.append(new Option(item.text, item.value));
-				});
-			}});
-		}
-});
-
-jQuery( "#jform_pluginlist" ).change(function(e) {
-
-		var plugin_id = jQuery('#jform_pluginlist').val();
-
-		var path = window.location.pathname + "?option=com_tjreports&task=tjreport.getparams";
-
-		if(plugin_id !="")
-		{
-			var data = 'plugin_id=' + plugin_id;
-
-			jQuery.ajax({
-			url: path,
-			type: 'post',
-			data : data,
-			dataType: 'json',
-
-			success: function(resp)
-			{
-				//	jQuery('#jform_plugin').val();
-				jQuery("#jform_param").val(resp.param.toString());
-
-				// Add plugin value to hidden plugin variable
-				jQuery("#jform_plugin").val(resp.plugin);
-				jQuery("#jform_parent").val(resp.id);
-
-			}});
-		}
-
-});
-
-</script>

@@ -36,8 +36,19 @@ class TjreportsControllerTjreport extends JControllerForm
 	 */
 	public function getplugins()
 	{
+		$app     = JFactory::getApplication();
+		$jinput  = $app->input;
+		$jform   = $jinput->post->get('jform', array(), 'ARRAY');
+		$client = $jform['client'];
+		$userid = $jform['userid'];
+		$id     = $jform['id'];
+
 		$model = $this->getModel('tjreport');
-		$result = $model->getplugins();
+		$reports = $model->getClientPlugins($client, $id, $userid);
+
+		echo json_encode($reports);
+
+		jexit();
 	}
 
 	/**
@@ -48,8 +59,27 @@ class TjreportsControllerTjreport extends JControllerForm
 
 	public function getparams()
 	{
-		$model = $this->getModel('tjreport');
-		$result = $model->getparams();
+		$app     = JFactory::getApplication();
+		$jinput  = $app->input;
+		$jform   = $jinput->post->get('jform', array(), 'ARRAY');
+		$plugin = $parent = null;
+		$default = $jinput->get('default', 0, 'INT');
+
+		if ($default && !empty($jform['plugin']))
+		{
+			$plugin = $jform['plugin'];
+		}
+		else
+		{
+			$parent  = isset($jform['parent']) ? $jform['parent'] : $jform['id'];
+		}
+
+		$model   = $this->getModel('tjreport');
+		$report  = $model->getReportPluginData($parent, $plugin);
+
+		echo json_encode($report);
+
+		jexit();
 	}
 
 /**

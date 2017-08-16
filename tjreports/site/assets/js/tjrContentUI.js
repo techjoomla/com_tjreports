@@ -304,7 +304,65 @@ jQuery.extend(tjrContentUI.utility, {
 		}
 	},
 });
-
+tjrContentUI.tjreport  = tjrContentUI.tjreport ? tjrContentUI.tjreport : {};
+jQuery.extend(tjrContentUI.tjreport, {
+	getPlugins:function(){
+		var url     = tjrContentUI.base_url + 'index.php?option=com_tjreports';
+		var $form   = jQuery('#adminForm.tjreportForm');
+		jQuery('#task',$form).val('tjreport.getplugins');
+		var promise = tjrContentService.postData(url, $form.serialize());
+		jQuery('#task',$form).val();
+		jQuery('#jform_parent',$form).find('option').not(':first').remove();
+		promise.fail(
+			function(response) {
+				console.log('Something went wrong.');
+				if (response.status == 403)
+				{
+					alert(Joomla.JText._('JERROR_ALERTNOAUTHOR'));
+				}
+			}
+		).done(
+			function(response) {
+				// Append option to plugin dropdown list.
+				var list = jQuery("#jform_parent");
+				jQuery.each(response, function(index, item) {
+					list.append(new Option(item.text, item.value));
+				});
+				tjrContentUI.tjreport.getParams();
+			}
+		);
+	},
+	getParams:function(defaultParam){
+		var url  = tjrContentUI.base_url + 'index.php?option=com_tjreports';
+		if(defaultParam)
+		{
+			url = url + '&default=1';
+		}
+		var $form = jQuery('#adminForm.tjreportForm');
+		jQuery('#task',$form).val('tjreport.getparams');
+		var promise = tjrContentService.postData(url, $form.serialize());
+		jQuery('#task',$form).val();
+		jQuery("#jform_param",$form).val('');
+		jQuery("#jform_plugin",$form).val('');
+		promise.fail(
+			function(response) {
+				console.log('Something went wrong.');
+				if (response.status == 403)
+				{
+					alert(Joomla.JText._('JERROR_ALERTNOAUTHOR'));
+				}
+			}
+		).done(
+			function(response) {
+				if (response)
+				{
+					jQuery("#jform_param",$form).val(response.param.toString());
+					jQuery("#jform_plugin",$form).val(response.plugin);
+				}
+			}
+		);
+	}
+});
 jQuery(document).click(function(e)
 {
 	if (!jQuery(e.target).closest('#ul-columns-name').length && e.target.id != 'show-hide-cols-btn')
@@ -312,3 +370,4 @@ jQuery(document).click(function(e)
 		jQuery(".ColVis_collection").hide();
 	}
 });
+

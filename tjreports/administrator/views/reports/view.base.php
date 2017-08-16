@@ -87,7 +87,7 @@ class ReportsViewBase extends JViewLegacy
 
 			if (!empty($queryData->param))
 			{
-				$param 		= json_decode($queryData->param, true);
+				$param       = json_decode($queryData->param, true);
 				$postFilters = $this->model->getValidRequestVars();
 
 				foreach ($postFilters as $postFilter => $filterType)

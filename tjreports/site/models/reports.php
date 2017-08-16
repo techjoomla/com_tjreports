@@ -37,17 +37,17 @@ class TjreportsModelReports extends JModelList
 	// Columns array contain columns data
 	public $columns = array();
 
-	// Columns which are not possible to sort by SQl Order by
-	public $sortableWoQuery = array();
-
 	// Columns that a user can select to display
 	public $showhideCols = array();
+
+	// Columns which will be displayed by default
+	private $defaultColToShow = array();
 
 	// Columns which are sortable with or without query statement
 	public $sortableColumns = array();
 
-	// Columns which will be displayed by default
-	private $defaultColToShow = array();
+	// Columns which are not possible to sort by SQl Order by
+	public $sortableWoQuery = array();
 
 	// Whether to display Search & Reset button or not
 	public $showSearchResetButton = true;
@@ -81,7 +81,7 @@ class TjreportsModelReports extends JModelList
 	{
 		$columns      = $this->columns;
 		$columnsKeys  = array_keys($columns);
-		$this->defaultColToShow = $this->sortableColumns 	= $this->showhideCols = array_combine($columnsKeys, $columnsKeys);
+		$this->defaultColToShow = $this->sortableColumns = $this->showhideCols = array_combine($columnsKeys, $columnsKeys);
 		$this->sortableWoQuery = array();
 
 		foreach ($columns as $key => $column)
@@ -98,17 +98,22 @@ class TjreportsModelReports extends JModelList
 				unset($this->sortableColumns[$key]);
 			}
 
-			if (!isset($column['table_column']) || !in_array($key, $this->sortableColumns))
+			if (!isset($column['disable_sorting']) && (!isset($column['table_column']) || !in_array($key, $this->sortableColumns)))
 			{
 				array_push($this->sortableWoQuery, $key);
 			}
 
-			if (!isset($column['title']) || (strpos($key, '::') !== false) ||
-				(isset($column['not_show_hide']) && $column['not_show_hide'] === false))
+			if (!isset($column['title']) || (strpos($key, '::') !== false)
+				|| (isset($column['not_show_hide']) && $column['not_show_hide'] === false))
 			{
 				unset($this->defaultColToShow[$key]);
 			}
 		}
+
+		$this->showhideCols     = array_values($this->showhideCols);
+		$this->sortableColumns  = array_values($this->sortableColumns);
+		$this->sortableWoQuery  = array_values($this->sortableWoQuery);
+		$this->defaultColToShow = array_values($this->defaultColToShow);
 	}
 
 	/**
@@ -231,6 +236,9 @@ class TjreportsModelReports extends JModelList
 		$input = JFactory::getApplication()->input;
 
 		$colToshow = $input->get('colToshow', array());
+
+		$reportId = $input->get('reportId', 0, 'uint');
+		$this->filterReportColumns($reportId, $colToshow);
 
 		if (empty($colToshow))
 		{
@@ -704,5 +712,114 @@ class TjreportsModelReports extends JModelList
 
 		return $lang->load($extension, $basePath, null, false, true)
 			|| $lang->load($extension, JPATH_PLUGINS . '/' . $type . '/' . $name, null, false, true);
+	}
+
+	/**
+	 * Method to Process parent Report columns
+	 *
+	 * @param   string  $queryId        Query Id
+	 * @param   ARRAY   &$selColToshow  Columns to show
+	 *
+	 * @return  Void
+	 *
+	 * @since   3.0
+	 */
+	private function filterReportColumns($queryId, &$selColToshow)
+	{
+		if (!$queryId)
+		{
+			return;
+		}
+
+		$query = $this->_db->getQuery(true);
+		$showhideCols = $paramColToshow = array();
+
+		// Process plugin params
+		$parentId = $this->processSavedReportColumns($queryId, $showhideCols, $paramColToshow, $selColToshow);
+
+		// Process if user has saved query is for a plugin
+		if (!empty($parentId))
+		{
+			$this->processSavedReportColumns($parentId, $showhideCols, $paramColToshow, $selColToshow);
+		}
+
+		// If plugin has save any column assign that otherwise default plugin param will be applied
+		if ($paramColToshow)
+		{
+			// If show hide column changes, check if there is any must to hide column
+			if ($selColToshow)
+			{
+				$selColToshow = array_intersect($selColToshow, $paramColToshow);
+				$selColToshow = $selColToshow ? $selColToshow : $paramColToshow;
+			}
+			else
+			{
+				$selColToshow = $paramColToshow;
+			}
+		}
+
+		$this->showhideCols = $showhideCols;
+	}
+
+	/**
+	 * Method to Process parent Report columns
+	 *
+	 * @param   INT     $queryId     Query Id
+	 * @param   ARRAY   &$showhideCols  Show Hide columns
+	 * @param   ARRAY   &$colToshow     Columns to show
+	 * @param   ARRAY   &$colToshow     Selected Cols
+	 *
+	 * @return  Void
+	 *
+	 * @since   3.0
+	 */
+	private function processSavedReportColumns($queryId, &$showhideCols, &$colToshow, &$selColToshow)
+	{
+		$query = $this->_db->getQuery(true);
+		$query->select(array('param', 'parent'))
+				->from('#__tj_reports')
+				->where('id=' . (int) $queryId);
+		$this->_db->setQuery($query);
+		$queryData    = $this->_db->loadObject();
+		$i = $parent = 0;
+
+		if (!empty($queryData->param))
+		{
+			$param    = json_decode($queryData->param, true);
+
+			if (isset($param['showHideColumns']))
+			{
+				if (empty($showhideCols))
+				{
+					$showhideCols = (array) $param['showHideColumns'];
+				}
+				else
+				{
+					$showhideCols = array_intersect($showhideCols, (array) $param['showHideColumns']);
+				}
+			}
+
+			if (isset($param['colToshow']))
+			{
+				foreach ((array) $param['colToshow'] as $cols => $show)
+				{
+					if ($show !== false || in_array($cols, $selColToshow))
+					{
+						$colToshow[$cols] = $cols;
+					}
+
+					if (!empty($param['showHideColumns']) && !in_array($cols, $param['showHideColumns']) && !empty($selColToshow))
+					{
+						array_splice( $selColToshow, $i, 0, $cols );
+						$i++;
+						$colToshow[$cols] = $cols;
+					}
+				}
+			}
+
+			$parent = $queryData->parent;
+		}
+
+		return $parent;
 	}
 }

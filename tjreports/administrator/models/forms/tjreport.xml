@@ -83,18 +83,12 @@
 			<option value="0">COM_TJREPORTS_NO</option>
 		</field>
 	</fieldset>
-
-	<fieldset name="accesscontrol">
-		<field
-			name="rules"
-			type="rules"
-			label="COM_TJREPORTS_FORM_LBL_REPORT_PERMISSIONS"
-			translate_label="false"
-			filter="rules"
-			validate="rules"
-			class="inputbox"
-			component="com_tjreports"
-			section="tjreport"
-		/>
+	<fieldset name="permissions" id="permissions">
+		<field name="asset_id" type="text" filter="unset" />
+		<field name="rules" type="rules"
+		label="JFIELD_RULES_LABEL" translate_label="false"
+		filter="rules" 	validate="rules"
+		class="inputbox" component="com_tjreports"
+		section="tjreport" />
 	</fieldset>
 </form>

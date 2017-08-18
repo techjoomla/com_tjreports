@@ -238,6 +238,8 @@ class TjreportsModelReports extends JModelList
 		$colToshow = $input->get('colToshow', array());
 
 		$reportId = $input->get('reportId', 0, 'uint');
+		$this->setState('reportId', $reportId);
+
 		$this->filterReportColumns($reportId, $colToshow);
 
 		if (empty($colToshow))
@@ -758,16 +760,19 @@ class TjreportsModelReports extends JModelList
 			}
 		}
 
-		$this->showhideCols = $showhideCols;
+		if (!empty($showhideCols))
+		{
+			$this->showhideCols = $showhideCols;
+		}
 	}
 
 	/**
 	 * Method to Process parent Report columns
 	 *
-	 * @param   INT     $queryId     Query Id
-	 * @param   ARRAY   &$showhideCols  Show Hide columns
-	 * @param   ARRAY   &$colToshow     Columns to show
-	 * @param   ARRAY   &$colToshow     Selected Cols
+	 * @param   INT    $queryId        Query Id
+	 * @param   ARRAY  &$showhideCols  Show Hide columns
+	 * @param   ARRAY  &$colToshow     Columns to show
+	 * @param   ARRAY  &$selColToshow  Selected Cols
 	 *
 	 * @return  Void
 	 *
@@ -810,7 +815,7 @@ class TjreportsModelReports extends JModelList
 
 					if (!empty($param['showHideColumns']) && !in_array($cols, $param['showHideColumns']) && !empty($selColToshow))
 					{
-						array_splice( $selColToshow, $i, 0, $cols );
+						array_splice($selColToshow, $i, 0, $cols);
 						$i++;
 						$colToshow[$cols] = $cols;
 					}

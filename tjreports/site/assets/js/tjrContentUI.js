@@ -13,7 +13,7 @@ tjrContentUI.report    = tjrContentUI.report ? tjrContentUI.report : {};
 jQuery.extend(tjrContentUI.report, {
 	$form: null,
 	url: tjrContentUI.base_url + 'index.php?option=com_tjreports&view=reports&format=json',
-	querySaveUrl: tjrContentUI.base_url + 'index.php?option=com_tjreports',
+	querySaveUrl: tjrContentUI.base_url + 'index.php?option=com_tjreports&format=json',
 	submitTJRData: function(task) {
 		tjrContentUI.utility.loadingLayer('show');
 		this.$form = jQuery('#adminForm');
@@ -114,15 +114,13 @@ jQuery.extend(tjrContentUI.report, {
 					function(response) {
 						// console.log(response, ' success_response');
 						tjrContentUI.utility.loadingLayer('hide');
-
-						if (response['success'])
+						if (response.success)
 						{
 							window.location.reload();
 						}
 						else
 						{
-							alert(response['error']);
-							console.log('Something went wrong during query save.');
+							console.log('Something went wrong.', response.message, response.messages)
 						}
 					}
 				);
@@ -135,7 +133,6 @@ jQuery.extend(tjrContentUI.report, {
 		var params = {'reportToBuild':'reportToBuild','client':'client','reportId':'reportId','queryId':'queryId'};
 
 			jQuery.each(params, function(id,val){
-				console.log(id,val);
 				var value = jQuery('#' + id).val();
 					if (value)
 					{
@@ -307,7 +304,7 @@ jQuery.extend(tjrContentUI.utility, {
 tjrContentUI.tjreport  = tjrContentUI.tjreport ? tjrContentUI.tjreport : {};
 jQuery.extend(tjrContentUI.tjreport, {
 	getPlugins:function(){
-		var url     = tjrContentUI.base_url + 'index.php?option=com_tjreports';
+		var url     = tjrContentUI.base_url + 'index.php?option=com_tjreports&format=json';
 		var $form   = jQuery('#adminForm.tjreportForm');
 		jQuery('#task',$form).val('tjreport.getplugins');
 		var promise = tjrContentService.postData(url, $form.serialize());
@@ -323,17 +320,24 @@ jQuery.extend(tjrContentUI.tjreport, {
 			}
 		).done(
 			function(response) {
-				// Append option to plugin dropdown list.
-				var list = jQuery("#jform_parent");
-				jQuery.each(response, function(index, item) {
-					list.append(new Option(item.text, item.value));
-				});
-				tjrContentUI.tjreport.getParams();
+				if (response.success)
+				{
+					// Append option to plugin dropdown list.
+					var list = jQuery("#jform_parent");
+					jQuery.each(response.data, function(index, item) {
+						list.append(new Option(item.text, item.value));
+					});
+					tjrContentUI.tjreport.getParams();
+				}
+				else
+				{
+					console.log('Something went wrong.', response.message, response.messages)
+				}
 			}
 		);
 	},
 	getParams:function(defaultParam){
-		var url  = tjrContentUI.base_url + 'index.php?option=com_tjreports';
+		var url  = tjrContentUI.base_url + 'index.php?option=com_tjreports&format=json';
 		if(defaultParam)
 		{
 			url = url + '&default=1';
@@ -354,10 +358,14 @@ jQuery.extend(tjrContentUI.tjreport, {
 			}
 		).done(
 			function(response) {
-				if (response)
+				if (response.success)
 				{
-					jQuery("#jform_param",$form).val(response.param.toString());
-					jQuery("#jform_plugin",$form).val(response.plugin);
+					jQuery("#jform_param",$form).val(response.data.param.toString());
+					jQuery("#jform_plugin",$form).val(response.data.plugin);
+				}
+				else
+				{
+					console.log('Something went wrong.', response.message, response.messages)
 				}
 			}
 		);

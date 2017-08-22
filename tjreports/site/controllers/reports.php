@@ -155,65 +155,6 @@ class TjreportsControllerReports extends JControllerAdmin
 	}
 
 	/**
-	 * Save a query for report engine
-	 *
-	 * @return true
-	 *
-	 * @since 1.0.0
-	 */
-	public function saveQuery()
-	{
-		$db        		= JFactory::getDBO();
-		$input 			= JFactory::getApplication()->input;
-		$post			= $input->post->getArray();
-		$current_user 	= JFactory::getUser()->id;
-
-		$queryName 	= $db->escape($post['queryName']);
-		$alias 		= trim($queryName);
-
-		if ($alias)
-		{
-			if (JFactory::getConfig()->get('unicodeslugs') == 1)
-			{
-				$alias = JFilterOutput::stringURLUnicodeSlug($alias);
-			}
-			else
-			{
-				$alias = JFilterOutput::stringURLSafe($alias);
-			}
-		}
-
-		$model 			= $this->getModel('reports');
-		$validVars 		= $model->getValidRequestVars();
-		$reportData		= $input->post->getArray($validVars);
-		$reportParams	= json_encode($reportData);
-
-		$insert_object          = new stdClass;
-		$insert_object->id      = '';
-		$insert_object->title   = $queryName;
-		$insert_object->alias   = $alias;
-		$insert_object->plugin  = $db->escape($post['reportToBuild']);
-		$insert_object->client  = $db->escape($post['client']);
-		$insert_object->parent  = (int) $db->escape($post['reportId']);
-		$insert_object->default = 0;
-		$insert_object->userid  = $current_user;
-		$insert_object->param   = $reportParams;
-
-		$result = array('success' => true);
-
-		if (!$db->insertObject('#__tj_reports', $insert_object, 'id'))
-		{
-			$result['error'] = $db->stderr();
-			$result['success'] = false;
-
-			return false;
-		}
-
-		echo json_encode($result);
-		jexit();
-	}
-
-	/**
 	 * Function used to pdf export
 	 *
 	 * @return  html
@@ -242,53 +183,6 @@ class TjreportsControllerReports extends JControllerAdmin
 			return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
 
-		jexit();
-	}
-
-	/**
-	 * Function used to get all reports
-	 *
-	 * @return  json
-	 *
-	 * @since  1.0
-	 */
-	public function getreport()
-	{
-		$input = JFactory::getApplication()->input;
-
-		$report_id = $input->get('reportToLoad', '', 'INT');
-
-		if (!empty($report_id))
-		{
-			$db = JFactory::getDbo();
-			$query = $db->getQuery(true);
-			$query->select('*');
-			$query->from('#__tj_reports as r');
-			$query->where('r.id =' . $report_id);
-
-			$db->setQuery($query);
-			$reports = $db->loadObject();
-
-			echo json_encode($reports);
-
-			jexit();
-		}
-	}
-
-	/**
-	 * Function used to delete reports
-	 *
-	 * @return  boolean
-	 *
-	 * @since  1.0
-	 */
-	public function deleteQuery()
-	{
-		$cid = JFactory::getApplication()->input->get('cid', '', 'array');
-		$model = JModelLegacy::getInstance('Report', 'TjreportsModel');
-
-		$result = $model->delete($cid);
-		echo new JResponseJson($result);
 		jexit();
 	}
 

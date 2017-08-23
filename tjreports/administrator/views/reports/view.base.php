@@ -14,7 +14,7 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
-JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_ADMINISTRATOR);
+JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_SITE);
 JLoader::import('components.com_tjreports.models.tjreports', JPATH_SITE);
 JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_SITE);
 
@@ -53,7 +53,7 @@ class ReportsViewBase extends JViewLegacy
 	public function processData($type = 'html')
 	{
 		$app 		= JFactory::getApplication();
-		$canDo 		= TjreportsHelper::getActions();
+		$canDo 		= TjreportsHelpersTjreports::getActions();
 		$input 		= JFactory::getApplication()->input;
 		$user		= JFactory::getUser();
 
@@ -61,15 +61,15 @@ class ReportsViewBase extends JViewLegacy
 		$this->client     = $input->get('client', '', 'STRING');
 		$this->queryId    = $input->get('queryId', 0, 'INT');
 
-		if (!$canDo->get('core.view') || !$this->pluginName)
+		$this->model = $this->getModel($this->pluginName);
+		$this->setModel($this->model, true);
+
+		if (!$canDo->get('view.reports'))
 		{
-			JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR1'));
+			JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
 
 			return false;
 		}
-
-		$this->model = $this->getModel($this->pluginName);
-		$this->setModel($this->model, true);
 
 		$this->reportId = $input->get('reportId', 0, 'INT');
 
@@ -84,17 +84,19 @@ class ReportsViewBase extends JViewLegacy
 		if ($type == 'html' && $this->queryId)
 		{
 			$queryData  = $this->model->getQueryData($this->queryId);
+			$param 		= json_decode($queryData->param, true);
 
-			if (!empty($queryData->param))
+			if (isset($param['data']))
 			{
-				$param       = json_decode($queryData->param, true);
-				$postFilters = $this->model->getValidRequestVars();
+				$data = (array) $param['data'];
 
-				foreach ($postFilters as $postFilter => $filterType)
+				$postFilters = array('colToshow', 'filters', 'limit', 'list_limit');
+
+				foreach ($postFilters as $postFilter)
 				{
-					if (isset($param[$postFilter]))
+					if (isset($data[$postFilter]))
 					{
-						$input->set($postFilter, $param[$postFilter]);
+						$input->set($postFilter, $data[$postFilter]);
 					}
 				}
 			}

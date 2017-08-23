@@ -51,7 +51,6 @@ class TjreportsViewTjreport extends JViewLegacy
 		$extension = $input->get('extension', '', 'STRING');
 
 		$this->addToolBar();
-		$this->addDocumentHeaderData();
 
 		// Display the template
 		parent::display($tpl);
@@ -88,24 +87,5 @@ class TjreportsViewTjreport extends JViewLegacy
 			'tjreport.cancel',
 			$isNew ? 'JTOOLBAR_CANCEL' : 'JTOOLBAR_CLOSE'
 		);
-	}
-
-	/**
-	 * Add the script and Style.
-	 *
-	 * @return  Void
-	 *
-	 * @since	1.6
-	 */
-	protected function addDocumentHeaderData()
-	{
-		JText::script('COM_TJREPORTS_FORM_DEFAULT_OPTION');
-		JText::script('COM_TJREPORTS_INVALID_JSON_VALUE');
-		$document = JFactory::getDocument();
-		$document->addScript(JURI::root() . '/components/com_tjreports/assets/js/tjrContentService.js');
-		$document->addScript(JURI::root() . '/components/com_tjreports/assets/js/tjrContentUI.js');
-		$document->addStylesheet(JURI::root() . '/components/com_tjreports/assets/css/tjreports.css');
-		$document->addScriptDeclaration('tjrContentUI.base_url = "' . Juri::base() . '"');
-		$document->addScriptDeclaration('tjrContentUI.root_url = "' . Juri::root() . '"');
 	}
 }

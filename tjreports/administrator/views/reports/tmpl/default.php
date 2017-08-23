@@ -52,7 +52,7 @@ defined('_JEXEC') or die;
 				<div class="report-top-bar row-fluid">
 					<div class="span12 form-inline-header">
 						<?php
-						$class1 = !empty($this->savedQueries) ? 'span4' : 'span6';
+						$class1 = !empty($this->savedQueries) ? 'span2' : 'span4';
 						?>
 						<div class="show-hide-cols <?php echo $class1 ?>">
 							<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="tjrContentUI.report.getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>" />
@@ -89,14 +89,14 @@ defined('_JEXEC') or die;
 						</div>
 						<!--show-hide-cols-->
 
-						<div class="span2 pull-right">
+						<div class="span1 pull-right">
 							<div id="reportPagination" class="pull-right ">
 								<?php echo $this->pagination->getLimitBox();?>
 							</div>
 						</div>
 						<!--span1 pull-right-->
 
-						<div class="span4 pull-right">
+						<div class="span3 pull-right">
 							<input type="text" name="queryName" placeholder="Title for the Query" class="pull-right" style="display:none" id="queryName" />
 							<input type="button" class="btn btn-primary pull-right" id="saveQuery" onclick="tjrContentUI.report.saveThisQuery();" value="<?php echo JText::_('COM_TJREPORTS_SAVE_THIS_QUERY'); ?>" />
 						</div>
@@ -112,38 +112,36 @@ defined('_JEXEC') or die;
 						<?php
 						}
 						?>
+
+						<div class="js-stools-container-list hidden-phone hidden-tablet span4">
+							<div class="ordering-select hidden-phone" id="topFilters">
+								<?php
+									$displayFilters = $this->userFilters;
+									$totalHeadRows = count($displayFilters);
+									if ($totalHeadRows > 1)
+									{
+										$this->filters  = array_pop($displayFilters);
+										echo $this->loadTemplate('filters');
+
+										if ($this->srButton)
+										{
+											?>
+											<div class="btn-group filter-btn-block control-group">
+												<button class="btn hasTooltip" onclick="tjrContentUI.report.submitTJRData(); return false;" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT')?>"><i class="icon-search"></i>
+												</button>
+												<button class="btn hasTooltip" type="button" title="<?php echo JText::_('JSEARCH_FILTER_CLEAR')?>" onclick="tjrContentUI.report.resetSubmitTJRData(); return false;"><i class="icon-remove"></i>
+												</button>
+											</div>
+											<?php
+										}
+									}
+								?>
+							</div>
+						</div>
+						<!-- js-stools-container-list hidden-phone hidden-tablet span4 -->
+
 					</div>
 					<!-- span12 -->
-
-
-					<div class="js-stools-container-list hidden-phone hidden-tablet row-fluid">
-						<div class="ordering-select hidden-phone" id="topFilters">
-							<?php
-								$displayFilters = $this->userFilters;
-								$totalHeadRows = count($displayFilters);
-								if ($totalHeadRows > 1)
-								{
-									$this->filters  = array_pop($displayFilters);
-									echo $this->loadTemplate('filters');
-
-									if ($this->srButton)
-									{
-										?>
-										<div class="btn-group filter-btn-block control-group">
-											<?php if ($this->srButton !== -1) { ?>
-											<button class="btn hasTooltip" onclick="tjrContentUI.report.submitTJRData(); return false;" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT')?>"><i class="icon-search"></i>
-											</button>
-											<?php } ?>
-											<button class="btn hasTooltip" type="button" title="<?php echo JText::_('JSEARCH_FILTER_CLEAR')?>" onclick="tjrContentUI.report.resetSubmitTJRData(); return false;"><i class="icon-remove"></i>
-											</button>
-										</div>
-										<?php
-									}
-								}
-							?>
-						</div>
-					</div>
-					<!-- js-stools-container-list hidden-phone hidden-tablet span4 -->
 
 					<div id="report-containing-div" class="tjlms-tbl row-fluid">
 						<table id="report-table" class="table table-striped left_table ">
@@ -194,7 +192,7 @@ defined('_JEXEC') or die;
 													}
 													else
 													{
-														echo '<div class="header_title">' . JText::_($colTitle) . '</div>';
+														echo JText::_($colTitle);
 													}
 
 													echo '</th>';
@@ -222,7 +220,7 @@ defined('_JEXEC') or die;
 												}
 												else
 												{
-													echo '<div class="header_title">' . JText::_($colTitle) . '</div>';
+													echo JText::_($colTitle);
 												}
 
 												if (isset($filters[$colKey]))

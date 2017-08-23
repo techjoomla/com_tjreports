@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
  *
  * @since  1.6
  */
-class TjreportsHelper extends JHelperContent
+class TjreportsHelper
 {
 	/**
 	 * Configure the Linkbar.
@@ -68,17 +68,25 @@ class TjreportsHelper extends JHelperContent
 	/**
 	 * Gets a list of the actions that can be performed.
 	 *
-	 * @param   string   $component  The component name.
-	 * @param   string   $section    The access section name.
-	 * @param   integer  $id         The item ID.
+	 * @return    JObject
 	 *
-	 * @return  JObject
-	 *
-	 * @since   3.2
+	 * @since    1.6
 	 */
-	public static function getActions($component = 'com_tjreports', $section = '', $id = 0)
+	public static function getActions()
 	{
-		$result = parent::getActions($component, $section, $id);
+		$user   = JFactory::getUser();
+		$result = new JObject;
+
+		$assetName = 'com_tjreports';
+
+		$actions = array(
+			'core.admin', 'core.manage', 'core.create', 'core.edit', 'core.edit.own', 'core.edit.state', 'core.delete', 'core.viewall'
+		);
+
+		foreach ($actions as $action)
+		{
+			$result->set($action, $user->authorise($action, $assetName));
+		}
 
 		return $result;
 	}

@@ -59,7 +59,6 @@ class TjreportsControllerReports extends JControllerAdmin
 		$model = JModelLegacy::getInstance($pluginName, 'TjreportsModel');
 
 		$model->loadLanguage($pluginName);
-		$input->set('limit', 0);
 		$items     = $model->getItems();
 		$columns   = $model->columns;
 		$colToshow = $model->getState('colToshow');
@@ -155,6 +154,72 @@ class TjreportsControllerReports extends JControllerAdmin
 	}
 
 	/**
+	 * Save a query for report engine
+	 *
+	 * @return true
+	 *
+	 * @since 1.0.0
+	 */
+	public function saveQuery()
+	{
+		$db        		= JFactory::getDBO();
+		$input 			= JFactory::getApplication()->input;
+		$post			= $input->post->getArray();
+		$current_user 	= JFactory::getUser()->id;
+
+		// Take only first element as url might have more than on client
+		$currentTime = new JDate('now');
+
+		$res = array();
+		$res['data']          		= $post;
+		$res['privacy']        		= '';
+		$res['created_on']     		= $currentTime;
+		$res['last_accessed_on']	= $currentTime;
+		$res['hash']          		= '';
+
+		$params = json_encode($res);
+
+		$queryName 	= $db->escape($post['queryName']);
+		$alias 		= trim($queryName);
+
+		if ($alias)
+		{
+			if (JFactory::getConfig()->get('unicodeslugs') == 1)
+			{
+				$alias = JFilterOutput::stringURLUnicodeSlug($alias);
+			}
+			else
+			{
+				$alias = JFilterOutput::stringURLSafe($alias);
+			}
+		}
+
+		$insert_object                = new stdClass;
+		$insert_object->id            = '';
+		$insert_object->title         = $queryName;
+		$insert_object->alias         = $alias;
+		$insert_object->plugin        = $db->escape($post['reportToBuild']);
+		$insert_object->client        = $db->escape($post['client']);
+		$insert_object->parent        = (int) $db->escape($post['reportId']);
+		$insert_object->default       = 0;
+		$insert_object->userid        = $current_user;
+		$insert_object->param         = $params;
+
+		$result = array('success' => true);
+
+		if (!$db->insertObject('#__tj_reports', $insert_object, 'id'))
+		{
+			$result['error'] = $db->stderr();
+			$result['success'] = false;
+
+			return false;
+		}
+
+		echo json_encode($result);
+		jexit();
+	}
+
+	/**
 	 * Function used to pdf export
 	 *
 	 * @return  html
@@ -187,6 +252,54 @@ class TjreportsControllerReports extends JControllerAdmin
 	}
 
 	/**
+	 * Function used to get all reports
+	 *
+	 * @return  json
+	 *
+	 * @since  1.0
+	 */
+	public function getreport()
+	{
+		$input = JFactory::getApplication()->input;
+
+		$report_id = $input->get('reportToLoad', '', 'INT');
+
+		if (!empty($report_id))
+		{
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('*');
+			$query->from('#__tj_reports as r');
+			$query->where('r.id =' . $report_id);
+
+			$db->setQuery($query);
+			$reports = $db->loadObject();
+
+			echo json_encode($reports);
+
+			die();
+			jexit();
+		}
+	}
+
+	/**
+	 * Function used to delete reports
+	 *
+	 * @return  boolean
+	 *
+	 * @since  1.0
+	 */
+	public function deleteQuery()
+	{
+		$cid = JFactory::getApplication()->input->get('cid', '', 'array');
+		$model = JModelLegacy::getInstance('Report', 'TjreportsModel');
+
+		$result = $model->delete($cid);
+		echo new JResponseJson($result);
+		jexit();
+	}
+
+	/**
 	 * Function used to delete reports
 	 *
 	 * @param   ARRAY  $data  The data to filter
@@ -198,16 +311,16 @@ class TjreportsControllerReports extends JControllerAdmin
 	private function filterValue($data)
 	{
 		// Remove double Quotes from the data
-		$finalValue = strip_tags($data);
+		$finalValue       = strip_tags($data);
 
 		// Remove double Quotes from the data
-		$finalValue = str_replace('"', '', $finalValue);
+		$finalValue       = str_replace('"', '', $finalValue);
 
 		// Remove single Quotes from the data
-		$finalValue = str_replace("'", '', $finalValue);
+		$finalValue       = str_replace("'", '', $finalValue);
 
 		// Remove tabs and newlines from the data
-		$finalValue = preg_replace('/(\r\n|\r|\n)+/', " ", $finalValue);
+		$finalValue      = preg_replace('/(\r\n|\r|\n)+/', " ", $finalValue);
 
 		// Remove extra spaces from the data
 		$finalValue = preg_replace('/\s+/', " ", $finalValue);

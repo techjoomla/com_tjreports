@@ -30,38 +30,14 @@ class TjreportsControllerTjreport extends JControllerForm
 	}
 
 	/**
-	 * Function to get all the respective plugins for given client
+	 *Set a URL for browser redirection.
 	 *
-	 * @return  object  object
-	 */
-	public function getplugins()
-	{
-		$model = $this->getModel('tjreport');
-		$result = $model->getplugins();
-	}
-
-	/**
-	 * Function to get all the respective plugins for given client
+	 * @param   string  $url   URL to redirect to.
+	 * @param   string  $msg   Message to display on redirect. Optional, defaults to value set internally by controller, if any.
+	 * @param   string  $type  Message type. Optional, defaults to 'message' or the type set by a previous call to setMessage.
 	 *
-	 * @return  object  object
+	 * @return  JControllerLegacy  This object to support chaining.
 	 */
-
-	public function getparams()
-	{
-		$model = $this->getModel('tjreport');
-		$result = $model->getparams();
-	}
-
-/**
-	*Set a URL for browser redirection.
-	*
-	* @param   string  $url   URL to redirect to.
-	* @param   string  $msg   Message to display on redirect. Optional, defaults to value set internally by controller, if any.
-	* @param   string  $type  Message type. Optional, defaults to 'message' or the type set by a previous call to setMessage.
-	*
-	* @return  JControllerLegacy  This object to support chaining.
-	*/
-
 	public function setRedirect($url, $msg = null,$type = null)
 	{
 		$extension = JFactory::getApplication()->input->get('extension', '', 'word');

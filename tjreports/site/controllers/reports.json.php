@@ -46,7 +46,7 @@ class TjreportsControllerReports extends JControllerAdmin
 				return;
 			}
 
-			$queryName 	= $db->escape($post['queryName']);
+			$queryName 	= $db->escape($input->get('queryName'));
 			$alias 		= trim($queryName);
 
 			if ($alias)
@@ -106,10 +106,16 @@ class TjreportsControllerReports extends JControllerAdmin
 	{
 		try
 		{
-			$cid = JFactory::getApplication()->input->get('cid', '', 'array');
+			$app = JFactory::getApplication();
+			$db        		= JFactory::getDBO();
+			$input 			= $app->input;
+			$queryId = $input->get('queryId', 0, 'INT');
+
+			JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_tjreports/models');
+			//$jgiveCampaignModel = JModelLegacy::getInstance('Campaign', 'JgiveModel');
 			$model = JModelLegacy::getInstance('Report', 'TjreportsModel');
 
-			$result = $model->delete($cid);
+			$result = $model->delete($queryId);
 
 			echo new JResponseJson($result);
 		}

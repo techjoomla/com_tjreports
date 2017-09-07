@@ -85,4 +85,23 @@ class  TjreportsModelReport extends JModelAdmin
 
 		return $data;
 	}
+
+	/**
+	 * Method to delete the saved report
+	 *
+	 * @param   INT  &$pks  primary key of the element to be deleted
+	 *
+	 * @return  boolean  true/false.
+	 *
+	 * @since   1.6
+	 */
+	public function delete(&$pks)
+	{
+		$db    = JFactory::getDBO();
+		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
+		$tjrTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
+		$tjrTable->delete($pks);
+
+		return true;
+	}
 }

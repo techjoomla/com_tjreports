@@ -80,16 +80,16 @@ jQuery.extend(tjrContentUI.report, {
 	saveThisQuery: function()
 	{
 		this.$form = jQuery('#adminForm');
-		var inputHidden = jQuery('#queryName', this.$form).is(":hidden");
+		var inputHidden = jQuery('#queryName').is(":hidden");
 
 		if (inputHidden == 1)
 		{
-			jQuery('#queryName', this.$form).show();
-			jQuery('#saveQuery', this.$form).val('Save Query');
+			jQuery('#queryName').show();
+			jQuery('#saveQuery').html('Save Query');
 		}
 		else
 		{
-			var queryName = jQuery('#queryName', this.$form).val();
+			var queryName = jQuery('#queryName').val();
 
 			if (queryName === '')
 			{
@@ -103,7 +103,7 @@ jQuery.extend(tjrContentUI.report, {
 				jQuery('#task', this.$form).val('');
 
 				tjrContentUI.utility.loadingLayer();
-				var promise = tjrContentService.postData(this.querySaveUrl, formData);
+				var promise = tjrContentService.postData(this.querySaveUrl + "&queryName=" + queryName, formData);
 				promise.fail(
 					function(response) {
 						//console.log(response, ' error_response');
@@ -113,6 +113,49 @@ jQuery.extend(tjrContentUI.report, {
 				).done(
 					function(response) {
 						// console.log(response, ' success_response');
+						tjrContentUI.utility.loadingLayer('hide');
+						if (response.success)
+						{
+							window.location.reload();
+						}
+						else
+						{
+							console.log('Something went wrong.', response.message, response.messages)
+						}
+					}
+				);
+			}
+		}
+	},
+	deleteThisQuery: function()
+	{
+		this.$form = jQuery('#adminForm');
+		var inputHidden = jQuery('#queryName').is(":hidden");
+
+		var queryId = jQuery('#queryId').val();
+
+		if (queryId === '')
+		{
+			alert('Select Any of the query');
+			return false;
+		}
+		else
+		{
+			deletmsg = Joomla.JText._('COM_TMT_Q_ANSWER_OPTION_DELETE_CONFIRMATION_MSG');
+			var comfirmDelete = confirm("Are you sure you wants to delete..?");
+			if(comfirmDelete)
+			{
+				jQuery('#task', this.$form).val('reports.deleteQuery');
+				var formData = this.$form.serialize();
+				tjrContentUI.utility.loadingLayer();
+				var promise = tjrContentService.postData(this.querySaveUrl + "&queryId=" + queryId, formData);
+				promise.fail(
+					function(response) {
+						console.log('Something went wrong.');
+						tjrContentUI.utility.loadingLayer('hide');;
+					}
+				).done(
+					function(response) {
 						tjrContentUI.utility.loadingLayer('hide');
 						if (response.success)
 						{
@@ -154,10 +197,16 @@ jQuery.extend(tjrContentUI.report, {
 
 		return false;
 	},
-	loadReport: function(reportToLoad, extension)
+	loadReport: function(selectedElem, extension)
 	{
+		var reportToLoad = jQuery(selectedElem).val();
+		var reportId = jQuery(selectedElem).find(":selected").attr('data-reportid');
+
 		var action = document.adminForm.action;
-		var newAction = action+'&reportToBuild='+reportToLoad;
+		var newAction = action+'&reportToBuild='+reportToLoad+'&reportId='+reportId;
+		var report = jQuery('#reportToBuild').val();
+
+		jQuery('#report-select options').attr('selected', 'selected');
 
 		if (extension)
 		{
@@ -378,4 +427,34 @@ jQuery(document).click(function(e)
 		jQuery(".ColVis_collection").hide();
 	}
 });
+
+
+jQuery(document).ready(function(){
+	jQuery('.show-tools').hide();
+	jQuery('#show-filter').click(function(){
+		jQuery('#show-filter').toggleClass('btn-primary');
+		jQuery('.show-tools').slideToggle('1000');
+		jQuery('.fa', this).toggleClass('fa-caret-up').toggleClass('fa-caret-down');
+
+	});
+	jQuery('#btn-cancel').hide();
+	jQuery('.cancel-btn').hide();
+	jQuery('.saveData').click(function(){
+		jQuery('#btn-cancel').show();
+		jQuery('input').css('margin-bottom','0px');
+		jQuery('.cancel-btn').show();
+	});
+
+	jQuery('.cancel-btn').click(function(){
+		jQuery('#btn-cancel').hide();
+		jQuery(".saveData").html('Want to save this?');
+		jQuery('#adminForm1 input[type="text"]').val('');
+		jQuery('.cancel-btn').hide();
+		jQuery('#queryName').val('');
+	});
+});
+
+
+
+
 

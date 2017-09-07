@@ -75,8 +75,19 @@ class ReportsViewBase extends JViewLegacy
 
 		if ($this->reportId)
 		{
-			$allow_permission = $user->authorise('core.viewall', 'com_tjreports.tjreport.' . $this->reportId);
-			$input->set('allow_permission', $allow_permission);
+			$allow_permission = $user->authorise('core.view', 'com_tjreports.tjreport.' . $this->reportId);
+
+			if (!$allow_permission)
+			{
+				JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
+
+				return false;
+			}
+		}
+		else
+		{
+			JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR1'));
+			return false;
 		}
 
 		$user_id = $user->id;

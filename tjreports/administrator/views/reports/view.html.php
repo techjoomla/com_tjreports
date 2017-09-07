@@ -59,14 +59,22 @@ class TjreportsViewReports extends ReportsViewBase
 		$bar = JToolBar::getInstance('toolbar');
 		JToolBarHelper::title(JText::_('COM_TJREPORTS_TITLE_REPORT'), 'list');
 
-		$button = "<a class='btn' class='button'
+		$button = "<a class='btn'
 				type='submit' onclick=\"Joomla.submitbutton('reports.csvexport'); jQuery('#task').val('');\" href='#'><span title='Export'
 				class='icon-download'></span>" . JText::_('COM_TJREPORTS_CSV_EXPORT') . "</a>";
-			$bar->appendButton('Custom', $button);
+		$bar->appendButton('Custom', $button);
 
-		// List of plugin
-		if ($extension)
-		{
+		$button = '<span id="btn-cancel">
+						<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName" />
+					</span>
+					<a class="btn btn-primary  saveData" type="button" id="saveQuery"
+						onclick="tjrContentUI.report.saveThisQuery();">'
+						. JText::_('COM_TJREPORTS_SAVE_THIS_QUERY') . '</a>
+
+					<button class="btn btn btn-default  cancel-btn" type="button">
+						Cancel
+					</button>';
+
 			JFactory::getApplication()->input->set('extension', $extension);
 			JLoader::import('administrator.components.com_tjreports.helpers.tjreports', JPATH_SITE);
 			TjreportsHelper::addSubmenu('reports');
@@ -76,20 +84,7 @@ class TjreportsViewReports extends ReportsViewBase
 
 			// Get all enable plugins
 			$this->enableReportPlugins = $this->model->getenableReportPlugins($extension);
-
-			foreach ($this->enableReportPlugins as $eachPlugin) :
-				$this->model->loadLanguage($eachPlugin->element);
-				$btnclass = ($this->pluginName == $eachPlugin->element) ? " active btn-primary " : "";
-				$button = "<a class='btn button report-btn " . $btnclass . "' id='" . $eachPlugin->element . "'
-				onclick=\"tjrContentUI.report.loadReport('" . $eachPlugin->element . "','" . $extension . "'); \" ><span
-				class='icon-list'></span>" . JText::_($eachPlugin->name) . "</a>";
-					$bar->appendButton('Custom', $button);
-			endforeach;
-		}
-		else
-		{
-			JToolBarHelper::cancel('tjreport.cancel', 'JTOOLBAR_CANCEL');
-		}
+			$bar->appendButton('Custom', $button);
 	}
 
 	/**

@@ -513,18 +513,24 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function getenableReportPlugins()
 	{
-		$db = JFactory::getDBO();
-		$condtion = array(0 => '\'tjreports\'');
-		$condtionatype = join(',', $condtion);
-		$query = $db->getQuery(true);
+		// Get all report plugin
+		$dispatcher   = JEventDispatcher::getInstance();
+		$pluginExists = JPluginHelper::getPlugin('tjreports');
 
-		$query->select($db->quoteName(array('extension_id','name','element','enabled'), array('id',null,null,'published')));
-		$query->from($db->quoteName('#__extensions'));
-		$query->where("folder in (" . $condtionatype . ") AND enabled=1");
-		$db->setQuery($query);
-		$reportPlugins = $db->loadobjectList();
+		foreach ($pluginExists as $plugin)
+		{
+			$db = JFactory::getDBO();
+			$query = $db->getQuery(true);
 
-		return $reportPlugins;
+			$query->select('id');
+			$query->from($db->quoteName('#__tj_reports'));
+			$query->where($db->quoteName('plugin') . ' = ' . $db->quote($plugin->name));
+			$query->where($db->quoteName('userid') . ' = ' . $db->quote(0));
+			$db->setQuery($query);
+			$plugin->reportId = $db->loadResult();
+		}
+
+		return $pluginExists;
 	}
 
 	/**

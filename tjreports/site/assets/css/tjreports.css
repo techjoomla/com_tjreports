@@ -12,3 +12,7 @@ div#reports-container input.tjrsmall-input {width: 120px; font-size: 12px;}
 div#reports-container .form-inline-header .controls {padding-right: 5px;}
 div#topFilters div.filter-search {display: inline-block; float: left; margin-right: 5px;}
 div#topFilters {margin-top: 10px; float: left; width: 100%;}
+.ColVis_collection{display:none;}
+#topFilters{display:none;}
+#queryName{display:none;}
+

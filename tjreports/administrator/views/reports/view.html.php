@@ -71,7 +71,7 @@ class TjreportsViewReports extends ReportsViewBase
 						onclick="tjrContentUI.report.saveThisQuery();">'
 						. JText::_('COM_TJREPORTS_SAVE_THIS_QUERY') . '</a>
 
-					<button class="btn btn btn-default  cancel-btn" type="button">
+					<button class="btn btn btn-default  cancel-btn" type="button" onclick="tjrContentUI.report.cancel();">
 						Cancel
 					</button>';
 
@@ -81,9 +81,6 @@ class TjreportsViewReports extends ReportsViewBase
 			$this->sidebar = JHtmlSidebar::render();
 
 			$model	= $this->getModel();
-
-			// Get all enable plugins
-			$this->enableReportPlugins = $this->model->getenableReportPlugins($extension);
 			$bar->appendButton('Custom', $button);
 	}
 

@@ -61,6 +61,11 @@ jQuery.extend(tjrContentUI.report, {
 			}
 		);
 	},
+	showFilter: function(){
+		jQuery('#show-filter').toggleClass('btn-primary');
+		jQuery('#topFilters').slideToggle('1000');
+		jQuery('.fa', this).toggleClass('fa-caret-up').toggleClass('fa-caret-down');
+	},
 	resetSubmitTJRData : function(){
 		jQuery(':input','#topFilters')
 		 .not(':button, :submit, :reset, input:hidden')
@@ -74,13 +79,22 @@ jQuery.extend(tjrContentUI.report, {
 	},
 	getColNames: function()
 	{
-		techjoomla.jQuery('#saveQuery').show();
 		techjoomla.jQuery('.ColVis_collection').toggle();
+	},
+	cancel : function(){
+		jQuery('#btn-cancel').hide();
+		jQuery(".saveData").html('Want to save this?');
+		jQuery('#adminForm1 input[type="text"]').val('');
+		jQuery('.cancel-btn').hide();
+		jQuery('#queryName').val('');
 	},
 	saveThisQuery: function()
 	{
 		this.$form = jQuery('#adminForm');
 		var inputHidden = jQuery('#queryName').is(":hidden");
+		jQuery('#btn-cancel').show();
+		jQuery('.cancel-btn').show();
+		jQuery('input').css('margin-bottom','0px');
 
 		if (inputHidden == 1)
 		{
@@ -428,33 +442,8 @@ jQuery(document).click(function(e)
 	}
 });
 
-
 jQuery(document).ready(function(){
-	jQuery('.show-tools').hide();
-	jQuery('#show-filter').click(function(){
-		jQuery('#show-filter').toggleClass('btn-primary');
-		jQuery('.show-tools').slideToggle('1000');
-		jQuery('.fa', this).toggleClass('fa-caret-up').toggleClass('fa-caret-down');
-
-	});
+	jQuery('#topFilters').hide();
 	jQuery('#btn-cancel').hide();
 	jQuery('.cancel-btn').hide();
-	jQuery('.saveData').click(function(){
-		jQuery('#btn-cancel').show();
-		jQuery('input').css('margin-bottom','0px');
-		jQuery('.cancel-btn').show();
-	});
-
-	jQuery('.cancel-btn').click(function(){
-		jQuery('#btn-cancel').hide();
-		jQuery(".saveData").html('Want to save this?');
-		jQuery('#adminForm1 input[type="text"]').val('');
-		jQuery('.cancel-btn').hide();
-		jQuery('#queryName').val('');
-	});
 });
-
-
-
-
-

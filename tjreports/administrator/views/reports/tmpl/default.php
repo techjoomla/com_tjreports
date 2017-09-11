@@ -35,6 +35,7 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 	}
 
 	$extension = JFactory::getApplication()->input->get('client', '', 'word');
+		$this->enableReportPlugins = $this->model->getenableReportPlugins($extension);
 	$input  = JFactory::getApplication()->input;
 	$reportToBuild = $input->get('reportToBuild');
 ?>
@@ -82,9 +83,9 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 					{	?>
 					<div class="span3">
 						<?php	echo JHtml::_('select.genericlist', $this->savedQueries, "queryId", 'class="" size="1" onchange="tjrContentUI.report.getQueryResult(this.value);" name="filter_saveQuery"', "value", "text", $this->queryId);	?>
-					</div><!--span3-->>
+					</div><!--span3-->
 					<div class="span1">
-						<input type='button' value="Delete Query" class="btn btn-primary" onclick="tjrContentUI.report.deleteThisQuery();"/>
+						<input type='button' value="<?php echo JText::_('COM_TJREPORTS_DELETE_QUERY'); ?>" class="btn btn-primary" onclick="tjrContentUI.report.deleteThisQuery();"/>
 					</div><!--span1-->
 			<?php	}	?>
 				</div><!--row-fluid-->
@@ -98,7 +99,7 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 						?>
 						<div class="show-hide-cols <?php echo $class1 ?>">
 							<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="tjrContentUI.report.getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>" />
-							<ul id="ul-columns-name" class="ColVis_collection" style="display:none">
+							<ul id="ul-columns-name" class="ColVis_collection">
 								<?php
 								foreach ($this->showHideColumns as $colKey)
 								{
@@ -130,7 +131,7 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 							</ul>
 						</div>
 						<div class="span3">
-							<button type="button" class="btn btn-default" id="show-filter">
+							<button type="button" class="btn btn-default" id="show-filter" onclick="tjrContentUI.report.showFilter();">
 								Search Tools<i class="fa fa-caret-down"></i>
 							</button>
 						</div>

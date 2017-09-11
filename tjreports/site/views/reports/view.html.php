@@ -13,22 +13,15 @@
 // No direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.view');
-require_once JPATH_COMPONENT . '/helpers/tjreports.php';
+require_once __DIR__ . '/view.base.php';
 
 /**
  * View class for a list of Tjreports.
  *
  * @since  1.0.0
  */
-class TjreportsViewReports extends JViewLegacy
+class TjreportsViewReports extends ReportsViewBase
 {
-	protected $items;
-
-	protected $pagination;
-
-	protected $state;
-
 	/**
 	 * Execute and display a template script.
 	 *
@@ -38,143 +31,55 @@ class TjreportsViewReports extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		$canDo = TjreportsHelpersTjreports::getActions();
-		$this->user       = JFactory::getUser();
-		$this->user_id    = $this->user->id;
-		$input = JFactory::getApplication()->input;
-		$TjreportsModelReports = new TjreportsModelReports;
-		$app = JFactory::getApplication();
-		$mainframe  = JFactory::getApplication();
-		$this->user->authorise('core.view', 'com_tjreports');
-		$this->user->authorise('core.viewall', 'com_tjreports');
+		$input  = JFactory::getApplication()->input;
+		$result = $this->processData();
 
-		if (!($this->user->authorise('core.view', 'com_tjreports') || $this->user->authorise('core.viewall', 'com_tjreports')))
+		if (!$result)
 		{
-			if ($this->user->guest)
-			{
-				$return = base64_encode(JUri::getInstance());
-				$login_url_with_return = JRoute::_('index.php?option=com_users&view=login&return=' . $return);
-				$app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'notice');
-				$app->redirect($login_url_with_return, 403);
-			}
-			else
-			{
-				$app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
-				$app->setHeader('status', 403, true);
-
-				return;
-			}
+			return false;
 		}
 
-		$reportsModel = $this->getModel();
-		$client = $reportsModel->getState('client');
-		$full_client = explode(',', $client);
-
-		// Eg com_tjlms
-		$component = $full_client[0];
-		$eName = str_replace('com_', '', $component);
-		$file = JPath::clean(JPATH_ADMINISTRATOR . '/components/' . $component . '/helpers/' . $eName . '.php');
-
-		if (file_exists($file))
-		{
-			require_once $file;
-
-			$prefix = ucfirst(str_replace('com_', '', $component));
-			$cName = $prefix . 'Helper';
-
-			if (class_exists($cName))
-			{
-				$canDo = $cName::getActions();
-
-				if (!$canDo->get('view.reports'))
-				{
-					JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
-
-					return false;
-				}
-			}
-		}
-
-		// Get all vendars from backend
-		if (empty($client))
-		{
-			$params = JComponentHelper::getParams('com_tjreports');
-			$client = $params->get('vendars');
-			$input->set('client', $client);
-		}
-
-		// Get saved data
-		$queryId = $input->get('queryId', '0', 'INT');
-		$reportToBuild = $input->get('reportToBuild', '', 'STRING');
-		$reportId = $input->get('reportId', '', 'INT');
-
-		$this->options		= $this->get('reportoptions');
-
-		$this->isSuperUser = $this->user->authorise('core.viewall', 'com_tjreports');
-
-		$user       = JFactory::getUser();
-
-		if ($reportId)
-		{
-			$allow_permission = $user->authorise('core.viewall', 'com_tjreports.tjreport.' . $reportId);
-			$input->set('allow_permission', $allow_permission);
-		}
-
-		$input->set('reportId', $reportId);
-		$mainframe->setUserState('com_tjreports' . '.reportId', $reportId);
-
-		// Get respected plugin data
-		$this->items		= $this->get('Data');
-
-		// Get all columns of that report
-		$this->colNames	= $this->get('ColNames');
-
-		// Get saved queries by the logged in users
-
-		$this->saveQueries = $TjreportsModelReports->getSavedQueries($this->user_id, $reportToBuild);
-
-		// Call helper function
-		$TjreportsHelper = new TjreportsHelpersTjreports;
-		$TjreportsHelper->getLanguageConstant();
-
-		// Get all enable plugins
-		$this->enableReportPlugins = $this->get('enableReportPlugins');
-
-		// Get saved data
-		$queryId = $input->get('queryId', '0', 'INT');
-
-		$this->colToshow = array();
-
-		if ($queryId != 0)
-		{
-			$model = $this->getModel();
-			$colToSelect = array('colToshow');
-			$QueryData = $model->getQueryData($queryId);
-			$param = json_decode($QueryData->param);
-			$this->colToshow = $param->colToshow;
-		}
-
-		$input = JFactory::getApplication()->input;
-
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-		{
-			throw new Exception(implode("\n", $errors));
-		}
-
-		if (!empty($this->saveQueries))
-		{
-			$saveQueries = array();
-			$saveQueries[] = JHTML::_('select.option', '', JText::_('COM_TJREPORTS_SELONE_QUERY'));
-
-			foreach ($this->saveQueries as $eachQuery)
-			{
-				$saveQueries[] = JHTML::_('select.option', $eachQuery->plugin . '_' . $eachQuery->id, $eachQuery->title);
-			}
-
-			$this->saveQueriesList = $saveQueries;
-		}
+		$this->addDocumentHeaderData();
 
 		parent::display($tpl);
+	}
+
+	/**
+	 * Add the script and Style.
+	 *
+	 * @return  Void
+	 *
+	 * @since	1.6
+	 */
+	protected function addDocumentHeaderData()
+	{
+		JHtml::_('formbehavior.chosen', 'select');
+		$document = JFactory::getDocument();
+		$document->addScript(JURI::root() . '/components/com_tjreports/assets/js/tjrContentService.js');
+		$document->addScript(JURI::root() . '/components/com_tjreports/assets/js/tjrContentUI.js');
+		$document->addStylesheet(JURI::root() . '/components/com_tjreports/assets/css/tjreports.css');
+		$document->addScriptDeclaration('tjrContentUI.base_url = "' . Juri::base() . '"');
+		$document->addScriptDeclaration('tjrContentUI.root_url = "' . Juri::root() . '"');
+		JText::script('JERROR_ALERTNOAUTHOR');
+
+		if (method_exists($this->model, 'getScripts'))
+		{
+			$plgScripts = (array) $this->model->getScripts();
+
+			foreach ($plgScripts as $script)
+			{
+				$document->addScript($script);
+			}
+		}
+
+		if (method_exists($this->model, 'getStyles'))
+		{
+			$styles = (array) $this->model->getStyles();
+
+			foreach ($styles as $style)
+			{
+				$document->addStylesheet($style);
+			}
+		}
 	}
 }

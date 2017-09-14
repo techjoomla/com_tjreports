@@ -56,8 +56,12 @@ class ReportsViewBase extends JViewLegacy
 		$canDo 		= TjreportsHelper::getActions();
 		$input 		= JFactory::getApplication()->input;
 		$user		= JFactory::getUser();
+		$this->extension = JFactory::getApplication()->input->get('client', '', 'word');
 
-		$this->pluginName = $input->get('reportToBuild', '', 'STRING');
+		$this->reportId = $input->get('reportId', 0, 'INT');
+		$this->model = $this->getModel('reports');
+		$reportData = $this->model->getReportNameById($this->reportId);
+		$this->pluginName = $reportData->title;
 		$this->client     = $input->get('client', '', 'STRING');
 		$this->queryId    = $input->get('queryId', 0, 'INT');
 
@@ -70,8 +74,6 @@ class ReportsViewBase extends JViewLegacy
 
 		$this->model = $this->getModel($this->pluginName);
 		$this->setModel($this->model, true);
-
-		$this->reportId = $input->get('reportId', 0, 'INT');
 
 		if ($this->reportId)
 		{
@@ -87,6 +89,7 @@ class ReportsViewBase extends JViewLegacy
 		else
 		{
 			JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR1'));
+
 			return false;
 		}
 
@@ -154,6 +157,9 @@ class ReportsViewBase extends JViewLegacy
 
 		$this->userFilters     = $this->model->displayFilters();
 		$this->messages        = $this->model->getTJRMessages();
+
+		$extension = JFactory::getApplication()->input->get('client', '', 'word');
+		$this->enableReportPlugins = $this->model->getenableReportPlugins($extension);
 
 		return true;
 	}

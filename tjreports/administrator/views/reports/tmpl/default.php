@@ -17,11 +17,11 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 	$listDirn       = $this->state->get('list.direction');
 	$totalCount = 0;
 	$lang = JFactory::getLanguage();
-	$extension = 'com_tjreports';
+	$component = 'com_tjreports';
 	$base_dir = JPATH_SITE;
 	$language_tag = 'en-GB';
 	$reload = true;
-	$lang->load($extension, $base_dir, $language_tag, $reload);
+	$lang->load($component, $base_dir, $language_tag, $reload);
 	foreach ($this->colToshow as $key=>$data)
 	{
 		if (is_array($data))
@@ -34,10 +34,8 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 		}
 	}
 
-	$extension = JFactory::getApplication()->input->get('client', '', 'word');
-		$this->enableReportPlugins = $this->model->getenableReportPlugins($extension);
 	$input  = JFactory::getApplication()->input;
-	$reportToBuild = $input->get('reportToBuild');
+	$reportId = $input->get('reportId');
 ?>
 <div id="reports-container">
 	<div class="<?php echo COM_TJLMS_WRAPPER_DIV ?>">
@@ -56,11 +54,11 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 				<div class="row-fluid">
 					<div class="span3">
 						<div class="form-group">
-							<select class="form-control" id="report-select" onchange="tjrContentUI.report.loadReport(this,'<?php echo $extension; ?>');">
+							<select class="form-control" id="report-select" onchange="tjrContentUI.report.loadReport(this,'<?php echo $this->extension; ?>');">
 							<?php foreach ($this->enableReportPlugins as $eachPlugin) :
 									$this->model->loadLanguage($eachPlugin->name);
 									$selected = ' ';
-									if($reportToBuild == $eachPlugin->name)
+									if($reportId == $eachPlugin->reportId)
 									{
 										$selected = 'selected="selected"';
 									}
@@ -73,31 +71,29 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 						</div><!--form-group-->
 					</div><!--span3-->
 
-					<div class="span1 pull-right">
-						<div id="reportPagination" class="pull-right ">
-							<?php echo $this->pagination->getLimitBox();?>
-						</div>
-					</div>
-
 			<?php	if (!empty($this->savedQueries))
 					{	?>
 					<div class="span3">
 						<?php	echo JHtml::_('select.genericlist', $this->savedQueries, "queryId", 'class="" size="1" onchange="tjrContentUI.report.getQueryResult(this.value);" name="filter_saveQuery"', "value", "text", $this->queryId);	?>
 					</div><!--span3-->
-					<div class="span1">
+					<div class="span2">
 						<input type='button' value="<?php echo JText::_('COM_TJREPORTS_DELETE_QUERY'); ?>" class="btn btn-primary" onclick="tjrContentUI.report.deleteThisQuery();"/>
 					</div><!--span1-->
 			<?php	}	?>
+				<div class="span3">
+				</div>
+					<div class="span1 pull-right">
+						<div id="reportPagination" class="pull-right ">
+							<?php echo $this->pagination->getLimitBox();?>
+						</div>
+					</div>
 				</div><!--row-fluid-->
 				<!--/html code-->
 
 				<div class="report-top-bar row-fluid">
 					<div class="row-fluid">
 
-					<?php
-						$class1 = !empty($this->savedQueries) ? 'span2' : 'span2';
-						?>
-						<div class="show-hide-cols <?php echo $class1 ?>">
+						<div class="show-hide-cols span3">
 							<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="tjrContentUI.report.getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>" />
 							<ul id="ul-columns-name" class="ColVis_collection">
 								<?php
@@ -238,7 +234,6 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 												if (in_array($colKey, $this->sortable))
 												{
 													echo $sortHtml = JHtml::_('grid.sort', $colTitle, $colKey, $listDirn, $listOrder);
-													// str_replace('Joomla.tableOrdering', 'tjrContentUI.tableOrdering', $sortHtml);
 												}
 												else
 												{

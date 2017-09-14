@@ -666,9 +666,20 @@ class TjreportsModelReports extends JModelList
 	public function datadenyset()
 	{
 		$input = JFactory::getApplication()->input;
-		$reportName = $input->get('reportToBuild', '', 'STRING');
+		$reportId = $input->get('reportId', '0', 'int');
+
+		if ($reportId)
+		{
+			$this->model = $this->getModel('reports');
+			$reportData = $this->model->getReportNameById($reportId);
+			$reportName = $reportData->title;
+		}
+		else
+		{
+			return false;
+		}
+
 		$user_id = JFactory::getUser()->id;
-		$reportId = $input->get('reportId', '', 'int');
 
 		if ($reportName && $user_id && $reportId)
 		{
@@ -832,5 +843,24 @@ class TjreportsModelReports extends JModelList
 		}
 
 		return $parent;
+	}
+
+	/**
+	 * Method to get report name by report id
+	 *
+	 * @param   INT  $reportId  Report Id
+	 *
+	 * @return  Object
+	 *
+	 * @since   3.0
+	 */
+	public function getReportNameById($reportId)
+	{
+		$db        = JFactory::getDBO();
+		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
+		$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
+		$reportTable->load(array('id' => $reportId));
+
+		return $reportTable;
 	}
 }

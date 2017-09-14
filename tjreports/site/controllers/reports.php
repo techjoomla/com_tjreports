@@ -53,7 +53,9 @@ class TjreportsControllerReports extends JControllerAdmin
 		}
 
 		$input 	= JFactory::getApplication()->input;
-		$pluginName = $input->post->get('reportToBuild');
+		$reportId = $input->post->get('reportId');
+		$this->model = $this->getModel('reports');
+		$reportData = $this->model->getReportNameById($reportId);
 
 		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $pluginName);
 		$model = JModelLegacy::getInstance($pluginName, 'TjreportsModel');

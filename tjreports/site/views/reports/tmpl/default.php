@@ -34,10 +34,8 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 		}
 	}
 
-	$extension = JFactory::getApplication()->input->get('client', '', 'word');
-		$this->enableReportPlugins = $this->model->getenableReportPlugins($extension);
 	$input  = JFactory::getApplication()->input;
-	$reportToBuild = $input->get('reportToBuild');
+	$reportId = $input->get('reportId');
 ?>
 <div id="reports-container">
 	<div class="<?php echo COM_TJLMS_WRAPPER_DIV ?>">
@@ -68,11 +66,11 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 				<div class="row-fluid">
 					<div class="span4">
 						<div class="form-group">
-							<select class="form-control" id="report-select" onchange="tjrContentUI.report.loadReport(this,'<?php echo $extension; ?>');">
+							<select class="form-control" id="report-select" onchange="tjrContentUI.report.loadReport(this,'<?php echo $this->extension; ?>');">
 							<?php foreach ($this->enableReportPlugins as $eachPlugin) :
 									$this->model->loadLanguage($eachPlugin->name);
 									$selected = ' ';
-									if($reportToBuild == $eachPlugin->name)
+									if($reportId == $eachPlugin->reportId)
 									{
 										$selected = 'selected="selected"';
 									}
@@ -106,9 +104,9 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 				<div class="report-top-bar row-fluid">
 					<div class="row-fluid">
 
-					<div class="show-hide-cols span3">
+						<div class="show-hide-cols span3">
 							<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="tjrContentUI.report.getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>" />
-							<ul id="ul-columns-name" class="ColVis_collection" style="display:none">
+							<ul id="ul-columns-name" class="ColVis_collection">
 								<?php
 								foreach ($this->showHideColumns as $colKey)
 								{
@@ -147,7 +145,7 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 					</div>
 
 					<div class="js-stools-container-list hidden-phone hidden-tablet row-fluid">
-						<div class="ordering-select hidden-phone show-tools" id="topFilters" style="display:none;">
+						<div class="ordering-select hidden-phone show-tools" id="topFilters">
 							<?php
 								$displayFilters = $this->userFilters;
 								$totalHeadRows = count($displayFilters);

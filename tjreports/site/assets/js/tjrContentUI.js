@@ -155,8 +155,8 @@ jQuery.extend(tjrContentUI.report, {
 		}
 		else
 		{
-			deletmsg = Joomla.JText._('COM_TMT_Q_ANSWER_OPTION_DELETE_CONFIRMATION_MSG');
-			var comfirmDelete = confirm("Are you sure you wants to delete..?");
+			deletemsg = Joomla.JText._('COM_TJREPORTS_DELETE_MESSAGE');
+			var comfirmDelete = confirm(deletemsg);
 			if(comfirmDelete)
 			{
 				jQuery('#task', this.$form).val('reports.deleteQuery');
@@ -187,7 +187,7 @@ jQuery.extend(tjrContentUI.report, {
 	getQueryResult: function(id)
 	{
 		var url = tjrContentUI.base_url + 'index.php?option=com_tjreports&view=reports';
-		var params = {'reportToBuild':'reportToBuild','client':'client','reportId':'reportId','queryId':'queryId'};
+		var params = {'client':'client','reportId':'reportId','queryId':'queryId'};
 
 			jQuery.each(params, function(id,val){
 				var value = jQuery('#' + id).val();
@@ -217,8 +217,7 @@ jQuery.extend(tjrContentUI.report, {
 		var reportId = jQuery(selectedElem).find(":selected").attr('data-reportid');
 
 		var action = document.adminForm.action;
-		var newAction = action+'&reportToBuild='+reportToLoad+'&reportId='+reportId;
-		var report = jQuery('#reportToBuild').val();
+		var newAction = action+'&reportId='+reportId;
 
 		jQuery('#report-select options').attr('selected', 'selected');
 

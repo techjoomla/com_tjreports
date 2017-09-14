@@ -84,7 +84,7 @@ $input=JFactory::getApplication()->input;
 							$reportId = $row->id;
 						}
 						$link = JRoute::_('index.php?option=com_tjreports&task=tjreport.edit&id=' . $row->id.'&extension='.$input->get('extension','','STRING'));
-						$report_link = JRoute::_('index.php?option=com_tjreports&view=reports&client=' . $row->client . '&reportToBuild='. $row->plugin . '&reportId=' . $reportId);
+						$report_link = JRoute::_('index.php?option=com_tjreports&view=reports&client=' . $row->client . '&reportId=' . $reportId);
 				?>
 					<tr>
 						<td><?php  echo $this->pagination->getRowOffset($i); ?></td>

@@ -513,24 +513,35 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function getenableReportPlugins()
 	{
+		$user       = JFactory::getUser();
+
 		// Get all report plugin
 		$dispatcher   = JEventDispatcher::getInstance();
-		$pluginExists = JPluginHelper::getPlugin('tjreports');
+		$plugins = JPluginHelper::getPlugin('tjreports');
+		$pluginExists = json_decode(json_encode($plugins), true);
+		$pluginNames = array_column($pluginExists, 'name');
 
-		foreach ($pluginExists as $plugin)
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+
+		$query->select(array('id as reportId, title, plugin'));
+		$query->from($db->quoteName('#__tj_reports'));
+		$query->where($db->quoteName('plugin') . ' IN (' . implode(',', $db->quote($pluginNames)) . ')');
+		$query->where($db->quoteName('userid') . ' = ' . $db->quote(0));
+		$db->setQuery($query);
+		$reports = $db->loadAssocList();
+
+		foreach ($reports as $key => $report)
 		{
-			$db = JFactory::getDBO();
-			$query = $db->getQuery(true);
+			$allow = $user->authorise('core.view', 'com_tjreports.tjreport.' . $report['reportId']);
 
-			$query->select('id');
-			$query->from($db->quoteName('#__tj_reports'));
-			$query->where($db->quoteName('plugin') . ' = ' . $db->quote($plugin->name));
-			$query->where($db->quoteName('userid') . ' = ' . $db->quote(0));
-			$db->setQuery($query);
-			$plugin->reportId = $db->loadResult();
+			if (!$allow)
+			{
+				unset($reports[$key]);
+			}
 		}
 
-		return $pluginExists;
+		return $reports;
 	}
 
 	/**

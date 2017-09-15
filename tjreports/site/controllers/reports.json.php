@@ -112,7 +112,6 @@ class TjreportsControllerReports extends JControllerAdmin
 			$queryId = $input->get('queryId', 0, 'INT');
 
 			JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_tjreports/models');
-			//$jgiveCampaignModel = JModelLegacy::getInstance('Campaign', 'JgiveModel');
 			$model = JModelLegacy::getInstance('Report', 'TjreportsModel');
 
 			$result = $model->delete($queryId);

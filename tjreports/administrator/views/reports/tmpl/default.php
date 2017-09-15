@@ -16,12 +16,7 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 	$listOrder      = $this->state->get('list.ordering');
 	$listDirn       = $this->state->get('list.direction');
 	$totalCount = 0;
-	$lang = JFactory::getLanguage();
-	$component = 'com_tjreports';
-	$base_dir = JPATH_SITE;
-	$language_tag = 'en-GB';
-	$reload = true;
-	$lang->load($component, $base_dir, $language_tag, $reload);
+
 	foreach ($this->colToshow as $key=>$data)
 	{
 		if (is_array($data))
@@ -35,7 +30,6 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 	}
 
 	$input  = JFactory::getApplication()->input;
-	$reportId = $input->get('reportId');
 ?>
 <div id="reports-container">
 	<div class="<?php echo COM_TJLMS_WRAPPER_DIV ?>">
@@ -54,18 +48,22 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 				<div class="row-fluid">
 					<div class="span3">
 						<div class="form-group">
-							<select class="form-control" id="report-select" onchange="tjrContentUI.report.loadReport(this,'<?php echo $this->extension; ?>');">
+							<select class="form-control" id="report-select" onchange="tjrContentUI.report.loadReport(this,'<?php echo $this->client; ?>');">
 							<?php foreach ($this->enableReportPlugins as $eachPlugin) :
-									$this->model->loadLanguage($eachPlugin->name);
+									$this->model->loadLanguage($eachPlugin['plugin']);
 									$selected = ' ';
-									if($reportId == $eachPlugin->reportId)
+
+									if ($this->reportId == $eachPlugin['reportId'])
 									{
 										$selected = 'selected="selected"';
 									}
-									$pluginName = strtoupper($eachPlugin->name);
+
+									$pluginName = strtoupper($eachPlugin['plugin']);
 									$langConst = "PLG_TJREPORTS_" . $pluginName;
 							?>
-								<option value="<?php echo $eachPlugin->name;?>"<?php echo $selected; ?> data-reportid="<?php echo $eachPlugin->reportId; ?>"><?php echo JText::_($langConst); ?></option>
+								<option value="<?php echo $eachPlugin['plugin'];?>" <?php echo $selected; ?> data-reportid="<?php echo $eachPlugin['reportId']; ?>">
+									<?php echo $eachPlugin['title']; ?>
+								</option>
 						<?php	endforeach;	?>
 							</select>
 						</div><!--form-group-->

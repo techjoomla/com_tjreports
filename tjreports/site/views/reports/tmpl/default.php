@@ -47,10 +47,13 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 			<div id="j-main-container" class="span10">
 <?php 	else :?>
 			<div id="j-main-container">
-<?php	endif;?>
+<?php	endif;
+			if ($this->isExport)
+			{	?>
 			<a class='btn'
 				type='submit' onclick="Joomla.submitbutton('reports.csvexport'); jQuery('#task').val('');" href='#'><span title='Export'
 				class='icon-download'></span><?php echo JText::_('COM_TJREPORTS_CSV_EXPORT'); ?></a>
+	<?php	}	?>
 			<span id="btn-cancel">
 						<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName"/>
 					</span>
@@ -66,18 +69,18 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 				<div class="row-fluid">
 					<div class="span4">
 						<div class="form-group">
-							<select class="form-control" id="report-select" onchange="tjrContentUI.report.loadReport(this,'<?php echo $this->extension; ?>');">
+							<select class="form-control" id="report-select" onchange="tjrContentUI.report.loadReport(this,'<?php echo $this->client; ?>');">
 							<?php foreach ($this->enableReportPlugins as $eachPlugin) :
-									$this->model->loadLanguage($eachPlugin->name);
+									$this->model->loadLanguage($eachPlugin['plugin']);
 									$selected = ' ';
-									if($reportId == $eachPlugin->reportId)
+									if($reportId == $eachPlugin['reportId'])
 									{
 										$selected = 'selected="selected"';
 									}
-									$pluginName = strtoupper($eachPlugin->name);
+									$pluginName = strtoupper($eachPlugin['plugin']);
 									$langConst = "PLG_TJREPORTS_" . $pluginName;
 							?>
-								<option value="<?php echo $eachPlugin->name;?>"<?php echo $selected; ?> data-reportid="<?php echo $eachPlugin->reportId; ?>"><?php echo JText::_($langConst); ?></option>
+								<option value="<?php echo $eachPlugin['plugin'];?>"<?php echo $selected; ?> data-reportid="<?php echo $eachPlugin['reportId']; ?>"><?php echo JText::_($langConst); ?></option>
 						<?php	endforeach;	?>
 							</select>
 						</div><!--form-group-->

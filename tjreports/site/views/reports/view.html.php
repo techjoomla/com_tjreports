@@ -39,9 +39,53 @@ class TjreportsViewReports extends ReportsViewBase
 			return false;
 		}
 
+		$this->addToolbar();
 		$this->addDocumentHeaderData();
 
 		parent::display($tpl);
+	}
+
+	/**
+	 * Add the page title and toolbar.
+	 *
+	 * @return  Toolbar instance
+	 *
+	 * @since	1.6
+	 */
+	protected function addToolbar()
+	{
+		$bar = JToolBar::getInstance('toolbar');
+		JToolBarHelper::title(JText::_('COM_TJREPORTS_TITLE_REPORT'), 'list');
+
+		if ($this->isExport)
+		{
+			$button = "<a class='btn'
+					type='submit' onclick=\"Joomla.submitbutton('reports.csvexport'); jQuery('#task').val('');\" href='#'><span title='Export'
+					class='icon-download'></span>" . JText::_('COM_TJREPORTS_CSV_EXPORT') . "</a>";
+			$bar->appendButton('Custom', $button);
+		}
+
+		$button = '<span id="btn-cancel">
+						<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName" />
+					</span>
+					<a class="btn btn-primary  saveData" type="button" id="saveQuery"
+						onclick="tjrContentUI.report.saveThisQuery();">'
+						. JText::_('COM_TJREPORTS_SAVE_THIS_QUERY') . '</a>
+
+					<button class="btn btn btn-default  cancel-btn" type="button" onclick="tjrContentUI.report.cancel();">
+						Cancel
+					</button>';
+
+			JLoader::import('administrator.components.com_tjreports.helpers.tjreports', JPATH_SITE);
+			TjreportsHelper::addSubmenu('reports');
+			$app = JFactory::getApplication();
+
+			if ($app->isAdmin())
+			{
+				$this->sidebar = JHtmlSidebar::render();
+			}
+
+			$bar->appendButton('Custom', $button);
 	}
 
 	/**
@@ -60,7 +104,6 @@ class TjreportsViewReports extends ReportsViewBase
 		$document->addStylesheet(JURI::root() . '/components/com_tjreports/assets/css/tjreports.css');
 		$document->addScriptDeclaration('tjrContentUI.base_url = "' . Juri::base() . '"');
 		$document->addScriptDeclaration('tjrContentUI.root_url = "' . Juri::root() . '"');
-		JText::script('JERROR_ALERTNOAUTHOR');
 
 		if (method_exists($this->model, 'getScripts'))
 		{
@@ -81,5 +124,22 @@ class TjreportsViewReports extends ReportsViewBase
 				$document->addStylesheet($style);
 			}
 		}
+
+		$this->getLanguageConstant();
+	}
+
+	/**
+	 * Get all jtext for javascript
+	 *
+	 * @return   void
+	 *
+	 * @since   1.0
+	 */
+	public static function getLanguageConstant()
+	{
+		JText::script('JERROR_ALERTNOAUTHOR');
+		JText::script('COM_TJREPORTS_DELETE_MESSAGE');
+		JText::script('COM_TJREPORTS_SAVE_QUERY');
+		JText::script('COM_TJREPORTS_ENTER_TITLE');
 	}
 }

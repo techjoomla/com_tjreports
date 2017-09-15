@@ -33,8 +33,10 @@ class TjreportsControllerReports extends JControllerAdmin
 	{
 		$app  = JFactory::getApplication();
 		$user = JFactory::getUser();
+		$input 	= JFactory::getApplication()->input;
+		$reportId = $input->post->get('reportId');
 
-		if (!$user->authorise('core.export', 'com_tjreports'))
+		if (!$user->authorise('core.export', 'com_tjreports.tjreport.' . $reportId))
 		{
 			if ($user->guest)
 			{
@@ -52,10 +54,9 @@ class TjreportsControllerReports extends JControllerAdmin
 			}
 		}
 
-		$input 	= JFactory::getApplication()->input;
-		$reportId = $input->post->get('reportId');
 		$this->model = $this->getModel('reports');
 		$reportData = $this->model->getReportNameById($reportId);
+		$pluginName = $reportData->plugin;
 
 		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $pluginName);
 		$model = JModelLegacy::getInstance($pluginName, 'TjreportsModel');

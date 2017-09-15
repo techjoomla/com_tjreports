@@ -17,6 +17,7 @@ jimport('joomla.application.component.view');
 JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_ADMINISTRATOR);
 JLoader::import('components.com_tjreports.models.tjreports', JPATH_SITE);
 JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_SITE);
+JLoader::register('JToolBarHelper', JPATH_ADMINISTRATOR . '/includes/toolbar.php');
 
 /**
  * View class for a list of Tjreports.
@@ -60,14 +61,13 @@ class ReportsViewBase extends JViewLegacy
 		$this->reportId = $input->get('reportId', 0, 'INT');
 		$this->model = $this->getModel('reports');
 		$reportData = $this->model->getReportNameById($this->reportId);
-		$this->pluginName = $reportData->title;
-
+		$this->pluginName = $reportData->plugin;
 		$this->client     = $input->get('client', '', 'STRING');
 		$this->queryId    = $input->get('queryId', 0, 'INT');
 
 		if (!$canDo->get('core.view') || !$this->pluginName)
 		{
-			JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR1'));
+			JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
 
 			return false;
 		}
@@ -158,8 +158,8 @@ class ReportsViewBase extends JViewLegacy
 		$this->userFilters     = $this->model->displayFilters();
 		$this->messages        = $this->model->getTJRMessages();
 
-		$extension = JFactory::getApplication()->input->get('client', '', 'word');
-		$this->enableReportPlugins = $this->model->getenableReportPlugins($extension);
+		$this->enableReportPlugins = $this->model->getenableReportPlugins($this->client);
+		$this->isExport = $user->authorise('core.export', 'com_tjreports.tjreport.' . $this->reportId);
 
 		return true;
 	}

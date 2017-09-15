@@ -100,8 +100,15 @@ class  TjreportsModelReport extends JModelAdmin
 		$db    = JFactory::getDBO();
 		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
 		$tjrTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
-		$tjrTable->delete($pks);
+		$tjrTable->load(array('id' => int($pks)));
 
-		return true;
+		if ($tjrTable->userid == JFactory::getUser()->id)
+		{
+			$tjrTable->delete($pks);
+
+			return true;
+		}
+
+		return false;
 	}
 }

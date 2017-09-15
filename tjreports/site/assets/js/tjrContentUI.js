@@ -99,7 +99,7 @@ jQuery.extend(tjrContentUI.report, {
 		if (inputHidden == 1)
 		{
 			jQuery('#queryName').show();
-			jQuery('#saveQuery').html('Save Query');
+			jQuery('#saveQuery').html(Joomla.JText._('COM_TJREPORTS_SAVE_QUERY'));
 		}
 		else
 		{
@@ -107,7 +107,7 @@ jQuery.extend(tjrContentUI.report, {
 
 			if (queryName === '')
 			{
-				alert('Enter title for the Query');
+				alert(Joomla.JText._('COM_TJREPORTS_ENTER_TITLE'));
 				return false;
 			}
 			else

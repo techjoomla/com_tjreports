@@ -513,18 +513,35 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function getenableReportPlugins()
 	{
+		$user       = JFactory::getUser();
+
+		// Get all report plugin
+		$dispatcher   = JEventDispatcher::getInstance();
+		$plugins = JPluginHelper::getPlugin('tjreports');
+		$pluginExists = json_decode(json_encode($plugins), true);
+		$pluginNames = array_column($pluginExists, 'name');
+
 		$db = JFactory::getDBO();
-		$condtion = array(0 => '\'tjreports\'');
-		$condtionatype = join(',', $condtion);
 		$query = $db->getQuery(true);
 
-		$query->select($db->quoteName(array('extension_id','name','element','enabled'), array('id',null,null,'published')));
-		$query->from($db->quoteName('#__extensions'));
-		$query->where("folder in (" . $condtionatype . ") AND enabled=1");
+		$query->select(array('id as reportId, title, plugin'));
+		$query->from($db->quoteName('#__tj_reports'));
+		$query->where($db->quoteName('plugin') . ' IN (' . implode(',', $db->quote($pluginNames)) . ')');
+		$query->where($db->quoteName('userid') . ' = ' . $db->quote(0));
 		$db->setQuery($query);
-		$reportPlugins = $db->loadobjectList();
+		$reports = $db->loadAssocList();
 
-		return $reportPlugins;
+		foreach ($reports as $key => $report)
+		{
+			$allow = $user->authorise('core.view', 'com_tjreports.tjreport.' . $report['reportId']);
+
+			if (!$allow)
+			{
+				unset($reports[$key]);
+			}
+		}
+
+		return $reports;
 	}
 
 	/**
@@ -660,9 +677,20 @@ class TjreportsModelReports extends JModelList
 	public function datadenyset()
 	{
 		$input = JFactory::getApplication()->input;
-		$reportName = $input->get('reportToBuild', '', 'STRING');
+		$reportId = $input->get('reportId', '0', 'int');
+
+		if ($reportId)
+		{
+			$this->model = $this->getModel('reports');
+			$reportData = $this->model->getReportNameById($reportId);
+			$reportName = $reportData->title;
+		}
+		else
+		{
+			return false;
+		}
+
 		$user_id = JFactory::getUser()->id;
-		$reportId = $input->get('reportId', '', 'int');
 
 		if ($reportName && $user_id && $reportId)
 		{
@@ -826,5 +854,24 @@ class TjreportsModelReports extends JModelList
 		}
 
 		return $parent;
+	}
+
+	/**
+	 * Method to get report name by report id
+	 *
+	 * @param   INT  $reportId  Report Id
+	 *
+	 * @return  Object
+	 *
+	 * @since   3.0
+	 */
+	public function getReportNameById($reportId)
+	{
+		$db        = JFactory::getDBO();
+		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
+		$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
+		$reportTable->load(array('id' => $reportId));
+
+		return $reportTable;
 	}
 }

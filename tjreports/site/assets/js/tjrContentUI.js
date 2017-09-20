@@ -61,6 +61,11 @@ jQuery.extend(tjrContentUI.report, {
 			}
 		);
 	},
+	showFilter: function(){
+		jQuery('#show-filter').toggleClass('btn-primary');
+		jQuery('#topFilters').slideToggle('1000');
+		jQuery('.fa', this).toggleClass('fa-caret-up').toggleClass('fa-caret-down');
+	},
 	resetSubmitTJRData : function(){
 		jQuery(':input','#topFilters')
 		 .not(':button, :submit, :reset, input:hidden')
@@ -74,26 +79,35 @@ jQuery.extend(tjrContentUI.report, {
 	},
 	getColNames: function()
 	{
-		techjoomla.jQuery('#saveQuery').show();
 		techjoomla.jQuery('.ColVis_collection').toggle();
+	},
+	cancel : function(){
+		jQuery('#btn-cancel').hide();
+		jQuery(".saveData").html('Want to save this?');
+		jQuery('#adminForm1 input[type="text"]').val('');
+		jQuery('.cancel-btn').hide();
+		jQuery('#queryName').val('');
 	},
 	saveThisQuery: function()
 	{
 		this.$form = jQuery('#adminForm');
-		var inputHidden = jQuery('#queryName', this.$form).is(":hidden");
+		var inputHidden = jQuery('#queryName').is(":hidden");
+		jQuery('#btn-cancel').show();
+		jQuery('.cancel-btn').show();
+		jQuery('input').css('margin-bottom','0px');
 
 		if (inputHidden == 1)
 		{
-			jQuery('#queryName', this.$form).show();
-			jQuery('#saveQuery', this.$form).val('Save Query');
+			jQuery('#queryName').show();
+			jQuery('#saveQuery').html(Joomla.JText._('COM_TJREPORTS_SAVE_QUERY'));
 		}
 		else
 		{
-			var queryName = jQuery('#queryName', this.$form).val();
+			var queryName = jQuery('#queryName').val();
 
 			if (queryName === '')
 			{
-				alert('Enter title for the Query');
+				alert(Joomla.JText._('COM_TJREPORTS_ENTER_TITLE'));
 				return false;
 			}
 			else
@@ -103,7 +117,7 @@ jQuery.extend(tjrContentUI.report, {
 				jQuery('#task', this.$form).val('');
 
 				tjrContentUI.utility.loadingLayer();
-				var promise = tjrContentService.postData(this.querySaveUrl, formData);
+				var promise = tjrContentService.postData(this.querySaveUrl + "&queryName=" + queryName, formData);
 				promise.fail(
 					function(response) {
 						//console.log(response, ' error_response');
@@ -127,10 +141,53 @@ jQuery.extend(tjrContentUI.report, {
 			}
 		}
 	},
+	deleteThisQuery: function()
+	{
+		this.$form = jQuery('#adminForm');
+		var inputHidden = jQuery('#queryName').is(":hidden");
+
+		var queryId = jQuery('#queryId').val();
+
+		if (queryId === '')
+		{
+			alert('Select Any of the query');
+			return false;
+		}
+		else
+		{
+			deletemsg = Joomla.JText._('COM_TJREPORTS_DELETE_MESSAGE');
+			var comfirmDelete = confirm(deletemsg);
+			if(comfirmDelete)
+			{
+				jQuery('#task', this.$form).val('reports.deleteQuery');
+				var formData = this.$form.serialize();
+				tjrContentUI.utility.loadingLayer();
+				var promise = tjrContentService.postData(this.querySaveUrl + "&queryId=" + queryId, formData);
+				promise.fail(
+					function(response) {
+						console.log('Something went wrong.');
+						tjrContentUI.utility.loadingLayer('hide');;
+					}
+				).done(
+					function(response) {
+						tjrContentUI.utility.loadingLayer('hide');
+						if (response.success)
+						{
+							window.location.reload();
+						}
+						else
+						{
+							console.log('Something went wrong.', response.message, response.messages)
+						}
+					}
+				);
+			}
+		}
+	},
 	getQueryResult: function(id)
 	{
 		var url = tjrContentUI.base_url + 'index.php?option=com_tjreports&view=reports';
-		var params = {'reportToBuild':'reportToBuild','client':'client','reportId':'reportId','queryId':'queryId'};
+		var params = {'client':'client','reportId':'reportId','queryId':'queryId'};
 
 			jQuery.each(params, function(id,val){
 				var value = jQuery('#' + id).val();
@@ -154,10 +211,15 @@ jQuery.extend(tjrContentUI.report, {
 
 		return false;
 	},
-	loadReport: function(reportToLoad, extension)
+	loadReport: function(selectedElem, extension)
 	{
+		var reportToLoad = jQuery(selectedElem).val();
+		var reportId = jQuery(selectedElem).find(":selected").attr('data-reportid');
+
 		var action = document.adminForm.action;
-		var newAction = action+'&reportToBuild='+reportToLoad;
+		var newAction = action+'&reportId='+reportId;
+
+		jQuery('#report-select options').attr('selected', 'selected');
 
 		if (extension)
 		{
@@ -379,3 +441,8 @@ jQuery(document).click(function(e)
 	}
 });
 
+jQuery(document).ready(function(){
+	jQuery('#topFilters').hide();
+	jQuery('#btn-cancel').hide();
+	jQuery('.cancel-btn').hide();
+});

@@ -56,10 +56,6 @@ foreach($displayFilters as $searchKey => $filter)
 			{
 				$fieldAttr = array_merge($filter[$fieldKey]['attrib'], $attrib);
 			}
-			elseif (isset($filter['attrib']))
-			{
-				$fieldAttr = array_merge($filter['attrib'], $attrib);
-			}
 			else
 			{
 				$fieldAttr = $attrib;

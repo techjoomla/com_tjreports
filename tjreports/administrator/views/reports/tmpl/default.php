@@ -9,10 +9,8 @@
 
 // no direct access
 defined('_JEXEC') or die;
-?>
-<div id="reports-container">
-	<?php
-	JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
+
+JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 	$headerLevel    = $this->headerLevel;
 	$listOrder      = $this->state->get('list.ordering');
@@ -30,33 +28,72 @@ defined('_JEXEC') or die;
 			$totalCount++;
 		}
 	}
-	?>
+
+	$input  = JFactory::getApplication()->input;
+?>
+<div id="reports-container">
 	<div class="<?php echo COM_TJLMS_WRAPPER_DIV ?>">
 	<?php
-	//~ ob_start();
-	//~ $layoutOutput = ob_get_contents();
-	//~ ob_end_clean();
-	//~ echo $layoutOutput;
-
-	// <!--// JHtmlsidebar for menu ends-->
-	if (!empty($this->sidebar)):?>
-		<div id="j-sidebar-container" class="span2">
-			<?php echo $this->sidebar;?>
-		</div><!--j-sidebar-container-->
-		<div id="j-main-container" class="span10">
-	<?php else :?>
-		<div id="j-main-container">
-	<?php endif;?>
+		if (!empty($this->sidebar)):?>
+			<div id="j-sidebar-container" class="span2">
+				<?php echo $this->sidebar;?>
+			</div><!--j-sidebar-container-->
+			<div id="j-main-container" class="span10">
+<?php 	else :?>
+			<div id="j-main-container">
+<?php	endif;?>
 
 			<form action="<?php echo JRoute::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm" onsubmit="return tjrContentUI.report.submitForm();">
+				<!--html code-->
+				<div class="row-fluid">
+					<div class="span3">
+						<div class="form-group">
+							<select class="form-control" id="report-select" onchange="tjrContentUI.report.loadReport(this,'<?php echo $this->client; ?>');">
+							<?php foreach ($this->enableReportPlugins as $eachPlugin) :
+									$this->model->loadLanguage($eachPlugin['plugin']);
+									$selected = ' ';
+
+									if ($this->reportId == $eachPlugin['reportId'])
+									{
+										$selected = 'selected="selected"';
+									}
+
+									$pluginName = strtoupper($eachPlugin['plugin']);
+									$langConst = "PLG_TJREPORTS_" . $pluginName;
+							?>
+								<option value="<?php echo $eachPlugin['plugin'];?>" <?php echo $selected; ?> data-reportid="<?php echo $eachPlugin['reportId']; ?>">
+									<?php echo $eachPlugin['title']; ?>
+								</option>
+						<?php	endforeach;	?>
+							</select>
+						</div><!--form-group-->
+					</div><!--span3-->
+
+			<?php	if (!empty($this->savedQueries))
+					{	?>
+					<div class="span3">
+						<?php	echo JHtml::_('select.genericlist', $this->savedQueries, "queryId", 'class="" size="1" onchange="tjrContentUI.report.getQueryResult(this.value);" name="filter_saveQuery"', "value", "text", $this->queryId);	?>
+					</div><!--span3-->
+					<div class="span2">
+						<input type='button' value="<?php echo JText::_('COM_TJREPORTS_DELETE_QUERY'); ?>" class="btn btn-primary" onclick="tjrContentUI.report.deleteThisQuery();"/>
+					</div><!--span1-->
+			<?php	}	?>
+				<div class="span3">
+				</div>
+					<div class="span1 pull-right">
+						<div id="reportPagination" class="pull-right ">
+							<?php echo $this->pagination->getLimitBox();?>
+						</div>
+					</div>
+				</div><!--row-fluid-->
+				<!--/html code-->
+
 				<div class="report-top-bar row-fluid">
-					<div class="span12 form-inline-header">
-						<?php
-						$class1 = !empty($this->savedQueries) ? 'span4' : 'span6';
-						?>
-						<div class="show-hide-cols <?php echo $class1 ?>">
+					<div class="row-fluid">
+
+						<div class="show-hide-cols span3">
 							<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="tjrContentUI.report.getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>" />
-							<ul id="ul-columns-name" class="ColVis_collection" style="display:none">
+							<ul id="ul-columns-name" class="ColVis_collection">
 								<?php
 								foreach ($this->showHideColumns as $colKey)
 								{
@@ -87,37 +124,15 @@ defined('_JEXEC') or die;
 								?>
 							</ul>
 						</div>
-						<!--show-hide-cols-->
-
-						<div class="span2 pull-right">
-							<div id="reportPagination" class="pull-right ">
-								<?php echo $this->pagination->getLimitBox();?>
-							</div>
+						<div class="span3">
+							<button type="button" class="btn btn-default" id="show-filter" onclick="tjrContentUI.report.showFilter();">
+								Search Tools<i class="fa fa-caret-down"></i>
+							</button>
 						</div>
-						<!--span1 pull-right-->
-
-						<div class="span4 pull-right">
-							<input type="text" name="queryName" placeholder="Title for the Query" class="pull-right" style="display:none" id="queryName" />
-							<input type="button" class="btn btn-primary pull-right" id="saveQuery" onclick="tjrContentUI.report.saveThisQuery();" value="<?php echo JText::_('COM_TJREPORTS_SAVE_THIS_QUERY'); ?>" />
-						</div>
-						<!--span3 pull-right-->
-						<?php
-						if (!empty($this->savedQueries))
-						{ ?>
-							<div class="span2 pull-right">
-									<?php echo JHtml::_('select.genericlist', $this->savedQueries, "queryId", 'class="" size="1" onchange="tjrContentUI.report.getQueryResult(this.value);" name="filter_saveQuery"', "value", "text", $this->queryId);
-									?>
-							</div>
-							<!--span2 pull-right-->
-						<?php
-						}
-						?>
 					</div>
-					<!-- span12 -->
-
 
 					<div class="js-stools-container-list hidden-phone hidden-tablet row-fluid">
-						<div class="ordering-select hidden-phone" id="topFilters">
+						<div class="ordering-select hidden-phone show-tools" id="topFilters">
 							<?php
 								$displayFilters = $this->userFilters;
 								$totalHeadRows = count($displayFilters);
@@ -190,7 +205,6 @@ defined('_JEXEC') or die;
 													if (in_array($subKey, $this->sortable))
 													{
 														echo $sortHtml = JHtml::_('grid.sort', $colTitle, $subKey, $listDirn, $listOrder);
-														// str_replace('Joomla.tableOrdering', 'tjrContentUI.tableOrdering', $sortHtml);
 													}
 													else
 													{
@@ -218,7 +232,6 @@ defined('_JEXEC') or die;
 												if (in_array($colKey, $this->sortable))
 												{
 													echo $sortHtml = JHtml::_('grid.sort', $colTitle, $colKey, $listDirn, $listOrder);
-													// str_replace('Joomla.tableOrdering', 'tjrContentUI.tableOrdering', $sortHtml);
 												}
 												else
 												{
@@ -308,7 +321,6 @@ defined('_JEXEC') or die;
 					<div id="pagination">
 						<?php
 						echo $footerLinks = $this->pagination->getListFooter();
-						// str_replace("Joomla.submitform();", "tjrContentUI.report.submitfilter('pageChange');", $footerLinks);
 						?>
 					</div>
 

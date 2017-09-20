@@ -79,6 +79,11 @@ class TjreportsModelTjreport extends JModelAdmin
 		if (empty($data))
 		{
 			$data = $this->getItem();
+
+			if (!empty($data->param))
+			{
+				$data->param = json_encode(json_decode($data->param), JSON_PRETTY_PRINT);
+			}
 		}
 
 		return $data;

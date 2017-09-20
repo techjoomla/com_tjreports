@@ -25,28 +25,29 @@ class TjreportsViewTjreports extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
+		$this->canDo = TjreportsHelper::getActions();
+
+		if (!$this->canDo->get('core.view'))
+		{
+			JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
+
+			return false;
+		}
+
 		// Get data from the model
+		$this->state		= $this->get('State');
 		$this->items		= $this->get('Items');
 		$this->pagination	= $this->get('Pagination');
-		$this->state		= $this->get('State');
-		$this->filterForm    = $this->get('FilterForm');
 		$this->activeFilters = $this->get('ActiveFilters');
+		$this->filterForm    = $this->get('FilterForm');
 
 		// Initialise variables.
 		$app = JFactory::getApplication('administrator');
 
-	/*
-		if (count($errors = $this->get('Errors')))
-		{
-			JError::raiseError(500, implode('<br />', $errors));
-			return false;
-		}
-	*/
+		// Get extension name
+		$client = JFactory::getApplication()->input->get('client', '', 'word');
 
-				// Get extension name
-		$extension = JFactory::getApplication()->input->get('extension', '', 'word');
-
-		if ($extension)
+		if ($client)
 		{
 			TjreportsHelper::addSubmenu('tjreports');
 			$this->sidebar = JHtmlSidebar::render();
@@ -68,14 +69,28 @@ class TjreportsViewTjreports extends JViewLegacy
 	 */
 	protected function addToolBar()
 	{
-		$state = $this->get('State');
-		$canDo = TjreportsHelper::getActions();
-
 		$name = JText::_('COM_TJREPORTS');
 
 		JToolBarHelper::title($name, 'tjreport');
-		JToolBarHelper::deleteList('', 'tjreports.delete');
-		JToolBarHelper::addNew('tjreport.add');
-		JToolBarHelper::preferences('com_tjreports');
+
+		if ($this->canDo->get('core.delete'))
+		{
+			JToolBarHelper::deleteList('', 'tjreports.delete');
+		}
+
+		if ($this->canDo->get('core.create'))
+		{
+			JToolBarHelper::addNew('tjreport.add');
+		}
+
+		if ($this->canDo->get('core.edit'))
+		{
+			JToolBarHelper::editList('tjreport.edit');
+		}
+
+		if ($this->canDo->get('core.admin'))
+		{
+			JToolBarHelper::preferences('com_tjreports');
+		}
 	}
 }

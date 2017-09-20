@@ -35,7 +35,8 @@ JFactory::getDocument()->addScriptDeclaration('
 			if (task != "tjreport.cancel" && jQuery("#jform_param").val())
 			{
 				try{
-					JSON.parse(jQuery("#jform_param").val(), null, 4)
+					var params = JSON.stringify(JSON.parse(jQuery("#jform_param").val()));
+					jQuery("#jform_param").val(params)
 				}catch(e){
 					alert(Joomla.JText._("COM_TJREPORTS_INVALID_JSON_VALUE"));
 					return false;
@@ -114,11 +115,13 @@ JFactory::getDocument()->addScriptDeclaration('
 				</div>
 			<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'rules', JText::_('COM_CONTENT_FIELDSET_RULES')); ?>
-				<div class="control-group">
-					<div class="controls"><?php echo $this->form->getInput('rules'); ?></div>
-				</div>
-			<?php echo JHtml::_('bootstrap.endTab'); ?>
+			<?php if ($this->canDo->get('core.admin')) : ?>
+				<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'rules', JText::_('COM_CONTENT_FIELDSET_RULES')); ?>
+					<div class="control-group">
+						<div class="controls"><?php echo $this->form->getInput('rules'); ?></div>
+					</div>
+				<?php echo JHtml::_('bootstrap.endTab'); ?>
+			<?php endif; ?>
 
 			<?php echo JHtml::_('bootstrap.endTabSet'); ?>
 		</fieldset>

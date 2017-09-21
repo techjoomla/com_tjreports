@@ -21,17 +21,36 @@ foreach($displayFilters as $searchKey => $filter)
 
 	if($searchType == 'text')
 	{
-		$filterHtml = '<input type="text" name="filters[' . $searchKey . ']" class="input input-mini filter-input" ' .
-					  'onkeydown="tjrContentUI.report.submitOnEnter(event);"  onblur="tjrContentUI.report.submitTJRData();"' .
-					  'value="' . htmlspecialchars($searchValue) . '" />';
+		$filterHtml = '<div class="input-append">
+							<input type="text" name="filters[' . $searchKey . ']"
+									class="input input-mini filter-input" ' .
+									'onkeydown="tjrContentUI.report.submitOnEnter(event);"
+									onblur="tjrContentUI.report.submitTJRData();"
+									value="' . htmlspecialchars($searchValue) . '"
+								/>
+							<span class="input-group-btn">
+								<button class="btn btn-secondary close-icon" type="button" title="Cancel Search">
+									<i class="icon-remove"></i>
+								</button>
+							</span>
+						</div>';
 	}
 	elseif($searchType == 'select' && isset($filter['select_options']))
 	{
 		$svalue = isset($filter['select_value']) ? $filter['select_value'] : "value";
 		$stext  = isset($filter['select_text']) ? $filter['select_text'] : "text";
-		$filterHtml = JHtml::_('select.genericlist', $filter['select_options'], 'filters[' . $searchKey . ']',
-					'class="filter-input input-medium" size="1" onchange="tjrContentUI.report.submitTJRData();"',
+
+		$filterHtml = '<div class="input-append">';
+
+		$filterHtml .= JHtml::_('select.genericlist', $filter['select_options'], 'filters[' . $searchKey . ']',
+					'class="filter-input input-medium input-2" size="1" onchange="tjrContentUI.report.submitTJRData();"',
 					$svalue, $stext, $searchValue);
+
+		$filterHtml .= '<span class="input-group-btn">
+								<button class="btn btn-secondary close-icon" type="button" title="Cancel Search">
+									<i class="icon-remove"></i>
+								</button>
+							</span></div>';
 	}
 	elseif($searchType == 'date.range' || $searchType == 'calendar')
 	{
@@ -56,6 +75,10 @@ foreach($displayFilters as $searchKey => $filter)
 			{
 				$fieldAttr = array_merge($filter[$fieldKey]['attrib'], $attrib);
 			}
+			elseif (isset($filter['attrib']))
+			{
+				$fieldAttr = array_merge($filter['attrib'], $attrib);
+			}
 			else
 			{
 				$fieldAttr = $attrib;
@@ -72,7 +95,7 @@ foreach($displayFilters as $searchKey => $filter)
 		$filterHtml = $filter['html'];
 	}
 	?>
-		<div class="filter-search controls pull-left">
+		<div class="filter-search controls pull-left <?php echo $this->classForShowHide; ?>">
 			<?php echo $filterHtml;?>
 		</div>
 	<?php

@@ -127,9 +127,3 @@ $input=JFactory::getApplication()->input;
 
 	<?php echo JHtml::_('form.token'); ?>
 </form>
-<script>
-	function checkAll(count)
-	{
-alert(count);
-	}
-</script>

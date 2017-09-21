@@ -60,6 +60,7 @@ jQuery.extend(tjrContentUI.report, {
 				}
 			}
 		);
+		tjrContentUI.tjreport.loadSort();
 	},
 	showFilter: function(){
 		jQuery('#show-filter').toggleClass('btn-primary');
@@ -398,6 +399,24 @@ jQuery.extend(tjrContentUI.tjreport, {
 			}
 		);
 	},
+	loadSort: function(){
+		//code for hide heading and show filter
+		jQuery('.col-filter-header').hide();
+
+		jQuery(document).on('click','.col-search',function(){
+			var container = jQuery(this).parents('th');
+			jQuery('.col-filter-header',container).show();
+			jQuery('.table-heading',container).hide();
+		});
+
+		//code for hide filter and show heading
+		jQuery(document).on('click','.close-icon',function(){
+			var container = jQuery(this).parents('th');
+			jQuery('.table-heading', container).show();
+			jQuery('.col-filter-header',container).hide();
+			jQuery('#adminForm')[0].reset();
+		});
+	},
 	getParams:function(defaultParam){
 		var url  = tjrContentUI.base_url + 'index.php?option=com_tjreports&format=json';
 		if(defaultParam)
@@ -445,4 +464,5 @@ jQuery(document).ready(function(){
 	jQuery('#topFilters').hide();
 	jQuery('#btn-cancel').hide();
 	jQuery('.cancel-btn').hide();
+	tjrContentUI.tjreport.loadSort();
 });

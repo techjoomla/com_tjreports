@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 	$headerLevel    = $this->headerLevel;
-	$listOrder      = $this->state->get('list.ordering');
+	$this->listOrder      = $this->state->get('list.ordering');
 	$listDirn       = $this->state->get('list.direction');
 	$totalCount = 0;
 
@@ -139,6 +139,7 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 								if ($totalHeadRows > 1)
 								{
 									$this->filters  = array_pop($displayFilters);
+									$this->classForShowHide = '';
 									echo $this->loadTemplate('filters');
 
 									if ($this->srButton)
@@ -177,6 +178,8 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 									foreach($this->colToshow as $index=>$detail)
 									{
+										$hasFilter = isset($filters[$detail]);
+
 										if ($i == 1)
 										{
 											if (strpos($index, '::'))
@@ -204,7 +207,7 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 													if (in_array($subKey, $this->sortable))
 													{
-														echo $sortHtml = JHtml::_('grid.sort', $colTitle, $subKey, $listDirn, $listOrder);
+														echo $sortHtml = JHtml::_('grid.sort', $colTitle, $subKey, $listDirn, $this->listOrder);
 													}
 													else
 													{
@@ -229,17 +232,29 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 												echo '<th class="' . $colKey  . '">';
 
+												if ($hasFilter)
+												{
+													echo '<span class="table-heading">';
+												}
+
 												if (in_array($colKey, $this->sortable))
 												{
-													echo $sortHtml = JHtml::_('grid.sort', $colTitle, $colKey, $listDirn, $listOrder);
+													echo $sortHtml = JHtml::_('grid.sort', $colTitle, $colKey, $listDirn, $this->listOrder);
 												}
 												else
 												{
 													echo '<div class="header_title">' . JText::_($colTitle) . '</div>';
 												}
-
-												if (isset($filters[$colKey]))
+												if ($hasFilter)
 												{
+													echo '<a href="#" title="search attempts" class="col-search">
+																<i class="icon-search"></i>
+															</a></span>';
+												}
+
+												if ($hasFilter)
+												{
+													$this->classForShowHide = 'col-filter-header';
 													$this->filters  = array($colKey => $filters[$colKey]);
 													echo $this->loadTemplate('filters');
 												}
@@ -324,7 +339,7 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 						?>
 					</div>
 
-					<input type="hidden" id="filter_order" name="filter_order" value="<?php echo  $listOrder; ?>" />
+					<input type="hidden" id="filter_order" name="filter_order" value="<?php echo  $this->listOrder; ?>" />
 					<input type="hidden" id="filter_order_Dir" name="filter_order_Dir" value="<?php echo  $listDirn; ?>" />
 					<input type="hidden" id="reportId" name="reportId" value="<?php echo  $this->reportId; ?>" />
 					<input type="hidden" id="reportToBuild" name="reportToBuild" value="<?php echo  $this->pluginName; ?>" />

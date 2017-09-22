@@ -10,121 +10,14 @@
 // no direct access
 defined('_JEXEC') or die;
 
-$displayFilters = $this->filters;
-$filters = $this->filterValues;
+// No direct access
+defined('_JEXEC') or die;
 
-foreach($displayFilters as $searchKey => $filter)
-{
-	$searchType = $filter['search_type'];
-	$searchValue = isset($filters[$searchKey]) ? $filters[$searchKey] : '';
-	$filterHtml = '';
-	$filterHide = '';
+// Load the layout & push variables
 
-	if ($searchValue === '')
-	{
-		$filterHide = 'filter-hide';
-	}
-	else
-	{
-		$filterHide = 'filter-show';
-	}
-
-	if ($searchType == 'text')
-	{
-		$filterHtml = '<div class="input-append">
-							<input type="text" name="filters[' . $searchKey . ']"
-									class="input input-mini filter-input ' . $filterHide . '" ' .
-									'onkeydown="tjrContentUI.report.submitOnEnter(event);"
-									onblur="tjrContentUI.report.submitTJRData();"
-									value="' . htmlspecialchars($searchValue) . '"
-								/>
-							<span class="input-group-btn">
-								<button class="btn btn-secondary close-icon" type="button" title="Cancel Search">
-									<i class="icon-remove"></i>
-								</button>
-							</span>
-						</div>';
-
-		if(isset($this->colKey))
-		{
-			$filterHtml .= JHtml::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
-		}
-	}
-	elseif($searchType == 'select' && isset($filter['select_options']))
-	{
-		$svalue = isset($filter['select_value']) ? $filter['select_value'] : "value";
-		$stext  = isset($filter['select_text']) ? $filter['select_text'] : "text";
-
-		$filterHtml = '<div class="input-append">';
-
-		$filterHtml .= JHtml::_('select.genericlist', $filter['select_options'], 'filters[' . $searchKey . ']',
-					'class="filter-input input-medium ' . $filterHide . '" size="1" onchange="tjrContentUI.report.submitTJRData();"',
-					$svalue, $stext, $searchValue);
-
-		$filterHtml .= '<span class="input-group-btn">
-								<button class="btn btn-secondary close-icon" type="button" title="Cancel Search">
-									<i class="icon-remove"></i>
-								</button>
-							</span></div>';
-
-		if(isset($this->colKey))
-		{
-			$filterHtml .= JHtml::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
-		}
-	}
-	elseif($searchType == 'date.range' || $searchType == 'calendar')
-	{
-		$j = ($searchType == 'date.range') ? 2 : 1;
-
-		for ($i=1; $i<=$j; $i++)
-		{
-			if ($searchType == 'date.range')
-			{
-				$fieldKey =  ($i == 1)?  ($searchKey . '_from') : ($searchKey . '_to');
-			}
-			else
-			{
-				$fieldKey =  $searchKey;
-			}
-
-			$searchValue = isset($filters[$fieldKey]) ? $filters[$fieldKey] : '';
-			$dateFormat  = isset($filters['dateFormat']) ? $filters['dateFormat'] : '%Y-%m-%d';
-			$attrib		 = array('class' => 'tjrsmall-input dash-calendar validate-ymd-date ' . $filterHide);
-
-			if (isset($filter[$fieldKey]['attrib']))
-			{
-				$fieldAttr = array_merge($filter[$fieldKey]['attrib'], $attrib);
-			}
-			elseif (isset($filter['attrib']))
-			{
-				$fieldAttr = array_merge($filter['attrib'], $attrib);
-			}
-			else
-			{
-				$fieldAttr = $attrib;
-			}
-
-			$filterHtml  .= '<div class="filter-search controls">'
-				. JHtml::_('calendar', htmlspecialchars($searchValue), 'filters['. $fieldKey . ']', 'filters_' . $fieldKey , $dateFormat, $fieldAttr)
-				. '<span class="input-group-btn">
-								<button class="btn btn-secondary close-icon" type="button" title="Cancel Search">
-									<i class="icon-remove"></i>
-								</button>
-							</span></div>';
-
-			if(isset($this->colKey))
-			{
-				$filterHtml .= JHtml::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
-			}
-		}
-	}
-	elseif($searchType == 'html')
-	{
-		$filterHtml = $filter['html'];
-	}
-	?>
-		<div class="filter-search controls pull-left <?php echo $this->classForShowHide; ?>">
-			<?php echo $filterHtml;?>
-		</div>
-	<?php
-}
+$path = $this->tjreportsHelper->getViewpath('com_tjreports', 'reports', 'default_filters', 'SITE', 'SITE');
+ob_start();
+include($path);
+$html = ob_get_contents();
+ob_end_clean();
+echo $html;

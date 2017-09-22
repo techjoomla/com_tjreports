@@ -82,4 +82,38 @@ class TjreportsHelper extends JHelperContent
 
 		return $result;
 	}
+
+	/**
+	 * This function get the view path
+	 *
+	 * @param   STRING  $component      Component name
+	 * @param   STRING  $viewname       View name
+	 * @param   STRING  $layout         Layout
+	 * @param   STRING  $searchTmpPath  Site
+	 * @param   STRING  $useViewpath    Site
+	 *
+	 * @return  boolean
+	 *
+	 * @since  1.0.0
+	 */
+	public function getViewpath($component, $viewname, $layout = 'default', $searchTmpPath = 'SITE', $useViewpath = 'SITE')
+	{
+		$app = JFactory::getApplication();
+
+		$searchTmpPath = ($searchTmpPath == 'SITE') ? JPATH_SITE : JPATH_ADMINISTRATOR;
+		$useViewpath   = ($useViewpath == 'SITE') ? JPATH_SITE : JPATH_ADMINISTRATOR;
+
+		$layoutname = $layout . '.php';
+
+		$override = $searchTmpPath . '/' . 'templates' . '/' . $app->getTemplate() . '/' . 'html' . '/' . $component . '/' . $viewname . '/' . $layoutname;
+
+		if (JFile::exists($override))
+		{
+			return $view = $override;
+		}
+		else
+		{
+			return $view = $useViewpath . '/' . 'components' . '/' . $component . '/' . 'views' . '/' . $viewname . '/' . 'tmpl' . '/' . $layoutname;
+		}
+	}
 }

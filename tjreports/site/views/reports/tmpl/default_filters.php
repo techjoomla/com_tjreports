@@ -12,6 +12,12 @@ defined('_JEXEC') or die;
 
 $displayFilters = $this->filters;
 $filters = $this->filterValues;
+$classForShowHide = '';
+
+if ($this->filterLevel == 2)
+{
+	$classForShowHide = 'col-filter-header';
+}
 
 foreach($displayFilters as $searchKey => $filter)
 {

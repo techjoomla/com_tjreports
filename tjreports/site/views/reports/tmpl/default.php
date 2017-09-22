@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
+	$app = JFactory::getApplication();
 	$headerLevel    = $this->headerLevel;
 	$this->listOrder      = $this->state->get('list.ordering');
 	$this->listDirn       = $this->state->get('list.direction');
@@ -42,8 +43,11 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 <?php 	else :?>
 			<div id="j-main-container">
 <?php	endif;
+		if ($app->isSite())
+		{
 			if ($this->isExport)
-			{	?>
+			{
+				?>
 			<a class='btn'
 				type='submit' onclick="Joomla.submitbutton('reports.csvexport'); jQuery('#task').val('');" href='#'><span title='Export'
 				class='icon-download'></span><?php echo JText::_('COM_TJREPORTS_CSV_EXPORT'); ?></a>
@@ -58,6 +62,7 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 					<button class="btn btn btn-default  cancel-btn" type="button" style="display:none;" onclick="tjrContentUI.report.cancel();">
 						Cancel
 					</button><hr>
+<?php	}	?>
 			<form action="<?php echo JRoute::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm" onsubmit="return tjrContentUI.report.submitForm();">
 				<!--html code-->
 				<div class="row-fluid">
@@ -153,7 +158,8 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 								if ($totalHeadRows > 1)
 								{
 									$this->filters  = array_pop($displayFilters);
-									$this->classForShowHide = '';
+									$this->filterLevel = 1;
+
 									echo $this->loadTemplate('filters');
 
 									if ($this->srButton)
@@ -271,7 +277,8 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 												if ($hasFilter)
 												{
-													$this->classForShowHide = 'col-filter-header';
+													$this->filterLevel = 2;
+
 													$this->filters  = array($colKey => $filters[$colKey]);
 													$this->colKey = $colKey;
 

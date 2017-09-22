@@ -8,6 +8,7 @@
  */
 // No direct access to this file
 defined('_JEXEC') or die;
+require_once JPATH_COMPONENT . '/helpers/tjreports.php';
 /**
  * tjreport View
  *
@@ -31,9 +32,9 @@ class TjreportsViewTjreport extends JViewLegacy
 	public function display($tpl = null)
 	{
 		// Get the Data
-		$form = $this->get('Form');
-
-		$item = $this->get('Item');
+		$this->canDo = TjreportsHelper::getActions();
+		$this->item = $this->get('Item');
+		$this->form = $this->get('Form');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
@@ -42,10 +43,6 @@ class TjreportsViewTjreport extends JViewLegacy
 
 			return false;
 		}
-
-		// Assign the Data
-		$this->form = $form;
-		$this->item = $item;
 
 		$input = JFactory::getApplication()->input;
 		$extension = $input->get('extension', '', 'STRING');

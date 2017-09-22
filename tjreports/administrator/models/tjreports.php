@@ -48,8 +48,14 @@ class TjreportsModelTjreports extends JModelList
 		$query = $db->getQuery(true);
 
 		// Create the base select statement.
-		$query->select('*')
-			->from($db->quoteName('#__tj_reports'));
+		$query->select('tj.*')
+			->from($db->quoteName('#__tj_reports', 'tj'));
+
+		$subquery = $db->getQuery(true);
+		$subquery->select('count(*)')
+			->from($db->quoteName('#__tj_reports', 'stj'))
+			->where('stj.parent = tj.id');
+		$query->select('(' . $subquery . ') as savedquery');
 
 		// Filter by Plugin
 		$plugin = $this->getState('filter.plugin');
@@ -77,7 +83,7 @@ class TjreportsModelTjreports extends JModelList
 		}
 
 		// $query->where("id not in(select `parent` from `#__tj_reports` where `default`=1)");
-		$query->where('`default` = 1');
+		$query->where($db->quoteName('default') . ' = 1');
 
 		// Add the list ordering clause.
 		$orderCol	= $this->state->get('list.ordering', 'title');

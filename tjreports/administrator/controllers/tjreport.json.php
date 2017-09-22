@@ -42,7 +42,7 @@ class TjreportsControllerTjreport extends JControllerForm
 			$jinput  = $app->input;
 			$jform   = $jinput->post->get('jform', array(), 'ARRAY');
 			$client = $jform['client'];
-			$userid = $jform['userid'];
+			$userid = isset($jform['userid']) ? $jform['userid'] : 0;
 			$id     = $jform['id'];
 
 			$model = $this->getModel('tjreport');

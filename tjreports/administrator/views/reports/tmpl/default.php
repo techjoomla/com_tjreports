@@ -178,7 +178,10 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 									foreach($this->colToshow as $index=>$detail)
 									{
-										$hasFilter = isset($filters[$detail]);
+										if (!is_array($detail))
+										{
+											$hasFilter = isset($filters[$detail]);
+										}
 
 										if ($i == 1)
 										{

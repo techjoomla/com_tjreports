@@ -65,7 +65,7 @@ jQuery.extend(tjrContentUI.report, {
 	showFilter: function(){
 		jQuery('#show-filter').toggleClass('btn-primary');
 		jQuery('#topFilters').slideToggle('1000');
-		jQuery('.fa', this).toggleClass('fa-caret-up').toggleClass('fa-caret-down');
+		jQuery('#show-filter .fa').toggleClass('fa-caret-up').toggleClass('fa-caret-down');
 	},
 	resetSubmitTJRData : function(){
 		jQuery(':input','#topFilters')

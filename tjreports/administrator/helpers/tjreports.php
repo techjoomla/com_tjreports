@@ -26,8 +26,8 @@ class TjreportsHelper extends JHelperContent
 	 */
 	public static function addSubmenu($view='')
 	{
-		$extension = JFactory::getApplication()->input->get('extension', '', 'STRING');
-		$full_client = $extension;
+		$client = JFactory::getApplication()->input->get('client', '', 'STRING');
+		$full_client = $client;
 
 		// Set ordering.
 		$mainframe = JFactory::getApplication();

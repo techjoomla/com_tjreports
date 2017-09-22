@@ -422,7 +422,8 @@ jQuery.extend(tjrContentUI.tjreport, {
 			function(response) {
 				if (response.success)
 				{
-					jQuery("#jform_param",$form).val(response.data.param.toString());
+					var params = JSON.stringify(JSON.parse(response.data.param), null, "\t");
+					jQuery("#jform_param",$form).val(params);
 					jQuery("#jform_plugin",$form).val(response.data.plugin);
 				}
 				else

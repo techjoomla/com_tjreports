@@ -1,1 +1,1 @@
-/* Only premium users are allowed to update a component */
+DROP TABLE IF EXISTS `#__tj_reports`;

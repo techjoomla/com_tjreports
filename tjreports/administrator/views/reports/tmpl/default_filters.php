@@ -34,6 +34,11 @@ foreach($displayFilters as $searchKey => $filter)
 								</button>
 							</span>
 						</div>';
+
+		if(isset($this->colKey))
+		{
+			$filterHtml .= JHtml::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
+		}
 	}
 	elseif($searchType == 'select' && isset($filter['select_options']))
 	{
@@ -51,6 +56,11 @@ foreach($displayFilters as $searchKey => $filter)
 									<i class="icon-remove"></i>
 								</button>
 							</span></div>';
+
+		if(isset($this->colKey))
+		{
+			$filterHtml .= JHtml::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
+		}
 	}
 	elseif($searchType == 'date.range' || $searchType == 'calendar')
 	{
@@ -86,8 +96,12 @@ foreach($displayFilters as $searchKey => $filter)
 
 			$filterHtml  .= '<div class="filter-search controls">'
 				. JHtml::_('calendar', htmlspecialchars($searchValue), 'filters['. $fieldKey . ']', 'filters_' . $fieldKey , $dateFormat, $fieldAttr)
-				. '</div>'
-			;
+				. '</div>';
+
+			if(isset($this->colKey))
+			{
+				$filterHtml .= JHtml::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
+			}
 		}
 	}
 	elseif($searchType == 'html')

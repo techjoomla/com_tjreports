@@ -60,11 +60,15 @@ jQuery.extend(tjrContentUI.report, {
 				}
 			}
 		);
+
+		jQuery('.filter-hide').parents('.col-filter-header').hide();
+		jQuery('.filter-show').parents('th').find('.table-heading').hide();
+
 	},
 	showFilter: function(){
 		jQuery('#show-filter').toggleClass('btn-primary');
 		jQuery('#topFilters').slideToggle('1000');
-		jQuery('.fa', this).toggleClass('fa-caret-up').toggleClass('fa-caret-down');
+		jQuery('#show-filter .fa').toggleClass('fa-caret-up').toggleClass('fa-caret-down');
 	},
 	resetSubmitTJRData : function(){
 		jQuery(':input','#topFilters')
@@ -398,6 +402,24 @@ jQuery.extend(tjrContentUI.tjreport, {
 			}
 		);
 	},
+	loadSort: function(){
+		//code for hide heading and show filter
+		jQuery('.col-filter-header').hide();
+
+		jQuery(document).on('click','.col-search',function(){
+			var container = jQuery(this).parents('th');
+			jQuery('.col-filter-header',container).show();
+			jQuery('.table-heading',container).hide();
+		});
+
+		//code for hide filter and show heading
+		jQuery(document).on('click','.close-icon',function(){
+			var container = jQuery(this).parents('th');
+			jQuery('.table-heading', container).show();
+			jQuery('.col-filter-header',container).hide();
+			jQuery('#adminForm')[0].reset();
+		});
+	},
 	getParams:function(defaultParam){
 		var url  = tjrContentUI.base_url + 'index.php?option=com_tjreports&format=json';
 		if(defaultParam)
@@ -446,4 +468,5 @@ jQuery(document).ready(function(){
 	jQuery('#topFilters').hide();
 	jQuery('#btn-cancel').hide();
 	jQuery('.cancel-btn').hide();
+	tjrContentUI.tjreport.loadSort();
 });

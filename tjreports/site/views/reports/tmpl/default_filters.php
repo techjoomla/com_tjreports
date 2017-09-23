@@ -12,26 +12,71 @@ defined('_JEXEC') or die;
 
 $displayFilters = $this->filters;
 $filters = $this->filterValues;
+$classForShowHide = '';
+
+if ($this->filterLevel == 2)
+{
+	$classForShowHide = 'col-filter-header';
+}
 
 foreach($displayFilters as $searchKey => $filter)
 {
 	$searchType = $filter['search_type'];
 	$searchValue = isset($filters[$searchKey]) ? $filters[$searchKey] : '';
 	$filterHtml = '';
+	$filterHide = '';
 
-	if($searchType == 'text')
+	if ($searchValue === '')
 	{
-		$filterHtml = '<input type="text" name="filters[' . $searchKey . ']" class="input input-mini filter-input" ' .
-					  'onkeydown="tjrContentUI.report.submitOnEnter(event);"  onblur="tjrContentUI.report.submitTJRData();"' .
-					  'value="' . htmlspecialchars($searchValue) . '" />';
+		$filterHide = 'filter-hide';
+	}
+	else
+	{
+		$filterHide = 'filter-show';
+	}
+
+	if ($searchType == 'text')
+	{
+		$filterHtml = '<div class="input-append">
+							<input type="text" name="filters[' . $searchKey . ']"
+									class="input input-mini filter-input ' . $filterHide . '" ' .
+									'onkeydown="tjrContentUI.report.submitOnEnter(event);"
+									onblur="tjrContentUI.report.submitTJRData();"
+									value="' . htmlspecialchars($searchValue) . '"
+								/>
+							<span class="input-group-btn">
+								<button class="btn btn-secondary close-icon" type="button" title="Cancel Search">
+									<i class="icon-remove"></i>
+								</button>
+							</span>
+						</div>';
+
+		if(isset($this->colKey))
+		{
+			$filterHtml .= JHtml::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
+		}
 	}
 	elseif($searchType == 'select' && isset($filter['select_options']))
 	{
 		$svalue = isset($filter['select_value']) ? $filter['select_value'] : "value";
 		$stext  = isset($filter['select_text']) ? $filter['select_text'] : "text";
-		$filterHtml = JHtml::_('select.genericlist', $filter['select_options'], 'filters[' . $searchKey . ']',
-					'class="filter-input input-medium" size="1" onchange="tjrContentUI.report.submitTJRData();"',
+
+		$filterHtml = '<div class="input-append">';
+
+		$filterHtml .= JHtml::_('select.genericlist', $filter['select_options'], 'filters[' . $searchKey . ']',
+					'class="filter-input input-medium ' . $filterHide . '" size="1" onchange="tjrContentUI.report.submitTJRData();"',
 					$svalue, $stext, $searchValue);
+
+		$filterHtml .= '<span class="input-group-btn">
+								<button class="btn btn-secondary close-icon" type="button" title="Cancel Search">
+									<i class="icon-remove"></i>
+								</button>
+							</span></div>';
+
+		if(isset($this->colKey))
+		{
+			$filterHtml .= JHtml::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
+		}
 	}
 	elseif($searchType == 'date.range' || $searchType == 'calendar')
 	{
@@ -50,11 +95,15 @@ foreach($displayFilters as $searchKey => $filter)
 
 			$searchValue = isset($filters[$fieldKey]) ? $filters[$fieldKey] : '';
 			$dateFormat  = isset($filters['dateFormat']) ? $filters['dateFormat'] : '%Y-%m-%d';
-			$attrib		 = array('class' => 'tjrsmall-input dash-calendar validate-ymd-date');
+			$attrib		 = array('class' => 'tjrsmall-input dash-calendar validate-ymd-date ' . $filterHide);
 
 			if (isset($filter[$fieldKey]['attrib']))
 			{
 				$fieldAttr = array_merge($filter[$fieldKey]['attrib'], $attrib);
+			}
+			elseif (isset($filter['attrib']))
+			{
+				$fieldAttr = array_merge($filter['attrib'], $attrib);
 			}
 			else
 			{
@@ -63,8 +112,16 @@ foreach($displayFilters as $searchKey => $filter)
 
 			$filterHtml  .= '<div class="filter-search controls">'
 				. JHtml::_('calendar', htmlspecialchars($searchValue), 'filters['. $fieldKey . ']', 'filters_' . $fieldKey , $dateFormat, $fieldAttr)
-				. '</div>'
-			;
+				. '<span class="input-group-btn">
+								<button class="btn btn-secondary close-icon" type="button" title="Cancel Search">
+									<i class="icon-remove"></i>
+								</button>
+							</span></div>';
+
+			if(isset($this->colKey))
+			{
+				$filterHtml .= JHtml::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
+			}
 		}
 	}
 	elseif($searchType == 'html')
@@ -72,7 +129,7 @@ foreach($displayFilters as $searchKey => $filter)
 		$filterHtml = $filter['html'];
 	}
 	?>
-		<div class="filter-search controls pull-left">
+		<div class="filter-search controls pull-left <?php echo $this->classForShowHide; ?>">
 			<?php echo $filterHtml;?>
 		</div>
 	<?php

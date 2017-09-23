@@ -217,4 +217,22 @@ class TjreportsControllerReports extends JControllerAdmin
 
 		return $finalValue;
 	}
+
+	/**
+	 * Function to get default report to be shown
+	 *
+	 * @return  boolean
+	 *
+	 * @since  1.0
+	 */
+	public function defaultReport()
+	{
+		$input = JFactory::getApplication()->input;
+		$client = $input->get('client', '', 'STRING');
+
+		$model = $this->getModel('reports');
+		$reports = $model->getenableReportPlugins();
+
+		$this->setRedirect(JRoute::_('index.php?option=com_tjreports&view=reports&client=' . $client . '&reportId=' . $reports[0]['reportId'], false));
+	}
 }

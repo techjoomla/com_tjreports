@@ -12,16 +12,12 @@ defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
+	$app = JFactory::getApplication();
 	$headerLevel    = $this->headerLevel;
-	$listOrder      = $this->state->get('list.ordering');
-	$listDirn       = $this->state->get('list.direction');
+	$this->listOrder      = $this->state->get('list.ordering');
+	$this->listDirn       = $this->state->get('list.direction');
 	$totalCount = 0;
-	$lang = JFactory::getLanguage();
-	$extension = 'com_tjreports';
-	$base_dir = JPATH_SITE;
-	$language_tag = 'en-GB';
-	$reload = true;
-	$lang->load($extension, $base_dir, $language_tag, $reload);
+
 	foreach ($this->colToshow as $key=>$data)
 	{
 		if (is_array($data))
@@ -35,7 +31,6 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 	}
 
 	$input  = JFactory::getApplication()->input;
-	$reportId = $input->get('reportId');
 ?>
 <div id="reports-container">
 	<div class="<?php echo COM_TJLMS_WRAPPER_DIV ?>">
@@ -48,8 +43,11 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 <?php 	else :?>
 			<div id="j-main-container">
 <?php	endif;
+		if ($app->isSite())
+		{
 			if ($this->isExport)
-			{	?>
+			{
+				?>
 			<a class='btn'
 				type='submit' onclick="Joomla.submitbutton('reports.csvexport'); jQuery('#task').val('');" href='#'><span title='Export'
 				class='icon-download'></span><?php echo JText::_('COM_TJREPORTS_CSV_EXPORT'); ?></a>
@@ -64,6 +62,7 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 					<button class="btn btn btn-default  cancel-btn" type="button" style="display:none;" onclick="tjrContentUI.report.cancel();">
 						Cancel
 					</button><hr>
+<?php	}	?>
 			<form action="<?php echo JRoute::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm" onsubmit="return tjrContentUI.report.submitForm();">
 				<!--html code-->
 				<div class="row-fluid">
@@ -73,14 +72,18 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 							<?php foreach ($this->enableReportPlugins as $eachPlugin) :
 									$this->model->loadLanguage($eachPlugin['plugin']);
 									$selected = ' ';
-									if($reportId == $eachPlugin['reportId'])
+
+									if ($this->reportId == $eachPlugin['reportId'])
 									{
 										$selected = 'selected="selected"';
 									}
+
 									$pluginName = strtoupper($eachPlugin['plugin']);
 									$langConst = "PLG_TJREPORTS_" . $pluginName;
 							?>
-								<option value="<?php echo $eachPlugin['plugin'];?>"<?php echo $selected; ?> data-reportid="<?php echo $eachPlugin['reportId']; ?>"><?php echo JText::_($langConst); ?></option>
+								<option value="<?php echo $eachPlugin['plugin'];?>" <?php echo $selected; ?> data-reportid="<?php echo $eachPlugin['reportId']; ?>">
+									<?php echo $eachPlugin['title']; ?>
+								</option>
 						<?php	endforeach;	?>
 							</select>
 						</div><!--form-group-->
@@ -155,6 +158,8 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 								if ($totalHeadRows > 1)
 								{
 									$this->filters  = array_pop($displayFilters);
+									$this->filterLevel = 1;
+
 									echo $this->loadTemplate('filters');
 
 									if ($this->srButton)
@@ -193,6 +198,11 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 									foreach($this->colToshow as $index=>$detail)
 									{
+										if (!is_array($detail))
+										{
+											$hasFilter = isset($filters[$detail]);
+										}
+
 										if ($i == 1)
 										{
 											if (strpos($index, '::'))
@@ -220,7 +230,7 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 													if (in_array($subKey, $this->sortable))
 													{
-														echo $sortHtml = JHtml::_('grid.sort', $colTitle, $subKey, $listDirn, $listOrder);
+														echo $sortHtml = JHtml::_('grid.sort', $colTitle, $subKey, $this->listDirn, $this->listOrder);
 													}
 													else
 													{
@@ -245,19 +255,33 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 												echo '<th class="' . $colKey  . '">';
 
+												if ($hasFilter)
+												{
+													echo '<span class="table-heading">';
+												}
+
 												if (in_array($colKey, $this->sortable))
 												{
-													echo $sortHtml = JHtml::_('grid.sort', $colTitle, $colKey, $listDirn, $listOrder);
-													// str_replace('Joomla.tableOrdering', 'tjrContentUI.tableOrdering', $sortHtml);
+													echo $sortHtml = JHtml::_('grid.sort', $colTitle, $colKey, $this->listDirn, $this->listOrder);
 												}
 												else
 												{
 													echo '<div class="header_title">' . JText::_($colTitle) . '</div>';
 												}
-
-												if (isset($filters[$colKey]))
+												if ($hasFilter)
 												{
+													echo '<a href="#" title="search attempts" class="col-search">
+																<i class="icon-search"></i>
+															</a></span>';
+												}
+
+												if ($hasFilter)
+												{
+													$this->filterLevel = 2;
+
 													$this->filters  = array($colKey => $filters[$colKey]);
+													$this->colKey = $colKey;
+
 													echo $this->loadTemplate('filters');
 												}
 
@@ -341,8 +365,8 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 						?>
 					</div>
 
-					<input type="hidden" id="filter_order" name="filter_order" value="<?php echo  $listOrder; ?>" />
-					<input type="hidden" id="filter_order_Dir" name="filter_order_Dir" value="<?php echo  $listDirn; ?>" />
+					<input type="hidden" id="filter_order" name="filter_order" value="<?php echo  $this->listOrder; ?>" />
+					<input type="hidden" id="filter_order_Dir" name="filter_order_Dir" value="<?php echo  $this->listDirn; ?>" />
 					<input type="hidden" id="reportId" name="reportId" value="<?php echo  $this->reportId; ?>" />
 					<input type="hidden" id="reportToBuild" name="reportToBuild" value="<?php echo  $this->pluginName; ?>" />
 					<input type="hidden" id="task" name="task" value="" />

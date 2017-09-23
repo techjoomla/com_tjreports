@@ -65,6 +65,10 @@ class ReportsViewBase extends JViewLegacy
 		$this->client     = $input->get('client', '', 'STRING');
 		$this->queryId    = $input->get('queryId', 0, 'INT');
 
+		JLoader::register('TjreportsHelper', JPATH_ADMINISTRATOR . '/components/com_tjreports/helpers/tjreports.php');
+		JLoader::load('TjreportsHelper');
+		$this->tjreportsHelper = new TjreportsHelper;
+
 		if (!$canDo->get('core.view') || !$this->pluginName)
 		{
 			JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));

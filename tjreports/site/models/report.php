@@ -100,7 +100,7 @@ class  TjreportsModelReport extends JModelAdmin
 		$db    = JFactory::getDBO();
 		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
 		$tjrTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
-		$tjrTable->load(array('id' => int($pks)));
+		$tjrTable->load(array('id' => &$pks));
 
 		if ($tjrTable->userid == JFactory::getUser()->id)
 		{

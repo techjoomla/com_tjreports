@@ -111,12 +111,20 @@ foreach($displayFilters as $searchKey => $filter)
 			}
 
 			$filterHtml  .= '<div class="filter-search controls">'
-				. JHtml::_('calendar', htmlspecialchars($searchValue), 'filters['. $fieldKey . ']', 'filters_' . $fieldKey , $dateFormat, $fieldAttr)
-				. '<span class="input-group-btn">
+				. JHtml::_('calendar', htmlspecialchars($searchValue), 'filters['. $fieldKey . ']', 'filters_' . $fieldKey , $dateFormat, $fieldAttr);
+			
+			if ($this->filterLevel == 1)
+			{
+				$filterHtml	.= '</div>';
+			}
+			else
+			{
+				$filterHtml	.= '<span class="input-group-btn">
 								<button class="btn btn-secondary close-icon" type="button" title="Cancel Search">
 									<i class="icon-remove"></i>
 								</button>
 							</span></div>';
+			}
 
 			if(isset($this->colKey))
 			{
@@ -129,7 +137,7 @@ foreach($displayFilters as $searchKey => $filter)
 		$filterHtml = $filter['html'];
 	}
 	?>
-		<div class="filter-search controls pull-left <?php echo $this->classForShowHide; ?>">
+		<div class="filter-search controls pull-left <?php echo $classForShowHide; ?>">
 			<?php echo $filterHtml;?>
 		</div>
 	<?php

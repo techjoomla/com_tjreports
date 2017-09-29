@@ -232,10 +232,10 @@ class TjreportsModelReports extends JModelList
 	protected function populateState($ordering = '', $direction = 'ASC')
 	{
 		// List state information
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$input = JFactory::getApplication()->input;
 
-		$colToshow = $input->get('colToshow', array());
+		$colToshow = $input->get('colToshow', array(), 'ARRAY');
 
 		$reportId = $input->get('reportId', 0, 'uint');
 		$this->setState('reportId', $reportId);
@@ -260,7 +260,7 @@ class TjreportsModelReports extends JModelList
 		$this->setState('list.start', $value);
 
 		// Ordering
-		$this->default_order = $input->get('filter_order', $this->default_order);
+		$this->default_order = $input->get('filter_order', $this->default_order, 'STRING');
 
 		// If last sorted by column is hidden sort by first visible column
 		if (!in_array($this->default_order, $colToshow))

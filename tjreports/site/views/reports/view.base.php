@@ -146,8 +146,8 @@ class ReportsViewBase extends JViewLegacy
 		}
 
 		$this->model->loadLanguage($this->pluginName);
-		$this->items      = $this->model->getItems();
 		$this->state      = $this->get('State');
+		$this->items      = $this->model->getItems();
 		$this->pagination = $this->get('pagination');
 
 		$this->headerLevel     = $this->model->headerLevel;

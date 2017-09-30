@@ -11,10 +11,12 @@ tjrContentUI.base_url = (typeof root_url == 'undefined') ? '' : root_url;
 tjrContentUI.report    = tjrContentUI.report ? tjrContentUI.report : {};
 
 jQuery.extend(tjrContentUI.report, {
+	searchToggle: true,
 	$form: null,
 	url: tjrContentUI.base_url + 'index.php?option=com_tjreports&view=reports&format=json',
 	querySaveUrl: tjrContentUI.base_url + 'index.php?option=com_tjreports&format=json',
 	submitTJRData: function(task) {
+		this.searchToggle = jQuery('div#topFilters').is(':visible');
 		tjrContentUI.utility.loadingLayer('show');
 		this.$form = jQuery('#adminForm');
 		var doProcess = this.validate();
@@ -25,7 +27,6 @@ jQuery.extend(tjrContentUI.report, {
 		var promise = tjrContentService.postData(this.url, this.$form.serialize());//, {'datatype':'html'}
 		promise.fail(
 			function(response) {
-				//console.log(response, ' error_response');
 				console.log('Something went wrong.');
 				tjrContentUI.utility.loadingLayer('hide');
 
@@ -57,6 +58,12 @@ jQuery.extend(tjrContentUI.report, {
 
 				if(jQuery.prototype.chosen){
 					jQuery(containerSel + ' select').chosen();
+				}
+
+				if (tjrContentUI.report.searchToggle)
+				{
+					jQuery('#show-filter').addClass('btn-primary').find('i').removeClass('fa-caret-down').addClass('fa-caret-up');
+					jQuery('#topFilters').show();
 				}
 			}
 		);
@@ -220,7 +227,7 @@ jQuery.extend(tjrContentUI.report, {
 		var reportToLoad = jQuery(selectedElem).val();
 		var reportId = jQuery(selectedElem).find(":selected").attr('data-reportid');
 
-		var action = document.adminForm.action;
+		var action = jQuery(document.adminForm).attr('action')
 		var newAction = action+'&reportId='+reportId;
 
 		jQuery('#report-select options').attr('selected', 'selected');

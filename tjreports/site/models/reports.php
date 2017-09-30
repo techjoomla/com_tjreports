@@ -232,7 +232,7 @@ class TjreportsModelReports extends JModelList
 	protected function populateState($ordering = '', $direction = 'ASC')
 	{
 		// List state information
-		$app   = JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$input = JFactory::getApplication()->input;
 
 		$colToshow = $input->get('colToshow', array(), 'ARRAY');

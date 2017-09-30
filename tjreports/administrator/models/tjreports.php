@@ -83,7 +83,7 @@ class TjreportsModelTjreports extends JModelList
 		}
 
 		// $query->where("id not in(select `parent` from `#__tj_reports` where `default`=1)");
-		$query->where($db->quoteName('default') . ' = 1');
+		$query->where($db->quoteName('parent') . ' = 0');
 
 		// Add the list ordering clause.
 		$orderCol	= $this->state->get('list.ordering', 'title');

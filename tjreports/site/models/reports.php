@@ -875,4 +875,49 @@ class TjreportsModelReports extends JModelList
 
 		return $reportTable;
 	}
+
+	/**
+	 * Method to get report link for inter linking
+	 *
+	 * @param   STRING  $client        client name
+	 * @param   STRING  $reportToLink  Report Name
+	 * @param   STRING  $filters       filter to set
+	 *
+	 * @return  Object
+	 *
+	 * @since   3.0
+	 */
+	public function getFirstReport($client, $reportToLink, $filters)
+	{
+		$user       = JFactory::getUser();
+
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+		$query->select(array('id as reportId'));
+		$query->from($db->quoteName('#__tj_reports'));
+		$query->where($db->quoteName('plugin') . ' = ' . $db->quote($reportToLink));
+		$query->where($db->quoteName('client') . ' = ' . $db->quote($client));
+		$query->order('id ASC');
+		$db->setQuery($query);
+		$reports = $db->loadAssocList();
+
+		$filterLink = '';
+
+		foreach ($filters as $key => $value)
+		{
+			$filterLink .= "&filters[" . $key . "]=" . $value;
+		}
+
+		foreach ($reports as $key => $report)
+		{
+			$allow = $user->authorise('core.view', 'com_tjreports.tjreport.' . $report['reportId']);
+
+			if ($allow)
+			{
+				$link = 'index.php?option=com_tjreports&view=reports&client=' . $client . '&reportId=' . $report['reportId'] . $filterLink;
+
+				return $link;
+			}
+		}
+	}
 }

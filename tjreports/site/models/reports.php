@@ -265,7 +265,8 @@ class TjreportsModelReports extends JModelList
 		// If last sorted by column is hidden sort by first visible column
 		if (!in_array($this->default_order, $colToshow))
 		{
-			$this->default_order = reset($colToshow);
+			$visibleSortable = array_intersect($colToshow, $this->sortableColumns);
+			$this->default_order = reset($visibleSortable);
 		}
 
 		$this->setState('list.ordering', $this->default_order);

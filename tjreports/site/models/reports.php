@@ -887,7 +887,7 @@ class TjreportsModelReports extends JModelList
 	 *
 	 * @since   3.0
 	 */
-	public function getFirstReport($client, $reportToLink, $filters)
+	public function getReportLink($client, $reportToLink, $filters)
 	{
 		$user       = JFactory::getUser();
 

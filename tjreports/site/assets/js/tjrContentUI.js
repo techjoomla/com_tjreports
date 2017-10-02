@@ -37,7 +37,6 @@ jQuery.extend(tjrContentUI.report, {
 			}
 		).done(
 			function(response) {
-				// console.log(response, ' success_response');
 				var containerSel = '#j-main-container';
 				tjrContentUI.utility.loadingLayer('hide');
 				var responseHTML = jQuery(response['html']).find(containerSel).html();
@@ -60,6 +59,11 @@ jQuery.extend(tjrContentUI.report, {
 					jQuery(containerSel + ' select').chosen();
 				}
 
+				if (task == 'reset')
+				{
+					tjrContentUI.report.searchToggle = false;
+				}
+
 				if (tjrContentUI.report.searchToggle)
 				{
 					jQuery('#show-filter').addClass('btn-primary').find('i').removeClass('fa-caret-down').addClass('fa-caret-up');
@@ -77,13 +81,13 @@ jQuery.extend(tjrContentUI.report, {
 		jQuery('#topFilters').slideToggle('1000');
 		jQuery('#show-filter .fa').toggleClass('fa-caret-up').toggleClass('fa-caret-down');
 	},
-	resetSubmitTJRData : function(){
+	resetSubmitTJRData : function(task){
 		jQuery(':input','#topFilters')
 		 .not(':button, :submit, :reset, input:hidden')
 		 .val('')
 		 .removeAttr('checked')
 		 .removeAttr('selected');
-		tjrContentUI.report.submitTJRData();
+		tjrContentUI.report.submitTJRData(task);
 	},
 	validate: function() {
 		return true;

@@ -24,16 +24,7 @@ foreach($displayFilters as $searchKey => $filter)
 	$searchType = $filter['search_type'];
 	$searchValue = isset($filters[$searchKey]) ? $filters[$searchKey] : '';
 	$filterHtml = '';
-	$filterHide = '';
-
-	if ($searchValue === '')
-	{
-		$filterHide = 'filter-hide';
-	}
-	else
-	{
-		$filterHide = 'filter-show';
-	}
+	$filterHide = $searchValue === '' ? 'filter-hide' : 'filter-show';
 
 	if ($searchType == 'text')
 	{
@@ -67,11 +58,18 @@ foreach($displayFilters as $searchKey => $filter)
 					'class="filter-input input-medium ' . $filterHide . '" size="1" onchange="tjrContentUI.report.submitTJRData();"',
 					$svalue, $stext, $searchValue);
 
-		$filterHtml .= '<span class="input-group-btn">
+		if ($this->filterLevel == 1)
+		{
+			$filterHtml	.= '</div>';
+		}
+		else
+		{
+			$filterHtml .= '<span class="input-group-btn">
 								<button class="btn btn-secondary close-icon" type="button" title="Cancel Search">
 									<i class="icon-remove"></i>
 								</button>
 							</span></div>';
+		}
 
 		if(isset($this->colKey))
 		{
@@ -95,6 +93,7 @@ foreach($displayFilters as $searchKey => $filter)
 
 			$searchValue = isset($filters[$fieldKey]) ? $filters[$fieldKey] : '';
 			$dateFormat  = isset($filters['dateFormat']) ? $filters['dateFormat'] : '%Y-%m-%d';
+			$filterHide = $searchValue === '' ? 'filter-hide' : 'filter-show';
 			$attrib		 = array('class' => 'tjrsmall-input dash-calendar validate-ymd-date ' . $filterHide);
 
 			if (isset($filter[$fieldKey]['attrib']))
@@ -112,7 +111,7 @@ foreach($displayFilters as $searchKey => $filter)
 
 			$filterHtml  .= '<div class="filter-search controls">'
 				. JHtml::_('calendar', htmlspecialchars($searchValue), 'filters['. $fieldKey . ']', 'filters_' . $fieldKey , $dateFormat, $fieldAttr);
-			
+
 			if ($this->filterLevel == 1)
 			{
 				$filterHtml	.= '</div>';

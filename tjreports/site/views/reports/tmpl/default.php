@@ -170,7 +170,7 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 											<button class="btn hasTooltip" onclick="tjrContentUI.report.submitTJRData(); return false;" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT')?>"><i class="icon-search"></i>
 											</button>
 											<?php } ?>
-											<button class="btn hasTooltip" type="button" title="<?php echo JText::_('JSEARCH_FILTER_CLEAR')?>" onclick="tjrContentUI.report.resetSubmitTJRData(); return false;"><i class="icon-remove"></i>
+											<button class="btn hasTooltip" type="button" title="<?php echo JText::_('JSEARCH_FILTER_CLEAR')?>" onclick="tjrContentUI.report.resetSubmitTJRData('reset'); return false;"><i class="icon-remove"></i>
 											</button>
 										</div>
 										<?php

@@ -11,10 +11,12 @@ tjrContentUI.base_url = (typeof root_url == 'undefined') ? '' : root_url;
 tjrContentUI.report    = tjrContentUI.report ? tjrContentUI.report : {};
 
 jQuery.extend(tjrContentUI.report, {
+	searchToggle: true,
 	$form: null,
 	url: tjrContentUI.base_url + 'index.php?option=com_tjreports&view=reports&format=json',
 	querySaveUrl: tjrContentUI.base_url + 'index.php?option=com_tjreports&format=json',
 	submitTJRData: function(task) {
+		this.searchToggle = jQuery('div#topFilters').is(':visible');
 		tjrContentUI.utility.loadingLayer('show');
 		this.$form = jQuery('#adminForm');
 		var doProcess = this.validate();
@@ -25,7 +27,6 @@ jQuery.extend(tjrContentUI.report, {
 		var promise = tjrContentService.postData(this.url, this.$form.serialize());//, {'datatype':'html'}
 		promise.fail(
 			function(response) {
-				//console.log(response, ' error_response');
 				console.log('Something went wrong.');
 				tjrContentUI.utility.loadingLayer('hide');
 
@@ -36,7 +37,6 @@ jQuery.extend(tjrContentUI.report, {
 			}
 		).done(
 			function(response) {
-				// console.log(response, ' success_response');
 				var containerSel = '#j-main-container';
 				tjrContentUI.utility.loadingLayer('hide');
 				var responseHTML = jQuery(response['html']).find(containerSel).html();
@@ -58,6 +58,17 @@ jQuery.extend(tjrContentUI.report, {
 				if(jQuery.prototype.chosen){
 					jQuery(containerSel + ' select').chosen();
 				}
+
+				if (task == 'reset')
+				{
+					tjrContentUI.report.searchToggle = false;
+				}
+
+				if (tjrContentUI.report.searchToggle)
+				{
+					jQuery('#show-filter').addClass('btn-primary').find('i').removeClass('fa-caret-down').addClass('fa-caret-up');
+					jQuery('#topFilters').show();
+				}
 			}
 		);
 
@@ -70,13 +81,13 @@ jQuery.extend(tjrContentUI.report, {
 		jQuery('#topFilters').slideToggle('1000');
 		jQuery('#show-filter .fa').toggleClass('fa-caret-up').toggleClass('fa-caret-down');
 	},
-	resetSubmitTJRData : function(){
+	resetSubmitTJRData : function(task){
 		jQuery(':input','#topFilters')
 		 .not(':button, :submit, :reset, input:hidden')
 		 .val('')
 		 .removeAttr('checked')
 		 .removeAttr('selected');
-		tjrContentUI.report.submitTJRData();
+		tjrContentUI.report.submitTJRData(task);
 	},
 	validate: function() {
 		return true;
@@ -220,7 +231,7 @@ jQuery.extend(tjrContentUI.report, {
 		var reportToLoad = jQuery(selectedElem).val();
 		var reportId = jQuery(selectedElem).find(":selected").attr('data-reportid');
 
-		var action = document.adminForm.action;
+		var action = jQuery(document.adminForm).attr('action')
 		var newAction = action+'&reportId='+reportId;
 
 		jQuery('#report-select options').attr('selected', 'selected');

@@ -232,7 +232,7 @@ class TjreportsModelReports extends JModelList
 	protected function populateState($ordering = '', $direction = 'ASC')
 	{
 		// List state information
-		$app   = JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$input = JFactory::getApplication()->input;
 
 		$colToshow = $input->get('colToshow', array(), 'ARRAY');
@@ -265,7 +265,8 @@ class TjreportsModelReports extends JModelList
 		// If last sorted by column is hidden sort by first visible column
 		if (!in_array($this->default_order, $colToshow))
 		{
-			$this->default_order = reset($colToshow);
+			$visibleSortable = array_intersect($colToshow, $this->sortableColumns);
+			$this->default_order = reset($visibleSortable);
 		}
 
 		$this->setState('list.ordering', $this->default_order);
@@ -873,5 +874,68 @@ class TjreportsModelReports extends JModelList
 		$reportTable->load(array('id' => $reportId));
 
 		return $reportTable;
+	}
+
+	/**
+	 * Method to get report link for inter linking
+	 *
+	 * @param   STRING  $reportToLink  Report Name
+	 * @param   STRING  $filters       filter to set
+	 *
+	 * @return  Object
+	 *
+	 * @since   3.0
+	 */
+	public function getReportLink($reportToLink, $filters)
+	{
+		$user       = JFactory::getUser();
+
+		$reports = $this->getPluginReport($reportToLink);
+		$filterLink = '';
+
+		foreach ($filters as $key => $value)
+		{
+			$filterLink .= "&filters[" . $key . "]=" . $value;
+		}
+
+		foreach ($reports as $key => $report)
+		{
+			$allow = $user->authorise('core.view', 'com_tjreports.tjreport.' . $report['reportId']);
+
+			if ($allow)
+			{
+				$link = 'index.php?option=com_tjreports&view=reports&client=' . $report['client'] . '&reportId=' . $report['reportId'] . $filterLink;
+
+				return $link;
+			}
+		}
+	}
+
+	/**
+	 * Method to get report plugin of particular type for inter linking
+	 *
+	 * @param   STRING  $pluginName  Plugin Name
+	 *
+	 * @return  Object
+	 *
+	 * @since   3.0
+	 */
+	public function getPluginReport($pluginName)
+	{
+		static $reports = array();
+
+		if (!isset($reports[$pluginName]))
+		{
+			$db = JFactory::getDBO();
+			$query = $db->getQuery(true);
+			$query->select(array('id as reportId', 'client'));
+			$query->from($db->quoteName('#__tj_reports'));
+			$query->where($db->quoteName('plugin') . ' = ' . $db->quote($pluginName));
+			$query->order('id ASC');
+			$db->setQuery($query);
+			$reports[$pluginName] = $db->loadAssocList();
+		}
+
+		return $reports[$pluginName];
 	}
 }

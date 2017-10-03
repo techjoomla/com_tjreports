@@ -879,7 +879,6 @@ class TjreportsModelReports extends JModelList
 	/**
 	 * Method to get report link for inter linking
 	 *
-	 * @param   STRING  $client        client name
 	 * @param   STRING  $reportToLink  Report Name
 	 * @param   STRING  $filters       filter to set
 	 *
@@ -887,20 +886,11 @@ class TjreportsModelReports extends JModelList
 	 *
 	 * @since   3.0
 	 */
-	public function getReportLink($client, $reportToLink, $filters)
+	public function getReportLink($reportToLink, $filters)
 	{
 		$user       = JFactory::getUser();
 
-		$db = JFactory::getDBO();
-		$query = $db->getQuery(true);
-		$query->select(array('id as reportId'));
-		$query->from($db->quoteName('#__tj_reports'));
-		$query->where($db->quoteName('plugin') . ' = ' . $db->quote($reportToLink));
-		$query->where($db->quoteName('client') . ' = ' . $db->quote($client));
-		$query->order('id ASC');
-		$db->setQuery($query);
-		$reports = $db->loadAssocList();
-
+		$reports = $this->getPluginReport($reportToLink);
 		$filterLink = '';
 
 		foreach ($filters as $key => $value)
@@ -914,10 +904,38 @@ class TjreportsModelReports extends JModelList
 
 			if ($allow)
 			{
-				$link = 'index.php?option=com_tjreports&view=reports&client=' . $client . '&reportId=' . $report['reportId'] . $filterLink;
+				$link = 'index.php?option=com_tjreports&view=reports&client=' . $report['client'] . '&reportId=' . $report['reportId'] . $filterLink;
 
 				return $link;
 			}
 		}
+	}
+
+	/**
+	 * Method to get report plugin of particular type for inter linking
+	 *
+	 * @param   STRING  $pluginName  Plugin Name
+	 *
+	 * @return  Object
+	 *
+	 * @since   3.0
+	 */
+	public function getPluginReport($pluginName)
+	{
+		static $reports = array();
+
+		if (!isset($reports[$pluginName]))
+		{
+			$db = JFactory::getDBO();
+			$query = $db->getQuery(true);
+			$query->select(array('id as reportId', 'client'));
+			$query->from($db->quoteName('#__tj_reports'));
+			$query->where($db->quoteName('plugin') . ' = ' . $db->quote($pluginName));
+			$query->order('id ASC');
+			$db->setQuery($query);
+			$reports[$pluginName] = $db->loadAssocList();
+		}
+
+		return $reports[$pluginName];
 	}
 }

@@ -131,5 +131,4 @@ class TjreportsTableTjreport extends JTable
 
 		return parent::check();
 	}
-
 }

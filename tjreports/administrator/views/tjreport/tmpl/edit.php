@@ -104,15 +104,21 @@ JFactory::getDocument()->addScriptDeclaration('
 					</div>
 				</div>
 
-				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('default'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('default'); ?></div>
-				</div>
+				<input type="hidden" name="jform[default]" value="1" />
 
-				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('plugin'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('plugin'); ?></div>
-				</div>
+				<?php
+				if($this->item->id)
+				{	?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('plugin'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('plugin'); ?></div>
+					</div>
+		<?php	}
+				else
+				{	?>
+					<input type="hidden" name="jform[plugin]" id="jform_plugin" value=""/>
+		<?php	}	?>
+
 			<?php echo JHtml::_('bootstrap.endTab'); ?>
 
 			<?php if ($this->canDo->get('core.admin')) : ?>

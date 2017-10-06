@@ -71,4 +71,64 @@ class TjreportsTableTjreport extends JTable
 
 		return $assetParentId;
 	}
+
+	/**
+	 * Overloaded check function
+	 *
+	 * @return  check
+	 *
+	 * @since  1.0.0
+	 */
+	public function check()
+	{
+		$db = JFactory::getDbo();
+
+		$this->alias = trim($this->alias);
+
+		if (empty($this->alias))
+		{
+			$this->alias = $this->title;
+		}
+
+		if ($this->alias)
+		{
+			if (JFactory::getConfig()->get('unicodeslugs') == 1)
+			{
+				$this->alias = JFilterOutput::stringURLUnicodeSlug($this->alias);
+			}
+			else
+			{
+				$this->alias = JFilterOutput::stringURLSafe($this->alias);
+			}
+		}
+
+		// Check if course with same alias is present
+		$table = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
+
+		if ($table->load(array('alias' => $this->alias)) && ($table->id != $this->id || $this->id == 0))
+		{
+			$msg = JText::_('COM_TJLMS_SAVE_ALIAS_WARNING');
+
+			while ($table->load(array('alias' => $this->alias)))
+			{
+				$this->alias = JString::increment($this->alias, 'dash');
+			}
+
+			JFactory::getApplication()->enqueueMessage($msg, 'warning');
+		}
+
+		if (in_array($this->alias, $tjlms_views))
+		{
+			$this->setError(JText::_('COM_TJLMS_VIEW_WITH_SAME_ALIAS'));
+
+			return false;
+		}
+
+		if (trim(str_replace('-', '', $this->alias)) == '')
+		{
+			$this->alias = JFactory::getDate()->format("Y-m-d-H-i-s");
+		}
+
+		return parent::check();
+	}
 }

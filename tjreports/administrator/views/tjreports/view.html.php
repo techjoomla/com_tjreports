@@ -71,7 +71,7 @@ class TjreportsViewTjreports extends JViewLegacy
 	{
 		$name = JText::_('COM_TJREPORTS');
 
-		JToolBarHelper::title($name, 'tjreport');
+		JToolBarHelper::title($name, 'list');
 
 		if ($this->canDo->get('core.delete'))
 		{

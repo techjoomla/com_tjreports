@@ -81,8 +81,9 @@ jQuery.extend(tjrContentUI.report, {
 		jQuery('#topFilters').slideToggle('1000');
 		jQuery('#show-filter .fa').toggleClass('fa-caret-up').toggleClass('fa-caret-down');
 	},
-	resetSubmitTJRData : function(task){
-		jQuery(':input','#topFilters')
+	resetSubmitTJRData : function(task,container){
+		container = container ? container : '#topFilters';
+		jQuery(':input', container)
 		 .not(':button, :submit, :reset, input:hidden')
 		 .val('')
 		 .removeAttr('checked')
@@ -451,7 +452,7 @@ jQuery.extend(tjrContentUI.tjreport, {
 			var container = jQuery(this).parents('th');
 			jQuery('.table-heading', container).show();
 			jQuery('.col-filter-header',container).hide();
-			jQuery('#adminForm')[0].reset();
+			tjrContentUI.report.resetSubmitTJRData('submit', container);
 		});
 	},
 	getParams:function(defaultParam){

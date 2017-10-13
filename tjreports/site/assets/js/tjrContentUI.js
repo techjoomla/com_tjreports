@@ -188,6 +188,7 @@ jQuery.extend(tjrContentUI.report, {
 						tjrContentUI.utility.loadingLayer('hide');
 						if (response.success)
 						{
+							tjrContentUI.utility.setJSCookie('showdeletemsg', '1', 1);
 							window.location.reload();
 						}
 						else
@@ -377,6 +378,28 @@ jQuery.extend(tjrContentUI.utility, {
 			}, 500);
 		}
 	},
+	setJSCookie:function(name,value,days) {
+		var expires = "";
+		if (days) {
+			var date = new Date();
+			date.setTime(date.getTime() + (days*24*60*60*1000));
+			expires = "; expires=" + date.toUTCString();
+		}
+		document.cookie = name + "=" + value + expires + "; path=/";
+	},
+	getJSCookie:function(name) {
+		var nameEQ = name + "=";
+		var ca = document.cookie.split(';');
+		for(var i=0;i < ca.length;i++) {
+			var c = ca[i];
+			while (c.charAt(0)==' ') c = c.substring(1,c.length);
+			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+		}
+		return null;
+	},
+	eraseJSCookie:function(name) {
+		tjrContentUI.utility.setJSCookie(name,"",-1);
+	},
 });
 tjrContentUI.tjreport  = tjrContentUI.tjreport ? tjrContentUI.tjreport : {};
 jQuery.extend(tjrContentUI.tjreport, {
@@ -480,4 +503,16 @@ jQuery(document).ready(function(){
 	jQuery('#btn-cancel').hide();
 	jQuery('.cancel-btn').hide();
 	tjrContentUI.tjreport.loadSort();
+
+	if (tjrContentUI.utility.getJSCookie('showdeletemsg'))
+	{
+		if (!Joomla.JText.strings['SUCCESS'])
+		{
+			Joomla.JText.strings['SUCCESS'] = "Success";
+		}
+		Joomla.renderMessages({'success' : [Joomla.JText._("COM_TJREPORTS_QUERY_DELETE_SUCCESS")]});
+		tjrContentUI.utility.eraseJSCookie("showdeletemsg");
+	}
 });
+
+

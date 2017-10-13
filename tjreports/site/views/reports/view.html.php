@@ -141,5 +141,6 @@ class TjreportsViewReports extends ReportsViewBase
 		JText::script('COM_TJREPORTS_DELETE_MESSAGE');
 		JText::script('COM_TJREPORTS_SAVE_QUERY');
 		JText::script('COM_TJREPORTS_ENTER_TITLE');
+		JText::script('COM_TJREPORTS_QUERY_DELETE_SUCCESS');
 	}
 }

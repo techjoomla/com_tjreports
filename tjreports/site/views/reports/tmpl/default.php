@@ -101,7 +101,9 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 						<?php	echo JHtml::_('select.genericlist', $this->savedQueries, "queryId", 'class="" size="1" onchange="tjrContentUI.report.getQueryResult(this.value);" name="filter_saveQuery"', "value", "text", $this->queryId);	?>
 					</div><!--span3-->
 					<div class="span1">
+						<?php if ($this->queryId) { ?>
 						<input type='button' value="<?php echo JText::_('COM_TJREPORTS_DELETE_QUERY'); ?>" class="btn btn-primary" onclick="tjrContentUI.report.deleteThisQuery();"/>
+						<?php } ?>
 					</div><!--span1-->
 			<?php	}	?>
 				</div><!--row-fluid-->
@@ -310,28 +312,6 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 							<tbody>
 								<?php
 								// Loop through items
-								foreach((array) $this->items as $itemKey => $item)
-								{
-									echo '<tr>';
-
-									foreach ($this->colToshow as $arrayKey => $key)
-									{
-										if (is_array($key))
-										{
-											foreach($key as $subkey => $subVal)
-											{
-												$keyDetails   = explode('::', $subkey);
-												echo '<td class="subdetails ' . $keyDetails[0] . ' ' . $keyDetails[1] . '">' .  $item[$arrayKey][$subkey] .'</td>';
-											}
-										}
-										else
-										{
-											echo '<td class="' . $key . '">'. $item[$key] .'</td>';
-										}
-									}
-
-									echo '</tr>';
-								}
 
 								// No Result Found
 								if (empty($this->items))
@@ -339,6 +319,31 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 									echo '<tr>
 											<td class="center" colspan="' . $totalCount . '">No Results Found.</td>
 										</tr>';
+								}
+								else
+								{
+									foreach($this->items as $itemKey => $item)
+									{
+										echo '<tr>';
+
+										foreach ($this->colToshow as $arrayKey => $key)
+										{
+											if (is_array($key))
+											{
+												foreach($key as $subkey => $subVal)
+												{
+													$keyDetails   = explode('::', $subkey);
+													echo '<td class="subdetails ' . $keyDetails[0] . ' ' . $keyDetails[1] . '">' .  $item[$arrayKey][$subkey] .'</td>';
+												}
+											}
+											else
+											{
+												echo '<td class="' . $key . '">'. $item[$key] .'</td>';
+											}
+										}
+
+										echo '</tr>';
+									}
 								}
 
 								// Any message to display

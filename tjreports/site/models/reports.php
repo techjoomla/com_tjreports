@@ -342,12 +342,14 @@ class TjreportsModelReports extends JModelList
 
 						if (!empty($filters[$fromCol]))
 						{
-							$query->where($dispFilter['searchin'] . ' > ' . $db->quote($filters[$fromCol]));
+							$fromTime = $filters[$fromCol] . ' 00:00:00';
+							$query->where($dispFilter['searchin'] . ' >= ' . $db->quote($fromTime));
 						}
 
 						if (!empty($filters[$toCol]))
 						{
-							$query->where($dispFilter['searchin'] . ' < ' . $db->quote($filters[$toCol]));
+							$toTime = $filters[$toCol] . ' 23:59:59';
+							$query->where($dispFilter['searchin'] . ' <= ' . $db->quote($toTime));
 						}
 					}
 					elseif (isset($dispFilter['type']))

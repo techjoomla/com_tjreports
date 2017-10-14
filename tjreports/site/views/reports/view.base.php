@@ -71,7 +71,7 @@ class ReportsViewBase extends JViewLegacy
 
 		if (!$canDo->get('core.view') || !$this->pluginName)
 		{
-			JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
+			JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR'));
 
 			return false;
 		}
@@ -85,14 +85,14 @@ class ReportsViewBase extends JViewLegacy
 
 			if (!$allow_permission)
 			{
-				JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
+				JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR'));
 
 				return false;
 			}
 		}
 		else
 		{
-			JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR1'));
+			JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR1'));
 
 			return false;
 		}

@@ -955,6 +955,7 @@ class TjreportsModelReports extends JModelList
 	public function getPluginModel($name = '', $prefix = '', $config = array())
 	{
 		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $name);
+		$this->loadLanguage($name, 'tjreports');
 
 		return JModelLegacy::getInstance($name, 'TjreportsModel', $config);
 	}
@@ -966,11 +967,11 @@ class TjreportsModelReports extends JModelList
 	 *
 	 * @since   2.0
 	 * */
-	public function getPluginClient()
+	public function getPluginDetail()
 	{
-		$client = '';
+		$detail = array('client' => '', 'title' => '');
 
-		return $client;
+		return $detail;
 	}
 
 	/**
@@ -982,7 +983,7 @@ class TjreportsModelReports extends JModelList
 	 *
 	 * @since   3.0
 	 */
-	public function getPluginClientname($pluginName)
+	public function getPluginInstallationDetail($pluginName)
 	{
 		static $clients = array();
 
@@ -993,7 +994,7 @@ class TjreportsModelReports extends JModelList
 
 			if ($model)
 			{
-				$clients[$pluginName] = $model->getPluginClient();
+				$clients[$pluginName] = $model->getPluginDetail();
 			}
 		}
 
@@ -1017,16 +1018,16 @@ class TjreportsModelReports extends JModelList
 			$pluginName = $plugin->name;
 			JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
 			$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable');
-			$client = $this->getPluginClientname($pluginName);
+			$details = $this->getPluginInstallationDetail($pluginName);
 			$reportTable->load(array('plugin' => $pluginName));
 
 			if (!$reportTable->id)
 			{
 				$data = array();
-				$data['title']  = $pluginName;
+				$data['title']  = $details['title'];
 				$data['plugin']  = $pluginName;
 				$data['alias']  = $pluginName;
-				$data['client']  = $client;
+				$data['client']  = $details['client'];
 				$data['parent']  = 0;
 				$data['default']  = 1;
 

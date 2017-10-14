@@ -940,4 +940,101 @@ class TjreportsModelReports extends JModelList
 
 		return $reports[$pluginName];
 	}
+
+	/**
+	 * Method to get a model object, loading it if required.
+	 *
+	 * @param   string  $name    The model name. Optional.
+	 * @param   string  $prefix  The class prefix. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
+	 *
+	 * @return  JModelLegacy|boolean  Model object on success; otherwise false on failure.
+	 *
+	 * @since   3.0
+	 */
+	public function getPluginModel($name = '', $prefix = '', $config = array())
+	{
+		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $name);
+
+		return JModelLegacy::getInstance($name, 'TjreportsModel', $config);
+	}
+
+	/**
+	 * Get client of the plugin, Must be overidden by plugin if has any client
+	 *
+	 * @return STRING Client
+	 *
+	 * @since   2.0
+	 * */
+	public function getPluginClient()
+	{
+		$client = '';
+
+		return $client;
+	}
+
+	/**
+	 * Method to get report plugin of particular type for inter linking
+	 *
+	 * @param   STRING  $pluginName  Plugin Name
+	 *
+	 * @return  Object
+	 *
+	 * @since   3.0
+	 */
+	public function getPluginClientname($pluginName)
+	{
+		static $clients = array();
+
+		if ($pluginName && !isset($clients[$pluginName]))
+		{
+			$clients[$pluginName] = '';
+			$model = $this->getPluginModel($pluginName);
+
+			if ($model)
+			{
+				$clients[$pluginName] = $model->getPluginClient();
+			}
+		}
+
+		return $clients[$pluginName];
+	}
+
+	/**
+	 * Execute the tj reports plugin queries
+	 *
+	 * @return  1
+	 */
+	public function addTjReportsPlugins()
+	{
+		$dispatcher = JEventDispatcher::getInstance();
+		$plugins    = JPluginHelper::getPlugin('tjreports');
+
+		$count = 0;
+
+		foreach ($plugins as $plugin)
+		{
+			$pluginName = $plugin->name;
+			JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
+			$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable');
+			$client = $this->getPluginClientname($pluginName);
+			$reportTable->load(array('plugin' => $pluginName));
+
+			if (!$reportTable->id)
+			{
+				$data = array();
+				$data['title']  = $pluginName;
+				$data['plugin']  = $pluginName;
+				$data['alias']  = $pluginName;
+				$data['client']  = $client;
+				$data['parent']  = 0;
+				$data['default']  = 1;
+
+				$reportTable->save($data);
+				$count++;
+			}
+		}
+
+		return $count;
+	}
 }

@@ -107,7 +107,7 @@ class TjreportsTableTjreport extends JTable
 
 		if ($table->load(array('alias' => $this->alias)) && ($table->id != $this->id || $this->id == 0))
 		{
-			$msg = JText::_('COM_TJLMS_SAVE_ALIAS_WARNING');
+			$msg = JText::_('COM_TJREPORT_SAVE_ALIAS_WARNING');
 
 			while ($table->load(array('alias' => $this->alias)))
 			{
@@ -117,9 +117,11 @@ class TjreportsTableTjreport extends JTable
 			JFactory::getApplication()->enqueueMessage($msg, 'warning');
 		}
 
-		if (in_array($this->alias, $tjlms_views))
+		$tjreport_views = array('reports');
+
+		if (in_array($this->alias, $tjreport_views))
 		{
-			$this->setError(JText::_('COM_TJLMS_VIEW_WITH_SAME_ALIAS'));
+			$this->setError(JText::_('COM_TJREPORT_VIEW_WITH_SAME_ALIAS'));
 
 			return false;
 		}

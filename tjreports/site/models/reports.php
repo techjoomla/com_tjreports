@@ -517,6 +517,8 @@ class TjreportsModelReports extends JModelList
 	public function getenableReportPlugins()
 	{
 		$user       = JFactory::getUser();
+		$input = JFactory::getApplication()->input;
+		$client = $input->get('client', '', 'STRING');
 
 		// Get all report plugin
 		$dispatcher   = JEventDispatcher::getInstance();
@@ -531,6 +533,12 @@ class TjreportsModelReports extends JModelList
 		$query->from($db->quoteName('#__tj_reports'));
 		$query->where($db->quoteName('plugin') . ' IN (' . implode(',', $db->quote($pluginNames)) . ')');
 		$query->where($db->quoteName('userid') . ' = ' . $db->quote(0));
+
+		if (!empty($client))
+		{
+			$query->where($db->quoteName('client') . ' = ' . $db->quote($client));
+		}
+
 		$db->setQuery($query);
 		$reports = $db->loadAssocList();
 

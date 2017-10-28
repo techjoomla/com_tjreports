@@ -31,6 +31,22 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 	}
 
 	$input  = JFactory::getApplication()->input;
+
+	$displayReportFilterFlag = false;
+	$displayFilters = $this->userFilters;
+	$totalHeadRows = count($displayFilters);
+
+	foreach ($displayFilters as $displayFilter)
+	{
+		$reportFilter = $displayFilter['report_filter'];
+
+		if (!empty($reportFilter))
+		{
+			$displayReportFilterFlag = true;
+			break;
+		}
+	}
+
 ?>
 <div id="reports-container">
 	<div class="<?php echo COM_TJLMS_WRAPPER_DIV ?>">
@@ -145,18 +161,24 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 								?>
 							</ul>
 						</div>
-						<div class="span3">
-							<button type="button" class="btn btn-default" id="show-filter" onclick="tjrContentUI.report.showFilter();">
-								Search Tools<i class="fa fa-caret-down"></i>
-							</button>
-						</div>
+						<?php
+						if ($displayReportFilterFlag)
+						{
+						?>
+							<div class="span3">
+								<button type="button" class="btn btn-default" id="show-filter" onclick="tjrContentUI.report.showFilter();">
+									<?php echo JText::_("COM_TJREPORTS_SEARCH_TOOLS"); ?>
+									<i class="fa fa-caret-down"></i>
+								</button>
+							</div>
+						<?php
+						}
+						?>
 					</div>
 
 					<div class="js-stools-container-list hidden-phone hidden-tablet row-fluid">
 						<div class="ordering-select hidden-phone show-tools" id="topFilters">
 							<?php
-								$displayFilters = $this->userFilters;
-								$totalHeadRows = count($displayFilters);
 								if ($totalHeadRows > 1)
 								{
 									$this->filters  = array_pop($displayFilters);

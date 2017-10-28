@@ -31,21 +31,8 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 	}
 
 	$input  = JFactory::getApplication()->input;
-
-	$displayReportFilterFlag = false;
 	$displayFilters = $this->userFilters;
 	$totalHeadRows = count($displayFilters);
-
-	foreach ($displayFilters as $displayFilter)
-	{
-		$reportFilter = $displayFilter['report_filter'];
-
-		if (!empty($reportFilter))
-		{
-			$displayReportFilterFlag = true;
-			break;
-		}
-	}
 
 ?>
 <div id="reports-container">
@@ -162,7 +149,7 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 							</ul>
 						</div>
 						<?php
-						if ($displayReportFilterFlag)
+						if ($totalHeadRows > 1)
 						{
 						?>
 							<div class="span3">

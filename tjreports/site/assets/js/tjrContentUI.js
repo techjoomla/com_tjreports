@@ -83,6 +83,7 @@ jQuery.extend(tjrContentUI.report, {
 	},
 	resetSubmitTJRData : function(task,container){
 		container = container ? container : '#topFilters';
+		jQuery('input:text', container).val('');
 		jQuery(':input', container)
 		 .not(':button, :submit, :reset, input:hidden')
 		 .val('')

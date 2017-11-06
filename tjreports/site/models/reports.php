@@ -1027,7 +1027,7 @@ class TjreportsModelReports extends JModelList
 			JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
 			$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable');
 			$details = $this->getPluginInstallationDetail($pluginName);
-			$reportTable->load(array('plugin' => $pluginName));
+			$reportTable->load(array('plugin' => $pluginName, 'userid' => 0));
 
 			if (!$reportTable->id)
 			{

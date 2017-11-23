@@ -55,7 +55,7 @@ foreach($displayFilters as $searchKey => $filter)
 		$filterHtml = '<div class="input-append">';
 
 		$filterHtml .= JHtml::_('select.genericlist', $filter['select_options'], 'filters[' . $searchKey . ']',
-					'class="filter-input input-medium ' . $filterHide . '" size="1" onchange="tjrContentUI.report.submitTJRData();"',
+					'class="filter-input ' . $filterHide . '" size="1" onchange="tjrContentUI.report.submitTJRData();"',
 					$svalue, $stext, $searchValue);
 
 		if ($this->filterLevel == 1)

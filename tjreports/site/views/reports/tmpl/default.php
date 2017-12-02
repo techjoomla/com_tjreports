@@ -196,6 +196,7 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 						<table id="report-table" class="table table-striped left_table ">
 							<thead>
 								<?php
+								 jimport('joomla.filter.output');
 								$filters = array();
 
 								if (!empty($displayFilters))
@@ -254,7 +255,7 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 											else
 											{
 												$colKey = $detail;
-
+												$colKeyClass = JFilterOutput::stringURLSafe($colKey);
 												if (!isset($this->columns[$colKey]['title']))
 												{
 													$colTitle = 'PLG_TJREPORTS_' . strtoupper($this->pluginName . '_' . $colKey . '_TITLE');
@@ -264,7 +265,7 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 													$colTitle = $this->columns[$colKey]['title'];
 												}
 
-												echo '<th class="' . $colKey  . '">';
+												echo '<th class="' . $colKeyClass  . '">';
 
 												if ($hasFilter)
 												{

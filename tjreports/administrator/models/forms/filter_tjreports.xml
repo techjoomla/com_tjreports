@@ -28,4 +28,35 @@
             key_field="id"
             value_field="region_name"/>
     </fields>
+    <fields name="list">
+		<field
+			name="fullordering"
+			type="list"
+			label="COM_CONTENT_LIST_FULL_ORDERING"
+			description="COM_CONTENT_LIST_FULL_ORDERING_DESC"
+			onchange="this.form.submit();"
+			default="title ASC"
+			>
+			<option value="title ASC">JGLOBAL_TITLE_ASC</option>
+			<option value="title DESC">JGLOBAL_TITLE_DESC</option>
+			<option value="plugin ASC">COM_TJREPORTS_PLUGIN_ASC</option>
+			<option value="plugin DESC">COM_TJREPORTS_PLUGIN_DESC</option>
+			<option value="client ASC">COM_TJREPORTS_CLIENT_ASC</option>
+			<option value="client DESC">COM_TJREPORTS_CLIENT_DESC</option>
+			<option value="savedquery ASC">COM_TJREPORTS_SAVED_QUERY_ASC</option>
+			<option value="savedquery DESC">COM_TJREPORTS_SAVED_QUERY_DESC</option>
+			<option value="id ASC">JGRID_HEADING_ID_ASC</option>
+			<option value="id DESC">JGRID_HEADING_ID_DESC</option>
+		</field>
+
+		<field
+			name="limit"
+			type="limitbox"
+			label="COM_CONTENT_LIST_LIMIT"
+			description="COM_CONTENT_LIST_LIMIT_DESC"
+			class="input-mini"
+			default="25"
+			onchange="this.form.submit();"
+		/>
+	</fields>
 </form>

@@ -26,7 +26,7 @@ $input = JFactory::getApplication()->input;
 	<?php endif;?>
 
 	<div class="row-fluid">
-		<div class="span6">
+		<div class="span12">
 			<?php
 				echo JLayoutHelper::render(
 					'joomla.searchtools.default',
@@ -44,26 +44,26 @@ $input = JFactory::getApplication()->input;
 					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" />
 				</th>
 				<th width="30%">
-					<?php echo JHtml::_('grid.sort', JText::_('COM_TJREPORTS_FORM_LBL_REPORT_TITLE'), 'title', $listDirn, $listOrder);?>
+					<?php echo JHtml::_('searchtools.sort', 'COM_TJREPORTS_FORM_LBL_REPORT_TITLE', 'title', $listDirn, $listOrder); ?>
 				</th>
 
 				<th width="20%">
-					<?php echo JHtml::_('grid.sort', JText::_('COM_TJREPORTS_FORM_LBL_REPORT_PLUGIN'), 'plugin', $listDirn, $listOrder);?>
+					<?php echo JHtml::_('searchtools.sort', 'COM_TJREPORTS_FORM_LBL_REPORT_PLUGIN', 'plugin', $listDirn, $listOrder); ?>
 				</th>
 
 				<th width="20%" class="center">
-					<?php echo JHtml::_('grid.sort', JText::_('COM_TJREPORTS_FORM_LBL_REPORT_CLIENT'), 'client', $listDirn, $listOrder);?>
+					<?php echo JHtml::_('searchtools.sort', 'COM_TJREPORTS_FORM_LBL_REPORT_CLIENT', 'client', $listDirn, $listOrder); ?>
 				</th>
 
 				<th width="10%" class="center">
-					<?php echo JHtml::_('grid.sort', JText::_('COM_TJREPORTS_LIST_SAVED_QUERY'), 'savedquery', $listDirn, $listOrder);?>
+					<?php echo JHtml::_('searchtools.sort', 'COM_TJREPORTS_LIST_SAVED_QUERY', 'savedquery', $listDirn, $listOrder); ?>
 				</th>
 
 				<th width="17%" class="center">
 					<?php echo JText::_('COM_TJREPORTS_REPORTS_VIEW_REPORT');?>
 				</th>
 				<th width="17%" class="center">
-					<?php echo JHtml::_('grid.sort', JText::_('COM_TJREPORTS_LIST_ID'), 'id', $listDirn, $listOrder);?>
+					<?php echo JHtml::_('searchtools.sort', 'COM_TJREPORTS_LIST_ID', 'id', $listDirn, $listOrder); ?>
 				</th>
 			</tr>
 		</thead>
@@ -139,8 +139,6 @@ $input = JFactory::getApplication()->input;
 	<?php } ?>
 	<input type="hidden" name="task" value=""/>
 	<input type="hidden" name="boxchecked" value="0"/>
-	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>"/>
 	<input type="hidden" name="extension" value="<?php echo $input->get('extension','','word'); ?>">
-	<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>"/>
 	<?php echo JHtml::_('form.token'); ?>
 </form>

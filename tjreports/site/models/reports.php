@@ -409,12 +409,6 @@ class TjreportsModelReports extends JModelList
 		{
 			$orderDir   = $this->getState('list.direction', $this->default_order_dir);
 			$this->multi_d_sort($items, $sortKey, $orderDir);
-
-			$limitstart = isset($limitstart) ? (int) $limitstart : 0;
-			$limitstart = (($limitstart * $limit) < $totalRows) ? $limitstart : 0;
-
-			$this->setState('list.start', $limitstart);
-
 			$items = array_splice($items, $limitstart, $limit);
 		}
 

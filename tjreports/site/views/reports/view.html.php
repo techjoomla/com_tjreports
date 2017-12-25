@@ -54,8 +54,42 @@ class TjreportsViewReports extends ReportsViewBase
 	 */
 	protected function addToolbar()
 	{
+		$app = JFactory::getApplication();
 		$bar = JToolBar::getInstance('toolbar');
-		JToolBarHelper::title(JText::_('COM_TJREPORTS_TITLE_REPORT'), 'list');
+
+		if ($app->isAdmin())
+		{
+			JToolBarHelper::title(JText::_('COM_TJREPORTS_TITLE_REPORT'), 'list');
+		}
+		else
+		{
+			$this->params = &$this->state->params;
+			$menus = $app->getMenu();
+			$title = null;
+
+			$menu = $menus->getActive();
+
+			if ($menu)
+			{
+				$title = $menu->title;
+			}
+			else
+			{
+				$title = $app->get('sitename');
+			}
+
+			foreach ($this->enableReportPlugins as $eachPlugin)
+			{
+				if ($this->reportId == $eachPlugin['reportId'])
+				{
+					$title = $title . ' - ' . $eachPlugin['title'];
+
+					break;
+				}
+			}
+
+			$this->document->setTitle($title);
+		}
 
 		if ($this->isExport)
 		{
@@ -78,7 +112,6 @@ class TjreportsViewReports extends ReportsViewBase
 
 			JLoader::import('administrator.components.com_tjreports.helpers.tjreports', JPATH_SITE);
 			TjreportsHelper::addSubmenu('reports');
-			$app = JFactory::getApplication();
 
 			if ($app->isAdmin())
 			{

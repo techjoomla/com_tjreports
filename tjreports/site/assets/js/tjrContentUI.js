@@ -5,7 +5,9 @@
  * @copyright  Copyright (c) 2009-2015 TechJoomla. All rights reserved
  * @license    GNU General Public License version 2, or later
  */
-var tjrContentUI       = (typeof tjrContentUI == 'undefined') ? {} : tjrContentUI;
+if (typeof tjrContentUI == 'undefined'){
+	var tjrContentUI = {};
+}
 tjrContentUI.root_url  = (typeof root_url == 'undefined') ? '' : root_url;
 tjrContentUI.base_url = (typeof root_url == 'undefined') ? '' : root_url;
 tjrContentUI.report    = tjrContentUI.report ? tjrContentUI.report : {};
@@ -13,8 +15,8 @@ tjrContentUI.report    = tjrContentUI.report ? tjrContentUI.report : {};
 jQuery.extend(tjrContentUI.report, {
 	searchToggle: true,
 	$form: null,
-	url: tjrContentUI.base_url + 'index.php?option=com_tjreports&view=reports&format=json',
-	querySaveUrl: tjrContentUI.base_url + 'index.php?option=com_tjreports&format=json',
+	url: 'index.php?option=com_tjreports&view=reports&format=json',
+	querySaveUrl: 'index.php?option=com_tjreports&format=json',
 	submitTJRData: function(task) {
 		this.searchToggle = jQuery('div#topFilters').is(':visible');
 		tjrContentUI.utility.loadingLayer('show');
@@ -406,7 +408,7 @@ jQuery.extend(tjrContentUI.utility, {
 tjrContentUI.tjreport  = tjrContentUI.tjreport ? tjrContentUI.tjreport : {};
 jQuery.extend(tjrContentUI.tjreport, {
 	getPlugins:function(){
-		var url     = tjrContentUI.base_url + 'index.php?option=com_tjreports&format=json';
+		var url     = 'index.php?option=com_tjreports&format=json';
 		var $form   = jQuery('#adminForm.tjreportForm');
 		jQuery('#task',$form).val('tjreport.getplugins');
 		var promise = tjrContentService.postData(url, $form.serialize());

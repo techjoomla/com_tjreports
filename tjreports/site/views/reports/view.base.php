@@ -60,6 +60,10 @@ class ReportsViewBase extends JViewLegacy
 
 		$this->reportId = $input->get('reportId', 0, 'INT');
 		$this->model = $this->getModel('reports');
+
+		$reports = $this->model->getenableReportPlugins();
+		$this->reportId = $this->reportId ? $this->reportId : (isset($reports['0']['reportId']) ? $reports['0']['reportId'] : '');
+
 		$reportData = $this->model->getReportNameById($this->reportId);
 		$this->pluginName = $reportData->plugin;
 		$this->client     = $input->get('client', '', 'STRING');
@@ -92,7 +96,7 @@ class ReportsViewBase extends JViewLegacy
 		}
 		else
 		{
-			JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR1'));
+			JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR'));
 
 			return false;
 		}

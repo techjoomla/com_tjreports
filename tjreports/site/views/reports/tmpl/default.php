@@ -12,27 +12,27 @@ defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
-	$app = JFactory::getApplication();
-	$headerLevel    = $this->headerLevel;
-	$this->listOrder      = $this->state->get('list.ordering');
-	$this->listDirn       = $this->state->get('list.direction');
-	$totalCount = 0;
+$app = JFactory::getApplication();
+$headerLevel    = $this->headerLevel;
+$this->listOrder      = $this->state->get('list.ordering');
+$this->listDirn       = $this->state->get('list.direction');
+$totalCount = 0;
 
-	foreach ($this->colToshow as $key=>$data)
+foreach ($this->colToshow as $key=>$data)
+{
+	if (is_array($data))
 	{
-		if (is_array($data))
-		{
-			$totalCount = $totalCount + count($data);
-		}
-		else
-		{
-			$totalCount++;
-		}
+		$totalCount = $totalCount + count($data);
 	}
+	else
+	{
+		$totalCount++;
+	}
+}
 
-	$input  = JFactory::getApplication()->input;
-	$displayFilters = $this->userFilters;
-	$totalHeadRows = count($displayFilters);
+$input  = JFactory::getApplication()->input;
+$displayFilters = $this->userFilters;
+$totalHeadRows = count($displayFilters);
 
 ?>
 <div id="reports-container">
@@ -94,7 +94,12 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 					<div class="span1 pull-right">
 						<div id="reportPagination" class="pull-right ">
-							<?php echo $this->pagination->getLimitBox();?>
+							<?php
+							if ($app->isAdmin())
+							{
+								echo $this->pagination->getLimitBox();
+							}
+							?>
 						</div>
 					</div>
 
@@ -373,13 +378,22 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 						</table>
 					</div>
 					<!--report-containing-div-->
-
+					<?php
+					if (!$app->isAdmin())
+					{
+						echo $this->pagination->getPaginationLinks();
+					}
+					else
+					{
+					?>
 					<div id="pagination">
 						<?php
-						echo $footerLinks = $this->pagination->getListFooter();
+						echo $this->pagination->getListFooter();
 						?>
 					</div>
-
+					<?php
+					}
+					?>
 					<input type="hidden" id="filter_order" name="filter_order" value="<?php echo  $this->listOrder; ?>" />
 					<input type="hidden" id="filter_order_Dir" name="filter_order_Dir" value="<?php echo  $this->listDirn; ?>" />
 					<input type="hidden" id="reportId" name="reportId" value="<?php echo  $this->reportId; ?>" />

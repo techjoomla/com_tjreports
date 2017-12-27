@@ -16,21 +16,9 @@ div#topFilters {margin-top: 10px; float: left; width: 100%;}
 #topFilters{display:none;}
 #queryName{display:none;}
 .header_title{display:inline-block;}
-th.center:nth-child(odd) {
-  background-color:  #d9edf7;
-  border-left: 1px solid #ddd;
-}
-th.center:nth-child(even) {
-  background-color: #fcf8e3;
-  border-left: 1px solid #ddd;
-}
-
+th.center:nth-child(odd) {background-color:  #d9edf7;border-left: 1px solid #ddd;}
+th.center:nth-child(even) {background-color: #fcf8e3; border-left: 1px solid #ddd;}
 td.subdetails.lesson.attempts_done:nth-child(odd),
-th.subdetails.lesson.attempts_done:nth-child(odd)  {
-     border-left: 1px solid #ddd;
-}
-
-table.tjrport-table{
-
-border-bottom:1px solid #ddd
-}
+th.subdetails.lesson.attempts_done:nth-child(odd)  {border-left: 1px solid #ddd;}
+table.tjrport-table{border-bottom:1px solid #ddd}
+#reportPagination .pagination.pagination-toolbar.clearfix {margin: 0;}

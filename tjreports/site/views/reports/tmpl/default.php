@@ -95,7 +95,11 @@ $totalHeadRows = count($displayFilters);
 					<div class="span1 pull-right">
 						<div id="reportPagination" class="pull-right ">
 							<?php
-							if ($app->isAdmin())
+							if (!$app->isAdmin())
+							{
+								echo $this->pagination->getPaginationLinks('joomla.pagination.links', array('showPagesLinks' => false,'showLimitStart' => false));
+							}
+							else
 							{
 								echo $this->pagination->getLimitBox();
 							}
@@ -381,7 +385,7 @@ $totalHeadRows = count($displayFilters);
 					<?php
 					if (!$app->isAdmin())
 					{
-						echo $this->pagination->getPaginationLinks();
+						echo $this->pagination->getPaginationLinks('joomla.pagination.links', array('showLimitBox' => false));
 					}
 					else
 					{

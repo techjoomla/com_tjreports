@@ -517,6 +517,10 @@ jQuery(document).ready(function(){
 		Joomla.renderMessages({'success' : [Joomla.JText._("COM_TJREPORTS_QUERY_DELETE_SUCCESS")]});
 		tjrContentUI.utility.eraseJSCookie("showdeletemsg");
 	}
+
+	jQuery(document).on('click', '#reports-container a[href="#"]', function(e){
+		e.preventDefault();
+	})
 });
 
 

@@ -84,7 +84,7 @@ jQuery.extend(tjrContentUI.report, {
 		jQuery('#show-filter .fa').toggleClass('fa-caret-up').toggleClass('fa-caret-down');
 	},
 	resetSubmitTJRData : function(task,container){
-		container = container.length ? container : '#topFilters';
+		container = (container && container.length) ? container : '#topFilters';
 		jQuery('input:text', container).val('');
 		jQuery(':input', container)
 		 .not(':button, :submit, :reset, input:hidden')

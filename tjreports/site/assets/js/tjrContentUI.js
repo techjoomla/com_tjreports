@@ -524,3 +524,9 @@ jQuery(document).ready(function(){
 });
 
 
+jQuery(document).ready(function(){
+jQuery('#report-table').on("liszt:ready", 'select', function(){      
+	jQuery(this).next('.chzn-container-single-nosearch').removeClass('chzn-container-single-nosearch')
+
+	});
+});

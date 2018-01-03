@@ -22,3 +22,22 @@ td.subdetails.lesson.attempts_done:nth-child(odd),
 th.subdetails.lesson.attempts_done:nth-child(odd)  {border-left: 1px solid #ddd;}
 table.tjrport-table{border-bottom:1px solid #ddd}
 #reportPagination .pagination.pagination-toolbar.clearfix {margin: 0;}
+#t3-mainbody #reports-container .field-calendar input[type="text"]{display:inline-block;height: 40px !important;padding: 6px 12px !important;}
+.report-tbl{min-height:450px; overflow-x: auto;}
+#t3-mainbody #reports-container .filter-search .chzn-container-single{width:153px !important;}
+.report-table{margin-top: 20px;}
+#t3-mainbody .btn{padding: 6px 12px;}
+#t3-mainbody #report-table .custom-group{display: table;border-collapse: separate;margin-bottom: 0;}
+#content div.row{margin-left: 0;margin-right: 0;}
+#t3-mainbody #report-table .custom-group-btn{vertical-align:baseline;}
+#t3-mainbody .report-btn{padding:0px 10px;}
+@media screen and (max-width: 767px){
+.table-responsive {
+    width: 100%;
+    margin-bottom: 15px;
+    overflow-y: hidden;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    border: 1px solid #ddd;
+}
+
+}

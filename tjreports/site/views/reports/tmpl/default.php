@@ -51,9 +51,9 @@ $totalHeadRows = count($displayFilters);
 			if ($this->isExport)
 			{
 				?>
-			<a class='btn'
-				type='submit' onclick="Joomla.submitbutton('reports.csvexport'); jQuery('#task').val('');" href='#'><span title='Export'
-				class='icon-download'></span><?php echo JText::_('COM_TJREPORTS_CSV_EXPORT'); ?></a>
+			<a class='btn btn-default'
+				type='submit' onclick="Joomla.submitbutton('reports.csvexport'); jQuery('#task').val('');" href='#'><i title='Export'
+				class='fa fa-download'></i>&nbsp;<?php echo JText::_('COM_TJREPORTS_CSV_EXPORT'); ?></a>
 	<?php	}	?>
 			<span id="btn-cancel">
 						<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName"/>
@@ -68,8 +68,8 @@ $totalHeadRows = count($displayFilters);
 <?php	}	?>
 			<form action="<?php echo JRoute::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm" onsubmit="return tjrContentUI.report.submitForm();">
 				<!--html code-->
-				<div class="row-fluid">
-					<div class="span4">
+				<div class="row">
+					<div class="span4 col-sm-3">
 						<div class="form-group">
 							<select class="form-control" id="report-select" onchange="tjrContentUI.report.loadReport(this,'<?php echo $this->client; ?>');">
 							<?php foreach ($this->enableReportPlugins as $eachPlugin) :
@@ -92,7 +92,7 @@ $totalHeadRows = count($displayFilters);
 						</div><!--form-group-->
 					</div><!--span3-->
 
-					<div class="span1 pull-right">
+					<div class="span1 col-sm-1 pull-right">
 						<div id="reportPagination" class="pull-right ">
 							<?php
 							if (!$app->isAdmin())
@@ -109,7 +109,7 @@ $totalHeadRows = count($displayFilters);
 
 			<?php	if (!empty($this->savedQueries))
 					{	?>
-					<div class="span4">
+					<div class="span4 col-sm-3">
 						<?php	echo JHtml::_('select.genericlist', $this->savedQueries, "queryId", 'class="" size="1" onchange="tjrContentUI.report.getQueryResult(this.value);" name="filter_saveQuery"', "value", "text", $this->queryId);	?>
 					</div><!--span3-->
 					<div class="span1">
@@ -120,11 +120,11 @@ $totalHeadRows = count($displayFilters);
 			<?php	}	?>
 				</div><!--row-fluid-->
 				<!--/html code-->
+				
+				<div class="report-top-bar">
+					<div class="row">
 
-				<div class="report-top-bar row-fluid">
-					<div class="row-fluid">
-
-						<div class="show-hide-cols span3">
+						<div class="show-hide-cols span3 col-sm-3">
 							<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="tjrContentUI.report.getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>" />
 							<ul id="ul-columns-name" class="ColVis_collection">
 								<?php
@@ -161,7 +161,7 @@ $totalHeadRows = count($displayFilters);
 						if ($totalHeadRows > 1)
 						{
 						?>
-							<div class="span3">
+							<div class="span3 col-sm-3 hidden-phone hidden-xs">
 								<button type="button" class="btn btn-default" id="show-filter" onclick="tjrContentUI.report.showFilter();">
 									<?php echo JText::_("COM_TJREPORTS_SEARCH_TOOLS"); ?>
 									<i class="fa fa-caret-down"></i>
@@ -187,10 +187,10 @@ $totalHeadRows = count($displayFilters);
 										?>
 										<div class="btn-group filter-btn-block control-group">
 											<?php if ($this->srButton !== -1) { ?>
-											<button class="btn hasTooltip" onclick="tjrContentUI.report.submitTJRData(); return false;" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT')?>"><i class="icon-search"></i>
+											<button class="btn hasTooltip" onclick="tjrContentUI.report.submitTJRData(); return false;" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT')?>"><i class="fa fa-search"></i>
 											</button>
 											<?php } ?>
-											<button class="btn hasTooltip" type="button" title="<?php echo JText::_('JSEARCH_FILTER_CLEAR')?>" onclick="tjrContentUI.report.resetSubmitTJRData('reset'); return false;"><i class="icon-remove"></i>
+											<button class="btn hasTooltip" type="button" title="<?php echo JText::_('JSEARCH_FILTER_CLEAR')?>" onclick="tjrContentUI.report.resetSubmitTJRData('reset'); return false;"><i class="fa fa-remove"></i>
 											</button>
 										</div>
 										<?php
@@ -200,8 +200,9 @@ $totalHeadRows = count($displayFilters);
 						</div>
 					</div>
 					<!-- js-stools-container-list hidden-phone hidden-tablet span4 -->
-
-					<div id="report-containing-div" class="tjlms-tbl row-fluid">
+					<div id="report-containing-div" class="row">
+						<div class="col-sm-12 col-xs-12">
+						<div class="table-responsive report-tbl">
 						<table id="report-table" class="table table-striped left_table ">
 							<thead>
 								<?php
@@ -292,7 +293,7 @@ $totalHeadRows = count($displayFilters);
 												if ($hasFilter)
 												{
 													echo '<a href="#" title="search attempts" class="col-search">
-																<i class="icon-search"></i>
+																<i class="fa fa-search"></i>
 															</a></span>';
 												}
 
@@ -381,6 +382,10 @@ $totalHeadRows = count($displayFilters);
 							</tbody>
 						</table>
 					</div>
+				</div>
+			</div>
+
+
 					<!--report-containing-div-->
 					<?php
 					if (!$app->isAdmin())

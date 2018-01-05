@@ -6,7 +6,7 @@
 table#report-table thead th > * {display: inline-block; width: 100%;}
 ul#ul-columns-name li input {margin-top: 0;}
 ul#ul-columns-name li:hover label {background-color: #F0F0F0;}
-ul#ul-columns-name li label {margin-bottom: 0; padding-top: 2px; padding-bottom: 2px;}
+ul#ul-columns-name li label {margin-bottom: 0; padding-top: 2px; padding-bottom: 2px;cursor:pointer;}
 div#report-containing-div {min-height:450px;}
 div#reports-container input.tjrsmall-input {width: 120px; font-size: 12px;}
 div#reports-container .form-inline-header .controls {padding-right: 5px;}

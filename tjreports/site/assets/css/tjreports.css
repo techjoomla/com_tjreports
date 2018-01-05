@@ -22,15 +22,27 @@ td.subdetails.lesson.attempts_done:nth-child(odd),
 th.subdetails.lesson.attempts_done:nth-child(odd)  {border-left: 1px solid #ddd;}
 table.tjrport-table{border-bottom:1px solid #ddd}
 #reportPagination .pagination.pagination-toolbar.clearfix {margin: 0;}
-#t3-mainbody #reports-container .field-calendar input[type="text"]{display:inline-block;height: 40px !important;padding: 6px 12px !important;}
-.report-tbl{min-height:450px; overflow-x: auto;}
-#t3-mainbody #reports-container .filter-search .chzn-container-single{width:153px !important;}
-.report-table{margin-top: 20px;}
-#t3-mainbody .btn{padding: 6px 12px;}
+#report-table thead input{height: 32px;}
+#t3-content #queryName{height: 32px;font-size: 14px;}
+.report-top-bar{margin-top:10px;}
+#t3-mainbody #reports-container
+.field-calendar .tjrsmall-input{display:inline-block;height: 32px !important;width:165px;font-size: 14px;}
+.report-tbl{min-height:450px;overflow-x: auto;margin-top: 20px;}
+#t3-mainbody #reports-container .filter-search select.filter-input{width:100% !important;}
+#reports-container .btn{padding: 4px 12px;text-transform: none;border-radius: 3px;font-size: 14px;}
 #t3-mainbody #report-table .custom-group{display: table;border-collapse: separate;margin-bottom: 0;}
 #content div.row{margin-left: 0;margin-right: 0;}
 #t3-mainbody #report-table .custom-group-btn{vertical-align:baseline;}
-#t3-mainbody .report-btn{padding:0px 10px;}
+#reports-container .report-btn{padding: 2px 10px;}
+.t3-content .btn-custom{color: #fff;background-color: #337ab7;border-color: #2e6da4;}
+.t3-content .btn-custom:hover {color: #fff; background-color: #286090; border-color: #204d74;}
+.t3-content .btn-custom:active { color: #fff; background-color: #286090; border-color: #204d74;}
+ .t3-content .btn-custom:focus { color: #fff;background-color: #286090;  border-color: #204d74;}
+.t3-content .btn-custom.active.focus, .t3-content .btn-custom.active:focus, .t3-content .btn-custom.active:hover,
+.t3-content .btn-custom:active.focus, .t3-content .btn-custom:active:focus, .t3-content .btn-custom:active:hover {
+    color: #fff; background-color: #204d74; border-color: #122b40;}
+
+
 @media screen and (max-width: 767px){
 .table-responsive {
     width: 100%;
@@ -39,5 +51,7 @@ table.tjrport-table{border-bottom:1px solid #ddd}
     -ms-overflow-style: -ms-autohiding-scrollbar;
     border: 1px solid #ddd;
 }
+
+
 
 }

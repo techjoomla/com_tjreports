@@ -53,7 +53,7 @@ if ($currentPage >= $step)
 
 	<?php if ($showLimitBox) : ?>
 		<div class="limit pull-right">
-			<?php echo JText::_() . $list['limitfield']; ?>
+			<?php echo $list['limitfield']; ?>
 		</div>
 	<?php endif; ?>
 

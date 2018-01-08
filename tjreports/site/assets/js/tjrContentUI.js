@@ -459,7 +459,7 @@ jQuery.extend(tjrContentUI.tjreport, {
 		});
 	},
 	getParams:function(defaultParam){
-		var url  = tjrContentUI.base_url + 'index.php?option=com_tjreports&format=json';
+		var url  = 'index.php?option=com_tjreports&format=json';
 		if(defaultParam)
 		{
 			url = url + '&default=1';

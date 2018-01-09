@@ -90,12 +90,12 @@ $totalHeadRows = count($displayFilters);
 
 			<?php	if (!empty($this->savedQueries))
 					{	?>
-					<div class="span4 col-md-2 col-sm-3 col-xs-5">
+					<div class="span4 col-md-2 col-sm-3 col-xs-9">
 						<?php	echo JHtml::_('select.genericlist', $this->savedQueries, "queryId", 'class="" size="1" onchange="tjrContentUI.report.getQueryResult(this.value);" name="filter_saveQuery"', "value", "text", $this->queryId);	?>
 					</div><!--span3-->
 					<div class="span1 col-md-1 col-xs-2 col-sm-3">
 						<?php if ($this->queryId) { ?>
-						<a class="btn btn-default" onclick="tjrContentUI.report.deleteThisQuery();"><i class="fa fa-trash"></i></a>
+						<a class="btn btn-primary" onclick="tjrContentUI.report.deleteThisQuery();"><i class="fa fa-trash"></i></a>
 <!--
 						<input type='button' value="<?php echo JText::_('COM_TJREPORTS_DELETE_QUERY'); ?>" class="btn btn-primary" onclick="tjrContentUI.report.deleteThisQuery();"/>
 -->

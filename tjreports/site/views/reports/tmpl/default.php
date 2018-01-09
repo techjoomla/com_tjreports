@@ -184,11 +184,7 @@ $totalHeadRows = count($displayFilters);
 						Cancel
 					</button>
 				</div>
-				<div class="col-sm-3 col-md-2 span3 col-xs-12 pull-right">
-			 <a class='btn btn-default btn-block'
-				type='submit' onclick="Joomla.submitbutton('reports.csvexport'); jQuery('#task').val('');" href='#'><i title='Export'
-				class='fa fa-download'></i>&nbsp;<?php echo JText::_('COM_TJREPORTS_CSV_EXPORT'); ?></a>
-				</div>
+
 <?php	} ?>
 
 

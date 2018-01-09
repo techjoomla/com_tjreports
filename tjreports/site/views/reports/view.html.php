@@ -59,7 +59,14 @@ class TjreportsViewReports extends ReportsViewBase
 
 		if ($app->isAdmin())
 		{
-			JToolBarHelper::title(JText::_('COM_TJREPORTS_TITLE_REPORT'), 'list');
+			$title = JText::_('COM_TJREPORTS_TITLE_REPORT');
+
+			if (isset($this->reportData->title))
+			{
+				$title = $title . ' - ' . $this->reportData->title;
+			}
+
+			JToolBarHelper::title($title, 'list');
 		}
 		else
 		{
@@ -78,14 +85,9 @@ class TjreportsViewReports extends ReportsViewBase
 				$title = $app->get('sitename');
 			}
 
-			foreach ($this->enableReportPlugins as $eachPlugin)
+			if (isset($this->reportData->title))
 			{
-				if ($this->reportId == $eachPlugin['reportId'])
-				{
-					$title = $title . ' - ' . $eachPlugin['title'];
-
-					break;
-				}
+				$title = $title . ' - ' . $this->reportData->title;
 			}
 
 			$this->document->setTitle($title);

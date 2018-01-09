@@ -124,12 +124,15 @@ $totalHeadRows = count($displayFilters);
 						<?php
 						}
 						?>
+						<?php
+							if (!$app->isAdmin()){?>
 						<div class="col-sm-3 col-md-2 span3 col-xs-12 pull-right">
 			 <a class='btn btn-default btn-block btn-csv'
 				type='submit' onclick="Joomla.submitbutton('reports.csvexport'); jQuery('#task').val('');" href='#'><i title='Export'
 				class='fa fa-download'></i>&nbsp;<?php echo JText::_('COM_TJREPORTS_CSV_EXPORT'); ?></a>
 				</div>
-
+<?php
+							}?>
 
 						<div class="show-hide-cols col-md-2 span3 col-sm-3 col-xs-12 span3 ">
 							<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="tjrContentUI.report.getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>" />

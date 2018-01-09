@@ -47,6 +47,9 @@ $totalHeadRows = count($displayFilters);
 			<div id="j-main-container">
 <?php	endif;
 			?>
+			<?php if ($app->isSite() && isset($this->reportData->title)) { ?>
+				<h2 class="title"><?php echo $this->reportData->title?></h2>
+			<?php } ?>
 			<form action="<?php echo JRoute::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm" onsubmit="return tjrContentUI.report.submitForm();">
 				<!--html code-->
 				<div class="row">

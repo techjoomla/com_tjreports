@@ -36,7 +36,7 @@ class ReportsViewBase extends JViewLegacy
 
 	protected $pluginName;
 
-	protected $tjrData;
+	protected $reportData;
 
 	protected $savedQueries = array();
 
@@ -64,8 +64,8 @@ class ReportsViewBase extends JViewLegacy
 		$reports = $this->model->getenableReportPlugins();
 		$this->reportId = $this->reportId ? $this->reportId : (isset($reports['0']['reportId']) ? $reports['0']['reportId'] : '');
 
-		$reportData = $this->model->getReportNameById($this->reportId);
-		$this->pluginName = $reportData->plugin;
+		$this->reportData = $this->model->getReportNameById($this->reportId);
+		$this->pluginName = $this->reportData->plugin;
 		$this->client     = $input->get('client', '', 'STRING');
 		$this->queryId    = $input->get('queryId', 0, 'INT');
 

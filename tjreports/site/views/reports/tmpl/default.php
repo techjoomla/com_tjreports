@@ -50,7 +50,7 @@ $totalHeadRows = count($displayFilters);
 			<form action="<?php echo JRoute::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm" onsubmit="return tjrContentUI.report.submitForm();">
 				<!--html code-->
 				<div class="row">
-					<div class="span4 col-md-3 col-sm-4 col-xs-9">
+					<div class="span4 col-md-3 col-sm-5 col-xs-9">
 						<div class="form-group">
 							<select class="form-control" id="report-select" onchange="tjrContentUI.report.loadReport(this,'<?php echo $this->client; ?>');">
 							<?php foreach ($this->enableReportPlugins as $eachPlugin) :
@@ -90,12 +90,15 @@ $totalHeadRows = count($displayFilters);
 
 			<?php	if (!empty($this->savedQueries))
 					{	?>
-					<div class="span4 col-md-3 col-sm-4 col-xs-12">
+					<div class="span4 col-md-2 col-sm-3 col-xs-5">
 						<?php	echo JHtml::_('select.genericlist', $this->savedQueries, "queryId", 'class="" size="1" onchange="tjrContentUI.report.getQueryResult(this.value);" name="filter_saveQuery"', "value", "text", $this->queryId);	?>
 					</div><!--span3-->
-					<div class="span1">
+					<div class="span1 col-md-1 col-xs-2 col-sm-3">
 						<?php if ($this->queryId) { ?>
+						<a class="btn btn-default" onclick="tjrContentUI.report.deleteThisQuery();"><i class="fa fa-trash"></i></a>
+<!--
 						<input type='button' value="<?php echo JText::_('COM_TJREPORTS_DELETE_QUERY'); ?>" class="btn btn-primary" onclick="tjrContentUI.report.deleteThisQuery();"/>
+-->
 						<?php } ?>
 					</div><!--span1-->
 			<?php	}	?>
@@ -103,12 +106,13 @@ $totalHeadRows = count($displayFilters);
 				<!--/html code-->
 
 				<div class="report-top-bar">
+
 					<div class="row">
 						<?php
 						if ($totalHeadRows > 1)
 						{
 						?>
-							<div class="span3 col-md-2 col-sm-6 col-xs-12 span3 hidden-phone hidden-xs">
+							<div class="span3 col-md-2 col-sm-4 col-xs-12 span3 hidden-phone hidden-xs">
 								<button type="button" class="btn btn-primary btn-custom btn-block" id="show-filter" onclick="tjrContentUI.report.showFilter();">
 									<?php echo JText::_("COM_TJREPORTS_SEARCH_TOOLS"); ?>
 									<i class="fa fa-caret-down"></i>
@@ -117,7 +121,14 @@ $totalHeadRows = count($displayFilters);
 						<?php
 						}
 						?>
-						<div class="show-hide-cols col-md-2 span3 col-sm-3 col-xs-12 span3">
+						<div class="col-sm-3 col-md-2 span3 col-xs-12 pull-right">
+			 <a class='btn btn-default btn-block btn-csv'
+				type='submit' onclick="Joomla.submitbutton('reports.csvexport'); jQuery('#task').val('');" href='#'><i title='Export'
+				class='fa fa-download'></i>&nbsp;<?php echo JText::_('COM_TJREPORTS_CSV_EXPORT'); ?></a>
+				</div>
+
+
+						<div class="show-hide-cols col-md-2 span3 col-sm-3 col-xs-12 span3 ">
 							<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="tjrContentUI.report.getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>" />
 							<ul id="ul-columns-name" class="ColVis_collection">
 								<?php
@@ -158,7 +169,7 @@ $totalHeadRows = count($displayFilters);
 				?>
 
 	<?php	}	?>
-			       <div class="col-sm-8 col-md-5 col-xs-12 span3">
+			       <div class="col-sm-12 col-md-5 col-xs-12 span3">
 			       <span id="btn-cancel">
 						<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName"/>
 					</span>
@@ -166,7 +177,7 @@ $totalHeadRows = count($displayFilters);
 						onclick="tjrContentUI.report.saveThisQuery();"><?php echo
 						 JText::_('COM_TJREPORTS_SAVE_THIS_QUERY'); ?></a>
 
-					<button class="btn btn btn-default  cancel-btn" type="button" style="display:none;" onclick="tjrContentUI.report.cancel();">
+					<button class="btn btn btn-default cancel-btn " type="button" style="display:none;" onclick="tjrContentUI.report.cancel();">
 						Cancel
 					</button>
 				</div>
@@ -176,6 +187,8 @@ $totalHeadRows = count($displayFilters);
 				class='fa fa-download'></i>&nbsp;<?php echo JText::_('COM_TJREPORTS_CSV_EXPORT'); ?></a>
 				</div>
 <?php	} ?>
+
+
 
 					</div>
 

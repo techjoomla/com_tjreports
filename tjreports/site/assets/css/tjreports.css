@@ -51,7 +51,18 @@ table.tjrport-table{border-bottom:1px solid #ddd}
     -ms-overflow-style: -ms-autohiding-scrollbar;
     border: 1px solid #ddd;
 }
-
-
+.show-hide-cols{margin-bottom:20px;}
+#show-hide-cols-btn{width:100%;}
+#queryName{margin-bottom:10px !important;}
+.btn-csv{margin-bottom:20px;}
 
 }
+
+@media screen and (max-width: 768px){
+#t3-content #show-filter{margin-bottom:20px;}
+}
+
+@media (max-width: 1024px) and (min-width: 768px){
+.t3-content .row-fluid [class*="span"]{margin-left:0;}
+}
+

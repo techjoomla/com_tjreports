@@ -22,9 +22,10 @@ td.subdetails.lesson.attempts_done:nth-child(odd),
 th.subdetails.lesson.attempts_done:nth-child(odd)  {border-left: 1px solid #ddd;}
 table.tjrport-table{border-bottom:1px solid #ddd}
 #reportPagination .pagination.pagination-toolbar.clearfix {margin: 0;}
-#report-table thead input{height: 32px;}
+#t3-content #report-table thead input{height: 32px;}
 #t3-content #queryName{height: 32px;font-size: 14px;}
 .report-top-bar{margin-top:10px;}
+#t3-content .form-group{margin-bottom:15px;}
 #t3-mainbody #reports-container
 .field-calendar .tjrsmall-input{display:inline-block;height: 32px !important;width:165px;font-size: 14px;}
 .report-tbl{min-height:450px;overflow-x: auto;margin-top: 20px;}
@@ -55,7 +56,9 @@ table.tjrport-table{border-bottom:1px solid #ddd}
 #show-hide-cols-btn{width:100%;}
 #queryName{margin-bottom:10px !important;}
 .btn-csv{margin-bottom:20px;}
-
+#t3-content #report-table .input-append input,
+#t3-content #report-table .input-append select{
+ margin-bottom: 0px !important;width: auto;}
 }
 
 @media screen and (max-width: 768px){

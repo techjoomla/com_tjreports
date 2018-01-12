@@ -95,6 +95,9 @@ vertical-align:baseline;
 #t3-content .filter-search .chzn-container-single .chzn-single{height: 32px;border-radius: 0;background: no-repeat;padding-left: 15px;}
 #t3-content .filter-search .chzn-container-single .chzn-single span,b{margin-top:3px}
 #t3-content #report-table .input-group-btn{width:0;}
+#reports-container .input-append .field-calendar  {
+    font-size: 14px;
+}
 @media screen and (max-width: 767px){
 .table-responsive {
     width: 100%;

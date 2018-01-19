@@ -8,6 +8,7 @@
  */
 // No direct access to this file
 defined('_JEXEC') or die;
+require_once JPATH_COMPONENT . '/helpers/tjreports.php';
 /**
  * tjreport View
  *
@@ -31,9 +32,9 @@ class TjreportsViewTjreport extends JViewLegacy
 	public function display($tpl = null)
 	{
 		// Get the Data
-		$form = $this->get('Form');
-
-		$item = $this->get('Item');
+		$this->canDo = TjreportsHelper::getActions();
+		$this->item = $this->get('Item');
+		$this->form = $this->get('Form');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
@@ -43,14 +44,11 @@ class TjreportsViewTjreport extends JViewLegacy
 			return false;
 		}
 
-		// Assign the Data
-		$this->form = $form;
-		$this->item = $item;
-
 		$input = JFactory::getApplication()->input;
 		$extension = $input->get('extension', '', 'STRING');
 
 		$this->addToolBar();
+		$this->addDocumentHeaderData();
 
 		// Display the template
 		parent::display($tpl);
@@ -87,5 +85,24 @@ class TjreportsViewTjreport extends JViewLegacy
 			'tjreport.cancel',
 			$isNew ? 'JTOOLBAR_CANCEL' : 'JTOOLBAR_CLOSE'
 		);
+	}
+
+	/**
+	 * Add the script and Style.
+	 *
+	 * @return  Void
+	 *
+	 * @since	1.6
+	 */
+	protected function addDocumentHeaderData()
+	{
+		JText::script('COM_TJREPORTS_FORM_DEFAULT_OPTION');
+		JText::script('COM_TJREPORTS_INVALID_JSON_VALUE');
+		$document = JFactory::getDocument();
+		$document->addScript(JURI::root() . '/components/com_tjreports/assets/js/tjrContentService.js');
+		$document->addScript(JURI::root() . '/components/com_tjreports/assets/js/tjrContentUI.js');
+		$document->addStylesheet(JURI::root() . '/components/com_tjreports/assets/css/tjreports.css');
+		$document->addScriptDeclaration('tjrContentUI.base_url = "' . Juri::base() . '"');
+		$document->addScriptDeclaration('tjrContentUI.root_url = "' . Juri::root() . '"');
 	}
 }

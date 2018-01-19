@@ -1,8 +1,7 @@
 <?php
-
 /**
  * @version    SVN: <svn_id>
- * @package    Com_Tjreports
+ * @package    Com_Reports
  * @copyright  Copyright (C) 2005 - 2014. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  * Shika is free software. This version may have been modified pursuant
@@ -11,25 +10,7 @@
  * other free or open source software licenses.
  */
 
-jimport('techjoomla.view.csv');
-require_once JPATH_ROOT . '/components/com_tjreports/models/reports.php';
+// No direct access
+defined('_JEXEC') or die;
 
-/**
- * Create your class that extends TjExportCsv class
- *
- * @since  1.0.0
- */
-class TjreportsViewReports extends TjExportCsv
-{
-/**
- * Default display function
- *
- * @param   STRING  $tpl  $tpl
- *
- * @return  null
- */
-	public function display($tpl = null)
-	{
-		parent::display();
-	}
-}
+include_once JPATH_SITE . '/components/com_tjreports/controllers/reports.json.php';

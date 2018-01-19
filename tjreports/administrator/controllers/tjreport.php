@@ -30,38 +30,14 @@ class TjreportsControllerTjreport extends JControllerForm
 	}
 
 	/**
-	 * Function to get all the respective plugins for given client
+	 *Set a URL for browser redirection.
 	 *
-	 * @return  object  object
-	 */
-	public function getplugins()
-	{
-		$model = $this->getModel('tjreport');
-		$result = $model->getplugins();
-	}
-
-	/**
-	 * Function to get all the respective plugins for given client
+	 * @param   string  $url   URL to redirect to.
+	 * @param   string  $msg   Message to display on redirect. Optional, defaults to value set internally by controller, if any.
+	 * @param   string  $type  Message type. Optional, defaults to 'message' or the type set by a previous call to setMessage.
 	 *
-	 * @return  object  object
+	 * @return  JControllerLegacy  This object to support chaining.
 	 */
-
-	public function getparams()
-	{
-		$model = $this->getModel('tjreport');
-		$result = $model->getparams();
-	}
-
-/**
-	*Set a URL for browser redirection.
-	*
-	* @param   string  $url   URL to redirect to.
-	* @param   string  $msg   Message to display on redirect. Optional, defaults to value set internally by controller, if any.
-	* @param   string  $type  Message type. Optional, defaults to 'message' or the type set by a previous call to setMessage.
-	*
-	* @return  JControllerLegacy  This object to support chaining.
-	*/
-
 	public function setRedirect($url, $msg = null,$type = null)
 	{
 		$extension = JFactory::getApplication()->input->get('extension', '', 'word');
@@ -72,5 +48,54 @@ class TjreportsControllerTjreport extends JControllerForm
 		}
 
 		parent::setRedirect($url, $msg, $type);
+	}
+
+	/**
+	 * Method override to check if you can add a new record.
+	 *
+	 * @param   array  $data  An array of input data.
+	 *
+	 * @return  boolean
+	 *
+	 * @since   1.6
+	 */
+	protected function allowAdd($data = array())
+	{
+		$user       = JFactory::getUser();
+
+		if ($user->authorise('core.create', 'com_tjreports'))
+		{
+			// In the absense of better information, revert to the component permissions.
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Method override to check if you can edit an existing record.
+	 *
+	 * @param   array   $data  An array of input data.
+	 * @param   string  $key   The name of the key for the primary key; default is id.
+	 *
+	 * @return  boolean
+	 *
+	 * @since   1.6
+	 */
+	protected function allowEdit($data = array(), $key = 'id')
+	{
+		$user       = JFactory::getUser();
+
+		if ($user->authorise('core.edit', 'com_tjreports'))
+		{
+			// In the absense of better information, revert to the component permissions.
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }

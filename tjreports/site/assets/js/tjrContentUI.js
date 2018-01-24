@@ -18,6 +18,7 @@ jQuery.extend(tjrContentUI.report, {
 	url: 'index.php?option=com_tjreports&view=reports&format=json',
 	querySaveUrl: 'index.php?option=com_tjreports&format=json',
 	submitTJRData: function(task) {
+		jQuery('#reports-container .hasTooltip').tooltip('destroy');
 		this.searchToggle = jQuery('div#topFilters').is(':visible');
 		tjrContentUI.utility.loadingLayer('show');
 		this.$form = jQuery('#adminForm');

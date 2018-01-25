@@ -34,16 +34,7 @@ else
 }
 
 $document = JFactory::getDocument();
-
-// Load js assets
-$tjStrapperPath = JPATH_SITE . '/media/techjoomla_strapper/tjstrapper.php';
-
-if (JFile::exists($tjStrapperPath))
-{
-	require_once $tjStrapperPath;
-	TjStrapper::loadTjAssets('com_tjreports');
-}
-// End
+$document->addStyleSheet(JUri::root(true) . '/media/com_tjreports/css/font-awesome/css/font-awesome.min.css');
 
 // Include dependancies
 jimport('joomla.application.component.controller');

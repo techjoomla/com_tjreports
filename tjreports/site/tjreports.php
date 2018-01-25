@@ -27,18 +27,6 @@ else
 	define('COM_TJLMS_WRAPPER_DIV', 'tjlms-wrapper row-fluid');
 }
 
-$document = JFactory::getDocument();
-
-// Load js assets
-$tjStrapperPath = JPATH_SITE . '/media/techjoomla_strapper/tjstrapper.php';
-
-if (JFile::exists($tjStrapperPath))
-{
-	require_once $tjStrapperPath;
-	TjStrapper::loadTjAssets('com_tjreports');
-}
-// End
-
 // Include dependancies
 jimport('joomla.application.component.controller');
 

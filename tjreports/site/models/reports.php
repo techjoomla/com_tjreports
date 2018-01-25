@@ -326,7 +326,7 @@ class TjreportsModelReports extends JModelList
 			foreach ($displayFilter as $key => $dispFilter)
 			{
 				// Check if any of the filter is set
-				if ((!empty($filters[$key]) || substr($dispFilter['search_type'], -6) === '.range') && in_array($key, $colToshow))
+				if ((($filters[$key] != '') || substr($dispFilter['search_type'], -6) === '.range') && in_array($key, $colToshow))
 				{
 					if (!isset($dispFilter['searchin']))
 					{

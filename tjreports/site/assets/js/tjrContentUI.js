@@ -99,7 +99,7 @@ jQuery.extend(tjrContentUI.report, {
 	},
 	getColNames: function()
 	{
-		techjoomla.jQuery('.ColVis_collection').toggle();
+		jQuery('.ColVis_collection').toggle();
 	},
 	cancel : function(){
 		jQuery('#btn-cancel').hide();

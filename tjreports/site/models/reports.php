@@ -1010,8 +1010,33 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function addTjReportsPlugins()
 	{
-		$dispatcher = JEventDispatcher::getInstance();
-		$plugins    = JPluginHelper::getPlugin('tjreports');
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true)
+			->select(
+				$db->quoteName(
+					array(
+						'folder',
+						'element',
+						'params',
+						'extension_id'
+					),
+					array(
+						'type',
+						'name',
+						'params',
+						'id'
+					)
+				)
+			)
+			->from('#__extensions')
+			->where('enabled = 1')
+			->where('type = ' . $db->quote('plugin'))
+			->where('folder = ' . $db->quote('tjreports'))
+			->where('state IN (0,1)')
+			->order('ordering');
+		$db->setQuery($query);
+
+		$plugins = $db->loadObjectList();
 
 		$count = 0;
 

@@ -258,13 +258,14 @@ jQuery.extend(tjrContentUI.report, {
 		return false;
 	},
 	attachCalSubmit : function(elem){
+		/** global: JoomlaCalendar */
 		var calObj = JoomlaCalendar.getCalObject(elem);
-			if (calObj && !claObj._joomlaCalendar.params.onUpdate)
+			if (calObj && !calObj._joomlaCalendar.params.onUpdate)
 			{
 				calObj._joomlaCalendar.params.onUpdate = tjrContentUI.report.submitCalForm;
 			}
 	},
-	submitCalForm : function(calObje){
+	submitCalForm : function(){
 		tjrContentUI.report.submitTJRData();
 	}
 });

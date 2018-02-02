@@ -132,8 +132,20 @@ class TjreportsViewReports extends ReportsViewBase
 	 */
 	protected function addDocumentHeaderData()
 	{
+		$app = JFactory::getApplication();
 		JHtml::_('formbehavior.chosen', 'select');
 		$document = JFactory::getDocument();
+
+		$com_params	= JComponentHelper::getParams('com_tjreports');
+		$bootstrapSetting = $com_params->get('bootstrap_setting', 1);
+
+		if (($bootstrapSetting == 3)
+			|| ( $app->isAdmin() && $bootstrapSetting == 1 )
+			|| ( !$app->isAdmin() && $bootstrapSetting == 2 ) )
+		{
+			$document->addStylesheet(JURI::root(true) . '/media/techjoomla_strapper/bs3/css/bootstrap.min.css');
+		}
+
 		$document->addScript(JURI::root() . '/components/com_tjreports/assets/js/tjrContentService.js');
 		$document->addScript(JURI::root() . '/components/com_tjreports/assets/js/tjrContentUI.js');
 		$document->addStylesheet(JURI::root() . '/components/com_tjreports/assets/css/tjreports.css');

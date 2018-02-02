@@ -130,6 +130,7 @@ vertical-align:baseline;
 
 @media screen and (max-width: 768px){
 #t3-content #show-filter{margin-bottom:20px;}
+.ordering-select #filtersreport_filter,#filterscourse_id{margin-bottom:20px;}
 }
 
 @media (max-width: 1024px) and (min-width: 768px){

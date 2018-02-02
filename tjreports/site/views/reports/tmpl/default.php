@@ -130,12 +130,12 @@
             </div>
             <!--/row-->
             <div class="report-top-bar">
-               <div class="row hidden-xs form-group">
+               <div class="row form-group">
                   <?php
                      if ($totalHeadRows > 1)
                      {
                      ?>
-                  <div class="col-md-2 col-sm-4 col-xs-12 hidden-phone">
+                  <div class="col-md-2 col-sm-4 col-xs-12">
                      <button type="button" class="btn btn-primary btn-custom btn-block" id="show-filter" onclick="tjrContentUI.report.showFilter();">
                      <?php echo JText::_("COM_TJREPORTS_SEARCH_TOOLS"); ?>
                      <i class="fa fa-caret-down"></i>
@@ -145,7 +145,7 @@
                      }
                      ?>
                 <!--/col-md-2-->
-                  <div class="show-hide-cols col-md-2 col-md-offset-2 col-sm-3 col-sm-offset-1">
+                  <div class="show-hide-cols col-md-2 col-md-offset-2 col-sm-3 col-sm-offset-1 hidden-xs">
                      <input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="tjrContentUI.report.getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>" />
                      <ul id="ul-columns-name" class="ColVis_collection">
                         <?php
@@ -181,7 +181,7 @@
                 <!--/col-md-2-->
                   <?php
                      if (!$app->isAdmin()){?>
-                  <div class="col-sm-3 col-md-2 pull-right">
+                  <div class="col-sm-3 col-md-2 pull-right hidden-xs">
                      <a class='btn btn-default btn-block btn-csv'
                         type='submit' onclick="Joomla.submitbutton('reports.csvexport'); jQuery('#task').val('');" href='#'><i title='Export'
                         class='fa fa-download'></i>&nbsp;<?php echo JText::_('COM_TJREPORTS_CSV_EXPORT'); ?></a>

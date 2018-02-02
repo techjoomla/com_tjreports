@@ -53,7 +53,7 @@ $totalHeadRows = count($displayFilters);
 			<form action="<?php echo JRoute::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm" onsubmit="return tjrContentUI.report.submitForm();">
 				<!--html code-->
 				<div class="row">
-					<div class="span4 col-md-3 col-sm-5 col-xs-9">
+					<div class="col-md-3 col-sm-5 col-xs-12">
 						<div class="form-group">
 							<select class="form-control" id="report-select" onchange="tjrContentUI.report.loadReport(this,'<?php echo $this->client; ?>');">
 							<?php foreach ($this->enableReportPlugins as $eachPlugin) :
@@ -74,9 +74,9 @@ $totalHeadRows = count($displayFilters);
 						<?php	endforeach;	?>
 							</select>
 						</div><!--form-group-->
-					</div><!--span3-->
+					</div><!--/col-md-3-->
 
-					<div class="span1 col-sm-1 col-xs-3 pull-right">
+					<div class="col-md-1 col-sm-1 pull-right hidden-xs">
 						<div id="reportPagination" class="pull-right ">
 							<?php
 							if (!$app->isAdmin())
@@ -89,33 +89,53 @@ $totalHeadRows = count($displayFilters);
 							}
 							?>
 						</div>
-					</div>
-
-			<?php	if (!empty($this->savedQueries))
-					{	?>
-					<div class="span4 col-md-2 col-sm-3 col-xs-9">
-						<?php	echo JHtml::_('select.genericlist', $this->savedQueries, "queryId", 'class="" size="1" onchange="tjrContentUI.report.getQueryResult(this.value);" name="filter_saveQuery"', "value", "text", $this->queryId);	?>
-					</div><!--span3-->
-					<div class="span1 col-md-1 col-xs-2 col-sm-3">
-						<?php if ($this->queryId) { ?>
-						<a class="btn btn-primary" onclick="tjrContentUI.report.deleteThisQuery();"><i class="fa fa-trash"></i></a>
-<!--
-						<input type='button' value="<?php echo JText::_('COM_TJREPORTS_DELETE_QUERY'); ?>" class="btn btn-primary" onclick="tjrContentUI.report.deleteThisQuery();"/>
--->
-						<?php } ?>
-					</div><!--span1-->
-			<?php	}	?>
+					</div><!--/col-md-1-->
 				</div><!--row-fluid-->
 				<!--/html code-->
 
-				<div class="report-top-bar">
+				<div class="row hidden-xs">
+				<?php	if (!empty($this->savedQueries))
+					{	?>
+					<div class="col-md-4 col-sm-5">
+						<?php	echo JHtml::_('select.genericlist', $this->savedQueries, "queryId", 'class="" size="1" onchange="tjrContentUI.report.getQueryResult(this.value);" name="filter_saveQuery"', "value", "text", $this->queryId);	?>
+						<?php if ($this->queryId) { ?>
+						<a class="btn btn-primary" onclick="tjrContentUI.report.deleteThisQuery();"><i class="fa fa-trash"></i></a>
 
-					<div class="row">
+						<?php } ?>
+					</div><!--/col-md-4-->
+					<?php	}	?>
+
+					<?php
+						if ($app->isSite())
+		{
+			if ($this->isExport)
+			{
+				?>
+
+	<?php	}	?>
+			       <div class="col-sm-7 col-md-5">
+			       <span id="btn-cancel">
+						<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName"/>
+					</span>
+					<a class="btn btn-primary  saveData" type="button" id="saveQuery"
+						onclick="tjrContentUI.report.saveThisQuery();"><?php echo
+						 JText::_('COM_TJREPORTS_SAVE_THIS_QUERY'); ?></a>
+
+					<button class="btn btn btn-default cancel-btn " type="button" style="display:none;" onclick="tjrContentUI.report.cancel();">
+						Cancel
+					</button>
+				</div>
+
+<?php	} ?>
+				</div><!--/row-->
+
+				<div class="report-top-bar">
+					<div class="row hidden-xs form-group">
 						<?php
 						if ($totalHeadRows > 1)
 						{
 						?>
-							<div class="span3 col-md-2 col-sm-4 col-xs-12 span3 hidden-phone hidden-xs">
+							<div class="col-md-2 col-sm-4 col-xs-12 hidden-phone">
 								<button type="button" class="btn btn-primary btn-custom btn-block" id="show-filter" onclick="tjrContentUI.report.showFilter();">
 									<?php echo JText::_("COM_TJREPORTS_SEARCH_TOOLS"); ?>
 									<i class="fa fa-caret-down"></i>
@@ -124,17 +144,9 @@ $totalHeadRows = count($displayFilters);
 						<?php
 						}
 						?>
-						<?php
-							if (!$app->isAdmin()){?>
-						<div class="col-sm-3 col-md-2 span3 col-xs-12 pull-right">
-			 <a class='btn btn-default btn-block btn-csv'
-				type='submit' onclick="Joomla.submitbutton('reports.csvexport'); jQuery('#task').val('');" href='#'><i title='Export'
-				class='fa fa-download'></i>&nbsp;<?php echo JText::_('COM_TJREPORTS_CSV_EXPORT'); ?></a>
-				</div>
-<?php
-							}?>
+						<!--/col-md-2-->
 
-						<div class="show-hide-cols col-md-2 span3 col-sm-3 col-xs-12 span3 ">
+						<div class="show-hide-cols col-md-2 col-md-offset-2 col-sm-3 col-sm-offset-1">
 							<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="tjrContentUI.report.getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>" />
 							<ul id="ul-columns-name" class="ColVis_collection">
 								<?php
@@ -167,32 +179,20 @@ $totalHeadRows = count($displayFilters);
 								?>
 							</ul>
 						</div>
-						<?php
-						if ($app->isSite())
-		{
-			if ($this->isExport)
-			{
-				?>
+						 <!--/col-md-2-->
 
-	<?php	}	?>
-			       <div class="col-sm-12 col-md-5 col-xs-12 span3">
-			       <span id="btn-cancel">
-						<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName"/>
-					</span>
-					<a class="btn btn-primary  saveData" type="button" id="saveQuery"
-						onclick="tjrContentUI.report.saveThisQuery();"><?php echo
-						 JText::_('COM_TJREPORTS_SAVE_THIS_QUERY'); ?></a>
-
-					<button class="btn btn btn-default cancel-btn " type="button" style="display:none;" onclick="tjrContentUI.report.cancel();">
-						Cancel
-					</button>
+					    <?php
+							if (!$app->isAdmin()){?>
+						<div class="col-sm-3 col-md-2 pull-right">
+			 <a class='btn btn-default btn-block btn-csv'
+				type='submit' onclick="Joomla.submitbutton('reports.csvexport'); jQuery('#task').val('');" href='#'><i title='Export'
+				class='fa fa-download'></i>&nbsp;<?php echo JText::_('COM_TJREPORTS_CSV_EXPORT'); ?></a>
 				</div>
-
-<?php	} ?>
-
-
-
+               <?php
+							}?>
+                   <!--/col-md-2-->
 					</div>
+					<!--/row-->
 
 					<div class="js-stools-container-list hidden-phone hidden-tablet row-fluid">
 						<div class="ordering-select hidden-phone show-tools" id="topFilters">
@@ -223,7 +223,7 @@ $totalHeadRows = count($displayFilters);
 					</div>
 					<!-- js-stools-container-list hidden-phone hidden-tablet span4 -->
 					<div id="report-containing-div" class="row">
-						<div class="col-sm-12 col-xs-12">
+						<div class="col-sm-12 col-xs-12 col-md-12">
 						<div class="table-responsive report-tbl">
 						<table id="report-table" class="table table-striped left_table ">
 							<thead>

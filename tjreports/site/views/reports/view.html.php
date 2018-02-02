@@ -132,6 +132,7 @@ class TjreportsViewReports extends ReportsViewBase
 	 */
 	protected function addDocumentHeaderData()
 	{
+		$app = JFactory::getApplication();
 		JHtml::_('formbehavior.chosen', 'select');
 		$document = JFactory::getDocument();
 

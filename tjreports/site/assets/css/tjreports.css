@@ -6,7 +6,6 @@ ul#ul-columns-name li input {margin-top: 0;}
 ul#ul-columns-name li:hover label {background-color: #F0F0F0;}
 ul#ul-columns-name li label {margin-bottom: 0; padding-top: 2px; padding-bottom: 2px;cursor:pointer;}
 div#report-containing-div {min-height:450px;}
-div#reports-container input.tjrsmall-input {width: 120px; font-size: 12px;}
 div#reports-container .form-inline-header .controls {padding-right: 5px;}
 div#topFilters div.filter-search {display: inline-block; float: left; margin-right: 5px;}
 div#topFilters {margin-top: 10px; float: left; width: 100%;}
@@ -24,6 +23,7 @@ table.tjrport-table{border-bottom:1px solid #ddd}
 #t3-content #queryName{height: 32px;font-size: 14px;}
 .report-top-bar{margin-top:10px;}
 #t3-content .form-group{margin-bottom:15px;}
+#reports-container h2{font-weight: 500;}
 #t3-mainbody #reports-container
 .field-calendar .tjrsmall-input {
 	display:inline-block;
@@ -97,6 +97,19 @@ vertical-align:baseline;
 #t3-content #report-table .input-group-btn{width:0;}
 #reports-container .input-append .field-calendar  {
     font-size: 14px;
+}
+.tjlms-wrapper .chzn-container .chzn-single, .tjlms-wrapper a.btn,
+.tjlms-wrapper button, .tjlms-wrapper button.btn, .tjlms-wrapper input[type=text],
+.tjlms-wrapper input[type="button"], .tjlms-wrapper select {
+    height: 35px !important;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border-radius: 0 !important;
+    box-shadow: none;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    line-height: 18px !important;
 }
 @media screen and (max-width: 767px){
 .table-responsive {

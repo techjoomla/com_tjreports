@@ -28,7 +28,7 @@ foreach($displayFilters as $searchKey => $filter)
 
 	if ($searchType == 'text')
 	{
-		$filterHtml = '<div class="input-append input-group">
+		$filterHtml = '<div class="input-group">
 							<input type="text" name="filters[' . $searchKey . ']"
 									class="input input-mini filter-input ' . $filterHide . '" ' .
 									'onkeydown="tjrContentUI.report.submitOnEnter(event);"
@@ -52,7 +52,7 @@ foreach($displayFilters as $searchKey => $filter)
 		$svalue = isset($filter['select_value']) ? $filter['select_value'] : "value";
 		$stext  = isset($filter['select_text']) ? $filter['select_text'] : "text";
 
-		$filterHtml = '<div class="input-append input-group">';
+		$filterHtml = '<div class="input-group">';
 
 		$filterHtml .= JHtml::_('select.genericlist', $filter['select_options'], 'filters[' . $searchKey . ']',
 					'class="filter-input ' . $filterHide . '" size="1" onchange="tjrContentUI.report.submitTJRData();"',
@@ -109,7 +109,7 @@ foreach($displayFilters as $searchKey => $filter)
 				$fieldAttr = $attrib;
 			}
 
-			$filterHtml  .= '<div class="filter-search controls custom-group input-append">'
+			$filterHtml  .= '<div class="filter-search controls custom-group input-group">'
 				. JHtml::_('calendar', htmlspecialchars($searchValue), 'filters['. $fieldKey . ']', 'filters_' . $fieldKey , $dateFormat, $fieldAttr);
 
 			if ($this->filterLevel == 1)

@@ -36,7 +36,7 @@
 
    ?>
 <div id="reports-container">
-<div class="<?php echo COM_TJLMS_WRAPPER_DIV ?>">
+<div class="<?php echo COM_TJLMS_WRAPPER_DIV ?> tjBs3">
    <?php
       if (!empty($this->sidebar)):?>
    <div id="j-sidebar-container" class="span2">

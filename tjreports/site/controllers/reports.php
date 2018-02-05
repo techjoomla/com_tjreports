@@ -116,7 +116,7 @@ class TjreportsControllerReports extends JControllerAdmin
 		echo $csvData;
 
 		$csvData  = '';
-		$filename = "tjreports_" . $pluginName . "_report_" . date("Y-m-d_H-i", time());
+		$filename = $pluginName . "_report_" . date("Y-m-d_H-i", time());
 
 		// Set CSV headers
 		header("Content-type: text/csv");

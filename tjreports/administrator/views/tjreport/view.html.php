@@ -96,6 +96,7 @@ class TjreportsViewTjreport extends JViewLegacy
 	 */
 	protected function addDocumentHeaderData()
 	{
+		JHtml::_('jquery.framework');
 		JText::script('COM_TJREPORTS_FORM_DEFAULT_OPTION');
 		JText::script('COM_TJREPORTS_INVALID_JSON_VALUE');
 		$document = JFactory::getDocument();

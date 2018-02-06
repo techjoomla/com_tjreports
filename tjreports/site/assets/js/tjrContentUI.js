@@ -73,11 +73,12 @@ jQuery.extend(tjrContentUI.report, {
 					jQuery('#topFilters').show();
 				}
 			}
+		).always(
+			function(response) {
+				jQuery('.filter-hide').parents('.col-filter-header').hide();
+				jQuery('.filter-show').parents('th').find('.table-heading').hide();
+			}
 		);
-
-		jQuery('.filter-hide').parents('.col-filter-header').hide();
-		jQuery('.filter-show').parents('th').find('.table-heading').hide();
-
 	},
 	showFilter: function(){
 		jQuery('#show-filter').toggleClass('btn-primary');

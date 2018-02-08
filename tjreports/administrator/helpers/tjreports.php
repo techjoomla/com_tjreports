@@ -72,7 +72,7 @@ class TjreportsHelper extends JHelperContent
 	 * @param   string   $section    The access section name.
 	 * @param   integer  $id         The item ID.
 	 *
-	 * @return  JObject
+	 * @return  result
 	 *
 	 * @since   3.2
 	 */

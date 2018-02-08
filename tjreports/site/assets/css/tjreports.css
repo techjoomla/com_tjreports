@@ -98,6 +98,14 @@ vertical-align:baseline;
 #reports-container .input-append .field-calendar  {
     font-size: 14px;
 }
+#reports-container .input-group .field-calendar .input-append {
+	margin-bottom: 0px;
+}
+
+#reports-container .filter-search .input-group-btn {
+	border: 1px solid #ccc;
+	border-radius: 0px;
+}
 .tjlms-wrapper .chzn-container .chzn-single, .tjlms-wrapper a.btn,
 .tjlms-wrapper button, .tjlms-wrapper button.btn, .tjlms-wrapper input[type=text],
 .tjlms-wrapper input[type="button"], .tjlms-wrapper select {

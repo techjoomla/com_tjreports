@@ -82,9 +82,12 @@ foreach($displayFilters as $searchKey => $filter)
 
 		for ($i=1; $i<=$j; $i++)
 		{
+			$altfieldKey = '';
+
 			if ($searchType == 'date.range')
 			{
-				$fieldKey =  ($i == 1)?  ($searchKey . '_from') : ($searchKey . '_to');
+				$fieldKey    =  ($i == 1) ?  ($searchKey . '_from') : ($searchKey . '_to');
+				$altfieldKey =  ($i == 1) ?  ($searchKey . '_to') : ($searchKey . '_from');
 			}
 			else
 			{
@@ -93,7 +96,17 @@ foreach($displayFilters as $searchKey => $filter)
 
 			$searchValue = isset($filters[$fieldKey]) ? $filters[$fieldKey] : '';
 			$dateFormat  = isset($filters['dateFormat']) ? $filters['dateFormat'] : '%Y-%m-%d';
-			$filterHide = $searchValue === '' ? 'filter-hide' : 'filter-show';
+
+			if ($j == 2)
+			{
+				$altSearchValue = isset($filters[$altfieldKey]) ? $filters[$altfieldKey] : '';
+				$filterHide = ($searchValue === '' && $altSearchValue === '') ? 'filter-hide' : 'filter-show';
+			}
+			else
+			{
+				$filterHide = $searchValue === '' ? 'filter-hide' : 'filter-show';
+			}
+
 			$attrib		 = array('class' => 'tjrsmall-input dash-calendar validate-ymd-date ' . $filterHide);
 
 			if (isset($filter[$fieldKey]['attrib']))
@@ -116,7 +129,7 @@ foreach($displayFilters as $searchKey => $filter)
 			{
 				$filterHtml	.= '</div>';
 			}
-			else
+			elseif ($this->filterLevel != 1 && $i != 1)
 			{
 				$filterHtml	.= '<span class="input-group-btn custom-group-btn">
 								<button class="btn btn-secondary close-icon" type="button" title="Cancel Search">

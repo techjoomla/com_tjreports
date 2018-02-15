@@ -14,6 +14,7 @@
 defined('_JEXEC') or die;
 
 require_once __DIR__ . '/view.base.php';
+jimport('techjoomla.tjtoolbar.button.csvexport');
 
 /**
  * View class for a list of Tjreports.
@@ -93,13 +94,12 @@ class TjreportsViewReports extends ReportsViewBase
 			$this->document->setTitle($title);
 		}
 
-		if ($this->isExport)
-		{
-			$button = "<a class='btn'
-					type='submit' onclick=\"Joomla.submitbutton('reports.csvexport'); jQuery('#task').val('');\" href='#'><span title='Export'
-					class='icon-download'></span>" . JText::_('COM_TJREPORTS_CSV_EXPORT') . "</a>";
-			$bar->appendButton('Custom', $button);
-		}
+		$message = array();
+		$message['success'] = JText::_("COM_TJLMS_EXPORT_FILE_SUCCESS");
+		$message['error'] = JText::_("COM_TJLMS_EXPORT_FILE_ERROR");
+		$message['inprogress'] = JText::_("COM_TJLMS_EXPORT_FILE_NOTICE");
+		$message['text'] = JText::_("COM_TJLMS_EXPORT_TOOLBAR_TITLE");
+		$bar->appendButton('CsvExport', $message);
 
 		$button = '<span id="btn-cancel">
 						<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName" />

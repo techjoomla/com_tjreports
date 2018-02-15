@@ -1,26 +1,35 @@
 <?php
 /**
  * @version    SVN: <svn_id>
- * @package    Techjoomla.Libraries
- * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2015 TechJoomla. All rights reserved.
- * @license    GNU General Public License version 2 or later.
+ * @package    Com_Tjreports
+ * @copyright  Copyright (C) 2005 - 2018. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * Shika is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
  */
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.view');
 jimport('techjoomla.view.csv');
 
 /**
- * TjCsv
+ * CSV class for a list of Tjreports.
  *
- * @package     Techjoomla.Libraries
- * @subpackage  TjCsv
- * @since       1.0
+ * @since  1.0.0
  */
 class TjreportsViewReports extends TjExportCsv
 {
+	protected $limitStart;
+
+	protected $data;
+
+	protected $recordCnt;
+
+	protected $headers;
+
+	protected $fileName;
 	/**
 	 * call exportCsv function from techjoomla (techjoomla.view.csv) library.
 	 *

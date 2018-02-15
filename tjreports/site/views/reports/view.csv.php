@@ -41,7 +41,7 @@ class TjreportsViewReports extends TjExportCsv
 	 */
 	public function display($tpl = null)
 	{
-		self::getItems();
+		$this->getItems();
 		parent::display();
 	}
 
@@ -74,8 +74,9 @@ class TjreportsViewReports extends TjExportCsv
 
 		$this->recordCnt = $model->getTotal();
 		$items = $model->getItems();
+		$columns   = $model->columns;
 		$colToshow = $model->getState('colToshow');
-		$csvData_arr = $colTitleArray = array();
+		$colTitleArray = array();
 
 		foreach ($colToshow as $index => $detail)
 		{

@@ -34,6 +34,24 @@
    $displayFilters = $this->userFilters;
    $totalHeadRows = count($displayFilters);
 
+   if ($app->isSite())
+   {
+      $message = array();
+      $message['success'] = JText::_("COM_TJLMS_EXPORT_FILE_SUCCESS");
+      $message['error'] = JText::_("COM_TJLMS_EXPORT_FILE_ERROR");
+      $message['inprogress'] = JText::_("COM_TJLMS_EXPORT_FILE_NOTICE");
+      $message['text'] = JText::_("COM_TJLMS_EXPORT_TOOLBAR_TITLE");
+
+      JHtml::script(JUri::base() . 'libraries/techjoomla/assets/js/tjexport.js');
+      $document = JFactory::getDocument();
+      $csv_url = JURI::root() . 'index.php?option=' . $input->get('option') . '&view=' . $input->get('view') . '&format=csv';
+
+      $document->addScriptDeclaration("var csv_export_url='{$csv_url}';");
+      $document->addScriptDeclaration("var csv_export_success='{$message['success']}';");
+      $document->addScriptDeclaration("var csv_export_error='{$message['error']}';");
+      $document->addScriptDeclaration("var csv_export_inprogress='{$message['inprogress']}';");
+   }
+
    ?>
 <div id="reports-container">
 <div class="<?php echo COM_TJLMS_WRAPPER_DIV ?> tjBs3">
@@ -182,9 +200,9 @@
                   <?php
                      if (!$app->isAdmin()){?>
                   <div class="col-sm-3 col-md-2 pull-right hidden-xs">
-                     <a class='btn btn-default btn-block btn-csv'
-                        type='submit' onclick="Joomla.submitbutton('reports.csvexport'); jQuery('#task').val('');" href='#'><i title='Export'
-                        class='fa fa-download'></i>&nbsp;<?php echo JText::_('COM_TJREPORTS_CSV_EXPORT'); ?></a>
+                     <button onclick="tjexport.exportCsv(0)" class="btn btn-small export">
+                        <i class='fa fa-download'></i>&nbsp;<?php echo JText::_('COM_TJREPORTS_CSV_EXPORT'); ?>
+                     </button>
                   </div>
                   <?php
                      }?>

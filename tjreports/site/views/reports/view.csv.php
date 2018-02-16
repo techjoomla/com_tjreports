@@ -120,8 +120,8 @@ class TjreportsViewReports extends TjExportCsv
 		}
 
 		$this->headers = $colTitleArray;
-		$pluginTitle = $reportData->title;
-		$this->fileName = strtolower($pluginTitle) . "_report_" . date("Y-m-d_H-i", time());
+		$pluginTitle = str_replace(" ", "_", $reportData->title);
+		$this->fileName = rtrim(strtolower($pluginTitle)) . "_report_" . date("Y-m-d_H-i", time());
 
 		// Loop through items
 		// foreach ((array) $items as $itemKey => &$item)

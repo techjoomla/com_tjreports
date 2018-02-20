@@ -8,7 +8,7 @@
 		<field
 				name="title"
 				type="text"
-				label="Plugin Name"
+				label="COM_TJREPORTS_FORM_LBL_PLUGIN_NAME"
 				size="40"
 				class="inputbox"
 				default=""
@@ -16,7 +16,7 @@
 		<field
 				name="alias"
 				type="text"
-				label="URL slug"
+				label="COM_TJREPORTS_FORM_LBL_URL_SLUG"
 				size="40"
 				class="inputbox"
 				default=""

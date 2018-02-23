@@ -231,9 +231,9 @@ table.tjrport-table {
     margin-top: 0 !important;
 }
 
-.com_tjreports .chzn-container .chzn-single, .com_tjreports a.btn, .com_tjreports button,
- .com_tjreports button.btn, .com_tjreports input[type=text],
- .com_tjreports input[type="button"], .com_tjreports select {
+.view-reports .chzn-container .chzn-single, .view-reports a.btn,
+ .view-reports button, .view-reports button.btn, .view-reports input[type=text],
+ .view-reports input[type="button"], .view-reports select {
     height: 35px !important;
     padding-top: 6px;
     padding-bottom: 6px;

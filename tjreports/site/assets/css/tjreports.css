@@ -231,7 +231,9 @@ table.tjrport-table {
     margin-top: 0 !important;
 }
 
-.tjlms-wrapper .chzn-container .chzn-single, .tjlms-wrapper a.btn, .tjlms-wrapper button, .tjlms-wrapper button.btn, .tjlms-wrapper input[type=text], .tjlms-wrapper input[type="button"], .tjlms-wrapper select {
+.com_tjreports .chzn-container .chzn-single, .com_tjreports a.btn, .com_tjreports button,
+ .com_tjreports button.btn, .com_tjreports input[type=text],
+ .com_tjreports input[type="button"], .com_tjreports select {
     height: 35px !important;
     padding-top: 6px;
     padding-bottom: 6px;

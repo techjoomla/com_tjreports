@@ -37,10 +37,10 @@
    if ($app->isSite())
    {
       $message = array();
-      $message['success'] = JText::_("COM_TJLMS_EXPORT_FILE_SUCCESS");
-      $message['error'] = JText::_("COM_TJLMS_EXPORT_FILE_ERROR");
-      $message['inprogress'] = JText::_("COM_TJLMS_EXPORT_FILE_NOTICE");
-      $message['text'] = JText::_("COM_TJLMS_EXPORT_TOOLBAR_TITLE");
+      $message['success'] = JText::_("COM_TJREPORTS_EXPORT_FILE_SUCCESS");
+      $message['error'] = JText::_("COM_TJREPORTS_EXPORT_FILE_ERROR");
+      $message['inprogress'] = JText::_("COM_TJREPORTS_EXPORT_FILE_NOTICE");
+      $message['text'] = JText::_("COM_TJREPORTS_CSV_EXPORT");
 
       JHtml::script(JUri::base() . 'libraries/techjoomla/assets/js/tjexport.js');
       $document = JFactory::getDocument();

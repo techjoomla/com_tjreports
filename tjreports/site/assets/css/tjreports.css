@@ -231,8 +231,8 @@ table.tjrport-table {
     margin-top: 0 !important;
 }
 
-.tjlms-wrapper .chzn-container .chzn-single, .tjlms-wrapper a.btn, .tjlms-wrapper button, .tjlms-wrapper button.btn, .tjlms-wrapper input[type=text], .tjlms-wrapper input[type="button"], .tjlms-wrapper select {
-    height: 35px !important;
+.view-reports .chzn-container .chzn-single, .view-reports a.btn, .view-reports button, .view-reports button.btn, .view-reports input[type="text"], .view-reports input[type="button"], .view-reports select{
+    height: 35px;
     padding-top: 6px;
     padding-bottom: 6px;
     border-radius: 0 !important;

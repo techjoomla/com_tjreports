@@ -79,7 +79,7 @@
 			<form action="<?php echo JRoute::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm" onsubmit="return tjrContentUI.report.submitForm();">
 				<!--html code-->
 				<div class="row">
-					<div class="col-md-3 col-sm-5 col-xs-12">
+					<div class="col-md-3 col-sm-5 col-xs-10">
 						<div class="form-group">
 							<select class="form-control" id="report-select" onchange="tjrContentUI.report.loadReport(this,'<?php echo $this->client; ?>');">
 							<?php
@@ -106,7 +106,7 @@
 						<!--form-group-->
 					</div>
 					<!--col-md-3-->
-					<div class="col-md-1 col-sm-1 pull-right hidden-xs">
+					<div class="col-xs-2 col-sm-1 pull-right">
 						<div id="reportPagination" class="pull-right ">
 							<?php
 							if (!$app->isAdmin())
@@ -124,7 +124,7 @@
 				</div>
 				<!--row-->
 				<!--/html code-->
-				<div class="row hidden-xs">
+				<div class="row">
 					<?php
 					if (!empty($this->savedQueries))
 					{
@@ -185,7 +185,7 @@
 						}
 						?>
 					<!--/col-md-2-->
-							<div class="show-hide-cols col-md-2 col-md-offset-2 col-sm-3 col-sm-offset-1 hidden-xs">
+							<div class="show-hide-cols col-md-2 col-sm-3">
 								<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="tjrContentUI.report.getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>" />
 								<ul id="ul-columns-name" class="ColVis_collection">
 									<?php
@@ -223,8 +223,8 @@
 						if (!$app->isAdmin())
 						{
 						?>
-							<div class="col-sm-3 col-md-2 pull-right hidden-xs">
-								<button onclick="tjexport.exportCsv(0)" class="btn btn-small export">
+							<div class="col-sm-5 col-md-8">
+								<button onclick="tjexport.exportCsv(0)" class="btn btn-small export pull-right">
 									<i class='fa fa-download'></i>&nbsp;<?php echo JText::_('COM_TJREPORTS_CSV_EXPORT'); ?>
 								</button>
 							</div>
@@ -270,7 +270,7 @@
 					<!--/row-->
 					<!-- js-stools-container-list hidden-phone hidden-tablet span4 -->
 					<div id="report-containing-div" class="row">
-						<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-xs-12">
 							<div class="table-responsive report-tbl">
 								<table id="report-table" class="table table-striped left_table ">
 									<thead>

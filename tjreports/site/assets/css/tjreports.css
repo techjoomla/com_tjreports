@@ -233,14 +233,22 @@ table.tjrport-table {
 
 .view-reports .chzn-container .chzn-single, .view-reports a.btn, .view-reports button, .view-reports button.btn, .view-reports input[type="text"], .view-reports input[type="button"], .view-reports select{
     height: 35px;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
     border-radius: 0 !important;
     box-shadow: none;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     line-height: 18px !important;
+}
+.view-reports #toolbar [class^="icon-"]{
+	height: 28px;
+    padding-top: 5px !important;
+}
+.view-reports #toolbar .export{
+    padding-top:0 !important;
+    padding-bottom:0 !important;
 }
 
 @media screen and (max-width: 767px) {

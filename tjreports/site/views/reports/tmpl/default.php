@@ -224,7 +224,7 @@
 						{
 						?>
 							<div class="col-sm-5 col-md-8">
-								<button onclick="tjexport.exportCsv(0)" class="btn btn-small export pull-right">
+								<button onclick="if(event.preventDefault) return false; tjexport.exportCsv(0)" class="btn btn-small export pull-right">
 									<i class='fa fa-download'></i>&nbsp;<?php echo JText::_('COM_TJREPORTS_CSV_EXPORT'); ?>
 								</button>
 							</div>

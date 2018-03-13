@@ -210,15 +210,20 @@ table.tjrport-table {
     margin-top: 3px
 }
 
-#t3-content #report-table .input-group-btn {
+#t3-content #report-table .input-group-btn,
+#reports-container .ordering-select .input-group-btn {
     width: 0;
+}
+.view-reports select,.ordering-select a.chzn-single{
+	height:35px !important;
 }
 
 #reports-container .input-append .field-calendar {
     font-size: 14px;
 }
 
-#reports-container .input-group .field-calendar .input-append {
+#reports-container .input-group .field-calendar .input-append,
+.view-reports .j-toggle-main input[type="text"] {
     margin-bottom: 0px;
 }
 

@@ -2,6 +2,10 @@
     padding: 0 14px;
 }
 
+.hasPopover {
+	display:block !important;
+}
+
 .show-hide-cols {
     position: relative;
 }

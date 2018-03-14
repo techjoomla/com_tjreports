@@ -6,6 +6,10 @@
 	display:block !important;
 }
 
+a[disabled] {
+	pointer-events: none;
+}
+
 .show-hide-cols {
     position: relative;
 }

@@ -189,5 +189,10 @@ class TjreportsViewReports extends ReportsViewBase
 		JText::script('COM_TJREPORTS_SAVE_QUERY');
 		JText::script('COM_TJREPORTS_ENTER_TITLE');
 		JText::script('COM_TJREPORTS_QUERY_DELETE_SUCCESS');
+
+		JFactory::getLanguage()->load('lib_techjoomla', JPATH_SITE, null, false, true);
+		JText::script('LIB_TECHJOOMLA_CSV_EXPORT_ABORT');
+		JText::script('LIB_TECHJOOMLA_CSV_EXPORT_UESR_ABORTED');
+		JText::script('LIB_TECHJOOMLA_CSV_EXPORT_CONFIRM_ABORT');
 	}
 }

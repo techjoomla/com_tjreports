@@ -46,6 +46,7 @@
       $document = JFactory::getDocument();
       $csv_url = JURI::root() . 'index.php?option=' . $input->get('option') . '&view=' . $input->get('view') . '&format=csv';
 
+      $document->addScriptDeclaration("var tj_csv_site_root='';");
       $document->addScriptDeclaration("var csv_export_url='{$csv_url}';");
       $document->addScriptDeclaration("var csv_export_success='{$message['success']}';");
       $document->addScriptDeclaration("var csv_export_error='{$message['error']}';");

@@ -363,7 +363,7 @@
 														}
 														if ($hasFilter)
 														{
-															echo '<a href="#" title="search attempts" class="col-search">
+															echo '<a href="#" title="search" class="col-search">
 																		<i class="fa fa-search"></i>
 																	</a></span>';
 														}

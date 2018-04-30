@@ -129,7 +129,7 @@ foreach($displayFilters as $searchKey => $filter)
 			{
 				$filterHtml	.= '</div>';
 			}
-			elseif ($this->filterLevel != 1 && $i != 1)
+			elseif ($this->filterLevel != 1 && $i != 1 || $searchType == 'calendar' )
 			{
 				$filterHtml	.= '<span class="input-group-btn custom-group-btn">
 								<button class="btn btn-secondary close-icon" type="button" title="Cancel Search">

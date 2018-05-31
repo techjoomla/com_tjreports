@@ -461,6 +461,7 @@ jQuery.extend(tjrContentUI.tjreport, {
 			var container = jQuery(this).parents('th');
 			jQuery('.col-filter-header',container).show();
 			jQuery('.chzn-search').children('input').attr('readOnly',false);
+
 			jQuery('.table-heading',container).hide();
 		});
 

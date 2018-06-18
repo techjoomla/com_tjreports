@@ -107,7 +107,7 @@ class TjreportsControllerReports extends JControllerAdmin
 					$colTitle = $columns[$colKey]['title'];
 				}
 
-				$colTitleArray[] = JText::_($colTitle);
+				$colTitleArray[] = '"' . JText::_($colTitle) . '"';
 			}
 		}
 

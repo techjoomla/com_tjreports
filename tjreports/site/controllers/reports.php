@@ -91,7 +91,7 @@ class TjreportsControllerReports extends JControllerAdmin
 						$subTextTitle = $columns[$subKey]['title'];
 					}
 
-					$colTitleArray[] = $contentTitle . ' ' . JText::sprintf($subTextTitle, $contentTitle, $contentId);
+					$colTitleArray[] = '"' . $contentTitle . ' ' . JText::sprintf($subTextTitle, $contentTitle, $contentId) . '"';
 				}
 			}
 			else

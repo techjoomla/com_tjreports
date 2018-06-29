@@ -131,6 +131,7 @@ class TjreportsControllerReports extends JControllerAdmin
 			fputcsv($output, $item);
 		}
 
+		fclose($output);
 		jexit();
 	}
 

@@ -111,6 +111,9 @@ class TjreportsControllerReports extends JControllerAdmin
 			}
 		}
 
+		// Create a file pointer connected to the output stream
+		$output = fopen('php://output', 'w');
+
 		// Output the column headings
 		fputcsv($output, $colTitleArray);
 
@@ -122,8 +125,7 @@ class TjreportsControllerReports extends JControllerAdmin
 		header('Pragma: no-cache');
 		header('Expires: 0');
 
-		// Create a file pointer connected to the output stream
-		$output = fopen('php://output', 'w');
+
 		fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
 		// Loop through items

@@ -125,9 +125,6 @@ class TjreportsControllerReports extends JControllerAdmin
 		header('Pragma: no-cache');
 		header('Expires: 0');
 
-
-		fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
-
 		// Loop through items
 		foreach ((array) $items as $itemKey => $item)
 		{

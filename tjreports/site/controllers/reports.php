@@ -91,7 +91,7 @@ class TjreportsControllerReports extends JControllerAdmin
 						$subTextTitle = $columns[$subKey]['title'];
 					}
 
-					$colTitleArray[] = '"' . $contentTitle . ' ' . JText::sprintf($subTextTitle, $contentTitle, $contentId) . '"';
+					$colTitleArray[] = $contentTitle . ' ' . JText::sprintf($subTextTitle, $contentTitle, $contentId);
 				}
 			}
 			else
@@ -107,52 +107,29 @@ class TjreportsControllerReports extends JControllerAdmin
 					$colTitle = $columns[$colKey]['title'];
 				}
 
-				$colTitleArray[] = '"' . JText::_($colTitle) . '"';
+				$colTitleArray[] = JText::_($colTitle);
 			}
 		}
 
-		$csvData .= implode(',', $colTitleArray);
-		$csvData .= "\n";
-		echo $csvData;
+		// Output the column headings
+		fputcsv($output, $colTitleArray);
 
-		$csvData  = '';
-		$pluginTitle = $reportData->title;
-		$filename = strtolower($pluginTitle) . "_report_" . date("Y-m-d_H-i", time());
+		$filename = strtolower($reportData->title) . "_report_" . date("Y-m-d_H-i", time());
 
-		// Set CSV headers
-		header("Content-type: text/csv");
-		header("Content-Disposition: attachment; filename=" . $filename . ".csv");
-		header("Pragma: no-cache");
-		header("Expires: 0");
+		// Output headers so that the file is downloaded rather than displayed
+		header('Content-Type: text/csv; charset=utf-8');
+		header('Content-Disposition: attachment; filename=' . $filename . '.csv');
+		header('Pragma: no-cache');
+		header('Expires: 0');
+
+		// Create a file pointer connected to the output stream
+		$output = fopen('php://output', 'w');
+		fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
 		// Loop through items
 		foreach ((array) $items as $itemKey => $item)
 		{
-			$itemCSV = array();
-
-			foreach ($colToshow as $arrayKey => $key)
-			{
-				if (is_array($key))
-				{
-					foreach ($key as $subkey => $subVal)
-					{
-						$final_text_value = $this->filterValue($item[$arrayKey][$subkey]);
-
-						// Add data in the Quotes and asign it in the csv array
-						$itemCSV[] = '"' . $final_text_value . '"';
-					}
-				}
-				else
-				{
-					$final_text_value = $this->filterValue($item[$key]);
-
-					// Add data in the Quotes and asign it in the csv array
-					$itemCSV[] = '"' . $final_text_value . '"';
-				}
-			}
-
-			// TRIGGER After csv body add extra fields
-			echo implode(',', $itemCSV) . "\n";
+			fputcsv($output, $item);
 		}
 
 		jexit();

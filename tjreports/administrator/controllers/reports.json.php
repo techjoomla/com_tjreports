@@ -1,7 +1,7 @@
 <?php
 /**
  * @version    SVN: <svn_id>
- * @package    Com_Tjreports
+ * @package    Com_Reports
  * @copyright  Copyright (C) 2005 - 2014. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  * Shika is free software. This version may have been modified pursuant
@@ -12,4 +12,5 @@
 
 // No direct access
 defined('_JEXEC') or die;
-JLoader::register('ReportsViewBase', JPATH_SITE . '/components/com_tjreports/views/reports/view.base.php');
+
+include_once JPATH_SITE . '/components/com_tjreports/controllers/reports.json.php';

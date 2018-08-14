@@ -11,25 +11,6 @@
  * other free or open source software licenses.
  */
 
-jimport('techjoomla.view.csv');
-require_once JPATH_ROOT . '/components/com_tjreports/models/reports.php';
-
-/**
- * Create your class that extends TjExportCsv class
- *
- * @since  1.0.0
- */
-class TjreportsViewReports extends TjExportCsv
-{
-/**
- * Default display function
- *
- * @param   STRING  $tpl  $tpl
- *
- * @return  null
- */
-	public function display($tpl = null)
-	{
-		parent::display();
-	}
-}
+// No direct access
+defined('_JEXEC') or die;
+JLoader::register('TjreportsViewReports', JPATH_SITE . '/components/com_tjreports/views/reports/view.csv.php');

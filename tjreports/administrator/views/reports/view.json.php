@@ -12,35 +12,4 @@
 
 // No direct access
 defined('_JEXEC') or die;
-
-require_once __DIR__ . '/view.base.php';
-
-/**
- * View class for a list of Tjreports.
- *
- * @since  1.0.0
- */
-class TjreportsViewReports extends ReportsViewBase
-{
-	/**
-	 * Execute and display a template script.
-	 *
-	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
-	 *
-	 * @return  mixed  A string if successful, otherwise a Error object.
-	 */
-	public function display($tpl = null)
-	{
-		$result = $this->processData('json');
-
-		if (!$result)
-		{
-			return false;
-		}
-
-		$output = array();
-		$output['html'] = parent::loadTemplate($tpl);
-
-		echo json_encode($output);
-	}
-}
+JLoader::register('TjreportsViewReports', JPATH_SITE . '/components/com_tjreports/views/reports/view.json.php');

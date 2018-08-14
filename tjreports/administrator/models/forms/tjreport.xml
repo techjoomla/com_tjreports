@@ -2,112 +2,78 @@
 <form>
 	<fieldset>
 		<field
-				name="id"
-				type="hidden"
-				/>
-
-		<field name="userid" type="user" default=""
-				label="COM_TJREPORTS_FORM_LBL_REPORT_CREATED_BY"
-				description="COM_TJREPORTS_FORM_DESC_REPORT_CREATED_BY"
-				id="userid"
-				required="required" />
-
+			name="id"
+			type="hidden"
+		/>
 		<field
-				name="title"
-				type="text"
-				label="COM_TJREPORTS_FORM_LBL_REPORT_TITLE"
-				description="COM_TJREPORTS_FORM_DESC_REPORT_TITLE"
-				size="40"
-				class="inputbox"
-				default=""
-				required="required"
-				/>
+			name="userid"
+			type="user"
+			default=""
+			label="COM_TJREPORTS_FORM_LBL_REPORT_CREATED_BY"
+			description="COM_TJREPORTS_FORM_DESC_REPORT_CREATED_BY"
+			id="userid"
+		/>
 		<field
-				name="alias"
-				type="text"
-				label="COM_TJREPORTS_FORM_LBL_REPORT_ALIAS"
-				description="COM_TJREPORTS_FORM_DESC_REPORT_ALIAS"
-				size="40"
-				class="inputbox"
-				default=""
-				/>
-
+			name="title"
+			type="text"
+			label="COM_TJREPORTS_FORM_LBL_REPORT_TITLE"
+			description="COM_TJREPORTS_FORM_DESC_REPORT_TITLE"
+			size="40"
+			class="inputbox"
+			default=""
+			required="required"
+		/>
 		<field
-				name="parent"
-				type="text"
-				label="COM_TJREPORTS_FORM_LBL_REPORT_PARENT"
-				description="COM_TJREPORTS_FORM_DESC_REPORT_PARENT"
-				size="40"
-				class="inputbox"
-				default=""
-				/>
-
-			<field
-				name="plugin"
-				type="hidden"
-				label="COM_TJREPORTS_FORM_LBL_REPORT_PARENT"
-				description="COM_TJREPORTS_FORM_DESC_REPORT_PARENT"
-				size="40"
-				class="inputbox"
-				default=""
-				/>
-
+			name="alias"
+			type="text"
+			label="COM_TJREPORTS_FORM_LBL_REPORT_ALIAS"
+			description="COM_TJREPORTS_FORM_DESC_REPORT_ALIAS"
+			size="40"
+			class="inputbox"
+			default=""
+		/>
 		<field
-            label="COM_TJREPORTS_FORM_LBL_REPORT_CLIENT"
-            description="COM_TJREPORTS_FORM_DESC_REPORT_CLIENT"
-            name="client"
-            id="client"
-            type="sql"
-            class="inputbox"
-            query="SELECT '' AS `id`, '- Select client -' AS `client` UNION SELECT `client`, `client` FROM `#__tj_reports` GROUP BY client"
-            key_field="id"
-            value_field="client"
-            required="required"/>
-
-
-       <field
-			name="pluginlist" type="list"
+			label="COM_TJREPORTS_FORM_LBL_REPORT_CLIENT"
+			description="COM_TJREPORTS_FORM_DESC_REPORT_CLIENT"
+			name="client"
+			id="client"
+			type="sql"
+			class="inputbox"
+			query="SELECT `client` FROM `#__tj_reports` GROUP BY client"
+			key_field="client"
+			value_field="client"
+			required="required"
+			onchange="tjrContentUI.tjreport.getPlugins();"
+			>
+			<option value="">COM_TJREPORT_TJREPORT_SELECT_CLIENT</option>
+		</field>
+		<field
+			name="parent" type="list"
+			label="COM_TJREPORTS_FORM_LBL_REPORT_PARENT"
+			description="COM_TJREPORTS_FORM_DESC_REPORT_PARENT"
+			onchange="tjrContentUI.tjreport.getParams();"
+			value_field="plugin"
+			>
+			<option value="">COM_TJREPORTS_FORM_DEFAULT_OPTION</option>
+		</field>
+		<field
 			label="COM_TJREPORTS_FORM_LBL_REPORT_PLUGIN"
 			description="COM_TJREPORTS_FORM_DESC_REPORT_PLUGIN"
-			multiple="false"
-			id="pluginlist"
+			name="plugin"
+			type="text"
+			class="inputbox"
 			required="required"
-			value_field="plugin">
-		</field>
-
-
-<!--
-
-		<field
-            label="COM_TJREPORTS_FORM_LBL_REPORT_PLUGIN"
-            description="COM_TJREPORTS_FORM_DESC_REPORT_PLUGIN"
-            name="plugin"
-            type="sql"
-            class="inputbox"
-            query="SELECT '' AS `id`, '- Select plugin -' AS `plugin` UNION SELECT `plugin`, `plugin` FROM `#__tj_reports` GROUP BY plugin"
-            key_field="id"
-            value_field="plugin"
-            required="required"/>
--->
-
-
+			readonly="readonly"
+		/>
 		<field
 			name="param"
 			type="textarea"
 			label="COM_TJREPORTS_FORM_LBL_REPORT_PARAMS"
 			description="COM_TJREPORTS_FORM_DESC_REPORT_PARAMS"
-			required="required"
 			cols="100"
-			rows="8" />
-
-		<field name="datadenyset" type="radio"
-			label="COM_TJREPORTS_FORM_LBL_REPORT_DATA_DENY_SET"
-			description="COM_TJREPORTS_FORM_DESC_REPORT_DATA_DENY_SET"
-			class="inputbox radio btn-group btn-group-yesno" size="1" default="0">
-			<option value="1">COM_TJREPORTS_YES</option>
-			<option value="0">COM_TJREPORTS_NO</option>
-		</field>
-
+			rows="8"
+			class="input-xxlarge"
+		/>
 		<field name="default" type="radio"
 			label="COM_TJREPORTS_FORM_LBL_REPORT_DEFAULT"
 			description="COM_TJREPORTS_FORM_DESC_REPORT_DEFAULT"
@@ -116,22 +82,13 @@
 			<option value="1">COM_TJREPORTS_YES</option>
 			<option value="0">COM_TJREPORTS_NO</option>
 		</field>
-
 	</fieldset>
-
-	<fieldset name="accesscontrol">
-
-		<field
-			name="rules"
-			type="rules"
-			label="COM_TJREPORTS_FORM_LBL_REPORT_PERMISSIONS"
-			translate_label="false"
-			filter="rules"
-			validate="rules"
-			class="inputbox"
-			component="com_tjreports"
-			section="tjreport"
-			/>
-
+	<fieldset name="permissions" id="permissions">
+		<field name="asset_id" type="text" filter="unset" />
+		<field name="rules" type="rules"
+		label="JFIELD_RULES_LABEL" translate_label="false"
+		filter="rules" 	validate="rules"
+		class="inputbox" component="com_tjreports"
+		section="tjreport" />
 	</fieldset>
 </form>

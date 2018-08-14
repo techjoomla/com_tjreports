@@ -79,83 +79,96 @@ class TjreportsModelTjreport extends JModelAdmin
 		if (empty($data))
 		{
 			$data = $this->getItem();
+
+			if (!empty($data->param))
+			{
+				$data->param = json_encode(json_decode($data->param), JSON_PRETTY_PRINT);
+			}
 		}
 
 		return $data;
 	}
 
-/**
- * Function hit
- *
- * @param   int  $id  id
- *
- * @return  null
- */
-	public function hit($id)
+	/**
+	 * Method to get the Plugins.
+	 *
+	 * @param   STRING  $client     Client Name
+	 * @param   INT     $currentId  Current Plugin ID
+	 * @param   INT     $userId     User Id
+	 *
+	 * @return  mixed   Plugin details
+	 *
+	 * @since   1.6
+	 */
+	public function getClientPlugins($client, $currentId = 0, $userId = 0)
 	{
-		$this->getTable()->hit($id);
-	}
+		$db    = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('r.*,r.id as value,r.title as text');
+		$query->from('#__tj_reports as r');
+		$query->where('r.client = ' . $db->quote($client));
+		$query->where('r.id <> ' . (int) $currentId);
+		$query->where('r.parent  = 0');
+		$query->where('r.default = 1');
 
-/**
- * Function to get all the respective plugins for given client.
- *
- * @return  json  json
- */
-
-	public function getplugins()
-	{
-		$app = JFactory::getApplication();
-		$jinput  = $app->input;
-		$client = $jinput->post->get('client', '', 'string');
-		$user_id = $jinput->post->get('user_id', '', 'int');
-
-		if (!empty($user_id) && !empty($client))
+		// Need to confirm reason for this
+		if ($userId)
 		{
-			$db = JFactory::getDbo();
-			$query = $db->getQuery(true);
-			$query->select('r.*,r.id as value,r.title as text');
-			$query->from('#__tj_reports as r');
-			$query->where('(r.parent = 0  or r.userid = ' . $user_id . ')');
-			$query->where('r.id not in ( select `parent` from #__tj_reports as tr where tr.userid=' . $user_id . ')');
-			$query->where('r.client like "' . $client . '"');
-
-			$db->setQuery($query);
-			$reports = $db->loadObjectList();
-
-			echo json_encode($reports);
-
-			die();
-			jexit();
+			$query->where('r.id not in ( select `parent` from #__tj_reports as tr where tr.userid=' . (int) $userId . ')');
 		}
+
+		$db->setQuery($query);
+		$reports = $db->loadObjectList();
+
+		return $reports;
 	}
 
 	/**
-	 * Function to plugin params
+	 * Method to get the Plugins.
 	 *
-	 * @return  json json
+	 * @param   INT  $pluginId    Current Plugin ID
+	 * @param   INT  $pluginName  Get default param of plugin
+	 *
+	 * @return  mixed   Plugin details
+	 *
+	 * @since   1.6
 	 */
-
-	public function getparams()
+	public function getReportPluginData($pluginId, $pluginName = null)
 	{
-		$app = JFactory::getApplication();
-		$jinput  = $app->input;
-		$plugin_id = $jinput->post->get('plugin_id', '', 'int');
-
-		if (!empty($plugin_id))
+		if ($pluginId)
 		{
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
 			$query->select('r.*');
 			$query->from('#__tj_reports as r');
-			$query->where('r.id =' . $plugin_id);
+			$query->where('r.id =' . (int) $pluginId);
 
 			$db->setQuery($query);
 			$report = $db->loadObject();
-
-			echo json_encode($report);
-
-			die();
-			jexit();
+			$pluginName = $report->plugin;
 		}
+		elseif ($pluginName)
+		{
+			$report = new stdClass;
+			$report->plugin = $pluginName;
+		}
+
+		if ($pluginName || (empty($report->param) && !empty($report->plugin)))
+		{
+			JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $pluginName);
+			$plgModel = JModelLegacy::getInstance($pluginName, 'TjreportsModel');
+
+			$params = array();
+			$params['filter_order']     = $plgModel->getState('list.ordering');
+			$params['filter_order_Dir'] = $plgModel->getState('list.direction');
+			$params['limit']            = $plgModel->getState('list.limit');
+			$params['colToshow']        = $plgModel->getState('colToshow');
+			$params['colToshow']        = array_combine($params['colToshow'], array_fill(0, count($params['colToshow']), true));
+			$params['showHideColumns']  = $plgModel->showhideCols;
+
+			$report->param = json_encode($params);
+		}
+
+		return $report;
 	}
 }

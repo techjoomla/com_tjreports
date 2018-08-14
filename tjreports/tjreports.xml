@@ -7,21 +7,19 @@
     <author>Parth Lawate</author>
     <authorEmail>contact@techjoomla.com</authorEmail>
     <authorUrl>http://techjoomla.com</authorUrl>
-    <version>CVS: 1.0.0</version>
+    <version>1.0.1</version>
     <description>This component is used to access all the report at single place.</description>
-
-
 
     <install> <!-- Runs on install -->
         <sql>
             <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
         </sql>
     </install>
-    <update> <!-- Runs on update -->
-        <sql>
-            <file driver="mysql" charset="utf8">sql/update.mysql.utf8.sql</file>
-        </sql>
-    </update>
+    <update>
+		<schemas>
+			<schemapath type="mysql">sql/updates/mysql</schemapath>
+		</schemas>
+	</update>
     <uninstall> <!-- Runs on uninstall -->
         <sql>
             <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
@@ -35,8 +33,8 @@
         <folder>views</folder>
         <folder>models</folder>
         <folder>controllers</folder>
-        <folder>helpers</folder>
         <folder>assets</folder>
+        <folder>layouts</folder>
     </files>
     <media destination="com_tjreports" folder="media">
         <folder>js</folder>

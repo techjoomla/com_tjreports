@@ -12,13 +12,20 @@ var tjrContentService = {
 			params = {};
 		}
 
-		params['url']		= url;
+		params['url']		= this.getBaseUrl() + url;
 		params['data'] 		= formData;
 		params['type'] 		= typeof params['type'] != "undefined" ? params['type'] : 'POST';
-		params['async'] 	= typeof params['async'] != "undefined" ? params['async'] :false;
+		params['async'] 	= typeof params['async'] != "undefined" ? params['async'] :true;
 		params['dataType'] 	= typeof params['datatype'] != "undefined" ? params['datatype'] : 'json';
 
 		var promise = jQuery.ajax(params);
 		return promise;
+	},
+	getBaseUrl : function(){
+		if (typeof tjrContentUI !== 'undefined'){
+			return tjrContentUI.base_url;
+		}
+
+		return '';
 	}
 }

@@ -2,21 +2,14 @@
 <config>
 
     <fieldset label="COM_TJREPORTS" name="tjreports">
-		<field name="vendars" type="text" default="" label="COM_TJREPORTS_DEFAULT_REPORTS" description="COM_TJREPORT_DEFAULT_REPORTS_DESC" />
+		<field name="bootstrap_setting" class="btn-group" default="1" type="list" label="COM_TJREPORTS_BOOTSTRAP_SETTING" description="COM_TJREPORTS_BOOTSTRAP_SETTING_DESC">
+			<option value="0">None</option>
+			<option value="1">Admin</option>
+			<option value="2">Site</option>
+			<option value="3">Both</option>
+		</field>
     </fieldset>
     <fieldset name="permissions" description="JCONFIG_PERMISSIONS_DESC" label="JCONFIG_PERMISSIONS_LABEL">
         <field name="rules" type="rules" component="com_tjreports" class="inputbox" filter="rules" validate="rules" label="JCONFIG_PERMISSIONS_LABEL" section="component" />
-	</fieldset>
-
-
-	<fieldset name="permissions"
-              description="JCONFIG_PERMISSIONS_DESC"
-              label="JCONFIG_PERMISSIONS_LABEL">
-
-        <field name="rules" type="rules" component="com_tjreports"
-               class="inputbox" filter="rules" validate="rules"
-               label="JCONFIG_PERMISSIONS_LABEL"
-               section="component"
-        />
 	</fieldset>
 </config>

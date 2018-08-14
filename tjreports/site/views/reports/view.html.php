@@ -13,22 +13,16 @@
 // No direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.view');
-require_once JPATH_COMPONENT . '/helpers/tjreports.php';
+require_once __DIR__ . '/view.base.php';
+jimport('techjoomla.tjtoolbar.button.csvexport');
 
 /**
  * View class for a list of Tjreports.
  *
  * @since  1.0.0
  */
-class TjreportsViewReports extends JViewLegacy
+class TjreportsViewReports extends ReportsViewBase
 {
-	protected $items;
-
-	protected $pagination;
-
-	protected $state;
-
 	/**
 	 * Execute and display a template script.
 	 *
@@ -38,143 +32,167 @@ class TjreportsViewReports extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		$canDo = TjreportsHelpersTjreports::getActions();
-		$this->user       = JFactory::getUser();
-		$this->user_id    = $this->user->id;
-		$input = JFactory::getApplication()->input;
-		$TjreportsModelReports = new TjreportsModelReports;
-		$app = JFactory::getApplication();
-		$mainframe  = JFactory::getApplication();
-		$this->user->authorise('core.view', 'com_tjreports');
-		$this->user->authorise('core.viewall', 'com_tjreports');
+		$input  = JFactory::getApplication()->input;
+		$result = $this->processData();
 
-		if (!($this->user->authorise('core.view', 'com_tjreports') || $this->user->authorise('core.viewall', 'com_tjreports')))
+		if (!$result)
 		{
-			if ($this->user->guest)
+			return false;
+		}
+
+		$this->addToolbar();
+		$this->addDocumentHeaderData();
+
+		parent::display($tpl);
+	}
+
+	/**
+	 * Add the page title and toolbar.
+	 *
+	 * @return  Toolbar instance
+	 *
+	 * @since	1.6
+	 */
+	protected function addToolbar()
+	{
+		$app = JFactory::getApplication();
+		$bar = JToolBar::getInstance('toolbar');
+
+		if ($app->isAdmin())
+		{
+			$title = JText::_('COM_TJREPORTS_TITLE_REPORT');
+
+			if (isset($this->reportData->title))
 			{
-				$return = base64_encode(JUri::getInstance());
-				$login_url_with_return = JRoute::_('index.php?option=com_users&view=login&return=' . $return);
-				$app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'notice');
-				$app->redirect($login_url_with_return, 403);
+				$title = $title . ' - ' . $this->reportData->title;
+			}
+
+			JToolBarHelper::title($title, 'list');
+		}
+		else
+		{
+			$this->params = &$this->state->params;
+			$menus = $app->getMenu();
+			$title = null;
+
+			$menu = $menus->getActive();
+
+			if ($menu)
+			{
+				$title = $menu->title;
 			}
 			else
 			{
-				$app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
-				$app->setHeader('status', 403, true);
-
-				return;
+				$title = $app->get('sitename');
 			}
-		}
 
-		$reportsModel = $this->getModel();
-		$client = $reportsModel->getState('client');
-		$full_client = explode(',', $client);
-
-		// Eg com_tjlms
-		$component = $full_client[0];
-		$eName = str_replace('com_', '', $component);
-		$file = JPath::clean(JPATH_ADMINISTRATOR . '/components/' . $component . '/helpers/' . $eName . '.php');
-
-		if (file_exists($file))
-		{
-			require_once $file;
-
-			$prefix = ucfirst(str_replace('com_', '', $component));
-			$cName = $prefix . 'Helper';
-
-			if (class_exists($cName))
+			if (isset($this->reportData->title))
 			{
-				$canDo = $cName::getActions();
-
-				if (!$canDo->get('view.reports'))
-				{
-					JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
-
-					return false;
-				}
+				$title = $title . ' - ' . $this->reportData->title;
 			}
+
+			$this->document->setTitle($title);
 		}
 
-		// Get all vendars from backend
-		if (empty($client))
-		{
-			$params = JComponentHelper::getParams('com_tjreports');
-			$client = $params->get('vendars');
-			$input->set('client', $client);
-		}
+		$message = array();
+		$message['success'] = JText::_("COM_TJREPORTS_EXPORT_FILE_SUCCESS");
+		$message['error'] = JText::_("COM_TJREPORTS_EXPORT_FILE_ERROR");
+		$message['inprogress'] = JText::_("COM_TJREPORTS_EXPORT_FILE_NOTICE");
+		$message['text'] = JText::_("COM_TJREPORTS_CSV_EXPORT");
+		$bar->appendButton('CsvExport', $message);
 
-		// Get saved data
-		$queryId = $input->get('queryId', '0', 'INT');
-		$reportToBuild = $input->get('reportToBuild', '', 'STRING');
-		$reportId = $input->get('reportId', '', 'INT');
+		$button = '<span id="btn-cancel">
+						<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName" />
+					</span>
+					<a class="btn btn-primary  saveData" type="button" id="saveQuery"
+						onclick="tjrContentUI.report.saveThisQuery();">'
+						. JText::_('COM_TJREPORTS_SAVE_THIS_QUERY') . '</a>
 
-		$this->options		= $this->get('reportoptions');
+					<button class="btn btn btn-default  cancel-btn" type="button" onclick="tjrContentUI.report.cancel();">
+						Cancel
+					</button>';
 
-		$this->isSuperUser = $this->user->authorise('core.viewall', 'com_tjreports');
+			JLoader::import('administrator.components.com_tjreports.helpers.tjreports', JPATH_SITE);
+			TjreportsHelper::addSubmenu('reports');
 
-		$user       = JFactory::getUser();
-
-		if ($reportId)
-		{
-			$allow_permission = $user->authorise('core.viewall', 'com_tjreports.tjreport.' . $reportId);
-			$input->set('allow_permission', $allow_permission);
-		}
-
-		$input->set('reportId', $reportId);
-		$mainframe->setUserState('com_tjreports' . '.reportId', $reportId);
-
-		// Get respected plugin data
-		$this->items		= $this->get('Data');
-
-		// Get all columns of that report
-		$this->colNames	= $this->get('ColNames');
-
-		// Get saved queries by the logged in users
-
-		$this->saveQueries = $TjreportsModelReports->getSavedQueries($this->user_id, $reportToBuild);
-
-		// Call helper function
-		$TjreportsHelper = new TjreportsHelpersTjreports;
-		$TjreportsHelper->getLanguageConstant();
-
-		// Get all enable plugins
-		$this->enableReportPlugins = $this->get('enableReportPlugins');
-
-		// Get saved data
-		$queryId = $input->get('queryId', '0', 'INT');
-
-		$this->colToshow = array();
-
-		if ($queryId != 0)
-		{
-			$model = $this->getModel();
-			$colToSelect = array('colToshow');
-			$QueryData = $model->getQueryData($queryId);
-			$param = json_decode($QueryData->param);
-			$this->colToshow = $param->colToshow;
-		}
-
-		$input = JFactory::getApplication()->input;
-
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-		{
-			throw new Exception(implode("\n", $errors));
-		}
-
-		if (!empty($this->saveQueries))
-		{
-			$saveQueries = array();
-			$saveQueries[] = JHTML::_('select.option', '', JText::_('COM_TJREPORTS_SELONE_QUERY'));
-
-			foreach ($this->saveQueries as $eachQuery)
+			if ($app->isAdmin())
 			{
-				$saveQueries[] = JHTML::_('select.option', $eachQuery->plugin . '_' . $eachQuery->id, $eachQuery->title);
+				$this->sidebar = JHtmlSidebar::render();
 			}
 
-			$this->saveQueriesList = $saveQueries;
+			$bar->appendButton('Custom', $button);
+	}
+
+	/**
+	 * Add the script and Style.
+	 *
+	 * @return  Void
+	 *
+	 * @since	1.6
+	 */
+	protected function addDocumentHeaderData()
+	{
+		$app = JFactory::getApplication();
+		JHtml::_('formbehavior.chosen', 'select');
+		$document = JFactory::getDocument();
+
+		$com_params	= JComponentHelper::getParams('com_tjreports');
+		$bootstrapSetting = $com_params->get('bootstrap_setting', 1);
+
+		if (($bootstrapSetting == 3)
+			|| ( $app->isAdmin() && $bootstrapSetting == 1 )
+			|| ( !$app->isAdmin() && $bootstrapSetting == 2 ) )
+		{
+			$document->addStylesheet(JURI::root(true) . '/media/techjoomla_strapper/bs3/css/bootstrap.min.css');
 		}
 
-		parent::display($tpl);
+		$document->addScript(JURI::root() . '/components/com_tjreports/assets/js/tjrContentService.js');
+		$document->addScript(JURI::root() . '/components/com_tjreports/assets/js/tjrContentUI.js');
+		$document->addStylesheet(JURI::root() . '/components/com_tjreports/assets/css/tjreports.css');
+		$document->addScriptDeclaration('tjrContentUI.base_url = "' . Juri::base() . '"');
+		$document->addScriptDeclaration('tjrContentUI.root_url = "' . Juri::root() . '"');
+
+		if (method_exists($this->model, 'getScripts'))
+		{
+			$plgScripts = (array) $this->model->getScripts();
+
+			foreach ($plgScripts as $script)
+			{
+				$document->addScript($script);
+			}
+		}
+
+		if (method_exists($this->model, 'getStyles'))
+		{
+			$styles = (array) $this->model->getStyles();
+
+			foreach ($styles as $style)
+			{
+				$document->addStylesheet($style);
+			}
+		}
+
+		$this->getLanguageConstant();
+	}
+
+	/**
+	 * Get all jtext for javascript
+	 *
+	 * @return   void
+	 *
+	 * @since   1.0
+	 */
+	public static function getLanguageConstant()
+	{
+		JText::script('JERROR_ALERTNOAUTHOR');
+		JText::script('COM_TJREPORTS_DELETE_MESSAGE');
+		JText::script('COM_TJREPORTS_SAVE_QUERY');
+		JText::script('COM_TJREPORTS_ENTER_TITLE');
+		JText::script('COM_TJREPORTS_QUERY_DELETE_SUCCESS');
+
+		JFactory::getLanguage()->load('lib_techjoomla', JPATH_SITE, null, false, true);
+		JText::script('LIB_TECHJOOMLA_CSV_EXPORT_ABORT');
+		JText::script('LIB_TECHJOOMLA_CSV_EXPORT_UESR_ABORTED');
+		JText::script('LIB_TECHJOOMLA_CSV_EXPORT_CONFIRM_ABORT');
 	}
 }

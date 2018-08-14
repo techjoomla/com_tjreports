@@ -28,8 +28,11 @@ class TjreportsModelTjreports extends JModelList
 		if (empty($config['filter_fields']))
 		{
 			$config['filter_fields'] = array(
+				'title',
 				'plugin',
-				'client'
+				'client',
+				'savedquery',
+				'id',
 			);
 		}
 
@@ -48,8 +51,14 @@ class TjreportsModelTjreports extends JModelList
 		$query = $db->getQuery(true);
 
 		// Create the base select statement.
-		$query->select('*')
-			->from($db->quoteName('#__tj_reports'));
+		$query->select('tj.*')
+			->from($db->quoteName('#__tj_reports', 'tj'));
+
+		$subquery = $db->getQuery(true);
+		$subquery->select('count(*)')
+			->from($db->quoteName('#__tj_reports', 'stj'))
+			->where('stj.parent = tj.id');
+		$query->select('(' . $subquery . ') as savedquery');
 
 		// Filter by Plugin
 		$plugin = $this->getState('filter.plugin');
@@ -77,7 +86,7 @@ class TjreportsModelTjreports extends JModelList
 		}
 
 		// $query->where("id not in(select `parent` from `#__tj_reports` where `default`=1)");
-		$query->where('`default` = 1');
+		$query->where($db->quoteName('parent') . ' = 0');
 
 		// Add the list ordering clause.
 		$orderCol	= $this->state->get('list.ordering', 'title');
@@ -119,20 +128,10 @@ class TjreportsModelTjreports extends JModelList
 	protected function populateState($ordering = null, $direction = null)
 	{
 		// List state information.
-		parent::populateState('a.id', 'asc');
+		parent::populateState($ordering, $direction);
 
 		// Initialise variables.
 		$app = JFactory::getApplication();
-
-		$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'), 'uint');
-		$this->setState('list.limit', $limit);
-
-		$limitstart = $app->input->get('limitstart', 0, 'uint');
-		$this->setState('list.start', $limitstart);
-
-		$limitstart = $app->input->get('limitstart', 0, 'uint');
-
-		$this->setState('list.start', $limitstart);
 
 		// Load the filter state.
 		$search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
@@ -146,25 +145,8 @@ class TjreportsModelTjreports extends JModelList
 		$client = $app->getUserStateFromRequest($this->context . '.filter.client', 'filter_client', '', 'string');
 		$this->setState('filter.client', $client);
 
-		// Ordering by name
-		$ordering = $app->getUserStateFromRequest($this->context . '.list.ordering', 'filter_order');
-		$direction = $app->getUserStateFromRequest($this->context . '.list.direction', 'filter_order_Dir');
-
 		// Bug fix For a list layout
 		$jinput = JFactory::getApplication()->input;
 		$layout = $jinput->get('layout', '', 'STRING');
-
-		if ((empty($ordering)) || ((!empty($ordering)) && ($jinput->get('profile', '', 'INT') == 2) && ($jinput->get('layout', '', 'STRING') == 'alist')))
-		{
-			$ordering  = "title";
-		}
-
-		if (empty($direction))
-		{
-			$direction = "asc";
-		}
-
-		$this->setState('list.ordering', preg_replace('/\s+/', ' ', $ordering));
-		$this->setState('list.direction', preg_replace('/\s+/', ' ', $direction));
 	}
 }

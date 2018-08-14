@@ -65,6 +65,9 @@ class TjreportsControllerTjreports extends JControllerAdmin
 	 */
 	public function discover()
 	{
+		JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_tjreports/models');
+		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
+
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('element');
@@ -72,32 +75,25 @@ class TjreportsControllerTjreports extends JControllerAdmin
 		$query->where($db->quoteName('type') . "=" . $db->quote('plugin'));
 		$query->where($db->quoteName('folder') . "=" . $db->quote('tjreports'));
 		$db->setQuery($query);
-		$allPlugins = $db->loadObjectList();
+		$allPlugins = $db->loadAssocList();
 
 		$query = $db->getQuery(true);
-		$query->select('plugin', 'element');
+		$query->select('plugin');
 		$query->from($db->quoteName('#__tj_reports'));
 		$db->setQuery($query);
-		$tjReportsPlugins = $db->loadObjectList();
+		$tjReportsPlugins = $db->loadAssocList();
 
-		$json  = json_encode($allPlugins);
-		$array = json_decode($json, true);
+		$intalledPlugins   = array_column($allPlugins, 'element');
+		$tjreportsPlugings = array_column($tjReportsPlugins, 'plugin');
 
-		$json1  = json_encode($tjReportsPlugins);
-		$array1 = json_decode($json1, true);
+		$discoverPlugins = array_diff($intalledPlugins, $tjreportsPlugings);
 
-		$intalledPlugins  = array_column($array, 'element');
-		$tjreportsPlugings = array_column($array1, 'plugin');
-
-		$diff  = array_diff($intalledPlugins, $tjreportsPlugings);
 		$count = 0;
 
-		foreach ($diff as $value)
+		foreach ($discoverPlugins as $value)
 		{
-			JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_tjreports/models');
 			$model = JModelLegacy::getInstance('Reports', 'TjreportsModel');
 			$pluginName = $value;
-			JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
 			$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable');
 			$details = $model->getPluginInstallationDetail($pluginName);
 			$reportTable->load(array('plugin' => $pluginName, 'userid' => 0));
@@ -117,6 +113,13 @@ class TjreportsControllerTjreports extends JControllerAdmin
 			}
 		}
 
-		$this->setRedirect('index.php?option=com_tjreports');
+		$message = JText::_('COM_TJREPORTS_NOTHING_TO_DISCOVER_PLUGINS');
+
+		if (!empty($count))
+		{
+			$message = JText::sprintf(JText::_('COM_TJREPORTS_DISCOVER_NEW_PLUGINS'), $count);
+		}
+
+		$this->setRedirect('index.php?option=com_tjreports', $message);
 	}
 }

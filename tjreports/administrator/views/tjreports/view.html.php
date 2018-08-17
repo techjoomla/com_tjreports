@@ -73,11 +73,6 @@ class TjreportsViewTjreports extends JViewLegacy
 
 		JToolBarHelper::title($name, 'list');
 
-		if ($this->canDo->get('core.delete'))
-		{
-			JToolBarHelper::deleteList('', 'tjreports.delete');
-		}
-
 		if ($this->canDo->get('core.create'))
 		{
 			JToolBarHelper::addNew('tjreport.add');
@@ -88,9 +83,19 @@ class TjreportsViewTjreports extends JViewLegacy
 			JToolBarHelper::editList('tjreport.edit');
 		}
 
+		if ($this->canDo->get('core.delete'))
+		{
+			JToolBarHelper::deleteList('', 'tjreports.delete');
+		}
+
 		if ($this->canDo->get('core.admin'))
 		{
 			JToolBarHelper::preferences('com_tjreports');
+		}
+
+		if ($this->canDo->get('core.create'))
+		{
+			JToolBarHelper::custom('tjreports.discover', 'refresh', 'refresh', 'JLIB_INSTALLER_DISCOVER', false);
 		}
 	}
 }

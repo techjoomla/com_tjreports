@@ -75,18 +75,15 @@ class TjreportsControllerTjreports extends JControllerAdmin
 		$query->where($db->quoteName('type') . "=" . $db->quote('plugin'));
 		$query->where($db->quoteName('folder') . "=" . $db->quote('tjreports'));
 		$db->setQuery($query);
-		$allPlugins = $db->loadAssocList();
+		$allPlugins = $db->loadColumn();
 
 		$query = $db->getQuery(true);
 		$query->select('plugin');
 		$query->from($db->quoteName('#__tj_reports'));
 		$db->setQuery($query);
-		$tjReportsPlugins = $db->loadAssocList();
+		$tjReportsPlugins = $db->loadColumn();
 
-		$intalledPlugins   = array_column($allPlugins, 'element');
-		$tjreportsPlugings = array_column($tjReportsPlugins, 'plugin');
-
-		$discoverPlugins = array_diff($intalledPlugins, $tjreportsPlugings);
+		$discoverPlugins = array_diff($allPlugins, $tjReportsPlugins);
 
 		$count = 0;
 
@@ -115,7 +112,7 @@ class TjreportsControllerTjreports extends JControllerAdmin
 
 		$message = JText::_('COM_TJREPORTS_NOTHING_TO_DISCOVER_PLUGINS');
 
-		if (!empty($count))
+		if ($count > 0)
 		{
 			$message = JText::sprintf(JText::_('COM_TJREPORTS_DISCOVER_NEW_PLUGINS'), $count);
 		}

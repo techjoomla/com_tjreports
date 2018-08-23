@@ -7,7 +7,7 @@
     <author>Parth Lawate</author>
     <authorEmail>contact@techjoomla.com</authorEmail>
     <authorUrl>http://techjoomla.com</authorUrl>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <description>This component is used to access all the report at single place.</description>
 
     <install> <!-- Runs on install -->

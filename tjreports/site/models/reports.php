@@ -237,8 +237,10 @@ class TjreportsModelReports extends JModelList
 
 		$colToshow = $input->get('colToshow', array(), 'ARRAY');
 
-		$reportId = $input->get('reportId', 0, 'uint');
-		$this->setState('reportId', $reportId);
+		if ($reportId = $input->get('reportId', 0, 'uint'))
+		{
+			$this->setState('reportId', $reportId);
+		}
 
 		$this->filterReportColumns($reportId, $colToshow);
 
@@ -913,6 +915,24 @@ class TjreportsModelReports extends JModelList
 				return $link;
 			}
 		}
+	}
+
+	/**
+	 * Method to get id of the report having default set as 1
+	 *
+	 * @param   STRING  $pluginName  Plugin Name
+	 *
+	 * @return  Integer
+	 *
+	 * @since   1.1.0
+	 */
+	public function getDefaultReport($pluginName)
+	{
+		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
+		$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
+		$reportTable->load(array('plugin' => $pluginName, 'default' => 1));
+
+		return $reportTable->id;
 	}
 
 	/**

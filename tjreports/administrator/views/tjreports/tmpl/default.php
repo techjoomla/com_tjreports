@@ -103,13 +103,13 @@ $input = JFactory::getApplication()->input;
 						{
 						?>
 						<a href="<?php echo $link; ?>" title="<?php echo JText::_('COM_TJREPORTS_EDIT'); ?>">
-							<?php echo $row->title; ?>
+							<?php echo htmlspecialchars($row->title, ENT_COMPAT, 'UTF-8'); ?>
 						</a>
 						<?php
 						}
 						else
 						{
-							echo $row->title;
+							echo htmlspecialchars($row->title, ENT_COMPAT, 'UTF-8');
 						}
 						?>
 					</td>

@@ -74,7 +74,7 @@
 		if ($app->isSite() && isset($this->reportData->title))
 		{
 		?>
-			<h2 class="title"><?php echo $this->reportData->title?></h2>
+			<h2 class="title"><?php echo htmlspecialchars($this->reportData->title, ENT_COMPAT, 'UTF-8'); ?></h2>
 		<?php
 		}
 		?>

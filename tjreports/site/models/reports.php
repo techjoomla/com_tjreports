@@ -928,6 +928,8 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function getDefaultReport($pluginName)
 	{
+		$db        = JFactory::getDBO();
+
 		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
 		$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
 		$reportTable->load(array('plugin' => $pluginName, 'default' => 1));

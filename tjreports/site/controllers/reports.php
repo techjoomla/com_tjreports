@@ -119,6 +119,8 @@ class TjreportsControllerReports extends JControllerAdmin
 		$pluginTitle = $reportData->title;
 		$filename = strtolower($pluginTitle) . "_report_" . date("Y-m-d_H-i", time());
 
+		$filename = urlencode(str_replace(" ", "_", $filename));
+
 		// Set CSV headers
 		header("Content-type: text/csv");
 		header("Content-Disposition: attachment; filename=" . $filename . ".csv");

@@ -125,6 +125,7 @@ jQuery.extend(tjrContentUI.report, {
 		else
 		{
 			var queryName = jQuery('#queryName').val();
+			queryName = queryName.trim();
 
 			if (queryName === '')
 			{

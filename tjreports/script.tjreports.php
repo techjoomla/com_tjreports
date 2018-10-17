@@ -42,7 +42,7 @@ jimport('joomla.application.component.helper');
 class Com_TjreportsInstallerScript
 {
 /** @var array The list of extra modules and plugins to install */
-	private $installation_queue = array(
+	private $queue = array(
 
 		// plugins => { (folder) => { (element) => (published) }* }*
 		'plugins' => array(
@@ -75,6 +75,49 @@ class Com_TjreportsInstallerScript
 	 */
 	public function uninstall($parent)
 	{
+		jimport('joomla.installer.installer');
+
+		$db = JFactory::getDBO();
+
+		$status          = new JObject;
+		$status->plugins = array();
+
+		$src = $parent->getParent()->getPath('source');
+
+		// Plugins uninstallation
+		if (count($this->queue['plugins']))
+		{
+			foreach ($this->queue['plugins'] as $folder => $plugins)
+			{
+				if (count($plugins))
+				{
+					foreach ($plugins as $plugin => $published)
+					{
+						$sql = $db->getQuery(true)->select($db->qn('extension_id'))
+						->from($db->qn('#__extensions'))
+						->where($db->qn('type') . ' = ' . $db->q('plugin'))
+						->where($db->qn('element') . ' = ' . $db->q($plugin))
+						->where($db->qn('folder') . ' = ' . $db->q($folder));
+						$db->setQuery($sql);
+
+						$id = $db->loadResult();
+
+						if ($id)
+						{
+							$installer         = new JInstaller;
+							$result            = $installer->uninstall('plugin', $id);
+							$status->plugins[] = array(
+								'name' => 'plg_' . $plugin,
+								'group' => $folder,
+								'result' => $result
+							);
+						}
+					}
+				}
+			}
+		}
+
+		return $status;
 	}
 
 	/**
@@ -125,9 +168,9 @@ class Com_TjreportsInstallerScript
 		$status->plugins = array();
 
 		// Plugins installation
-		if (count($this->installation_queue['plugins']))
+		if (count($this->queue['plugins']))
 		{
-			foreach ($this->installation_queue['plugins'] as $folder => $plugins)
+			foreach ($this->queue['plugins'] as $folder => $plugins)
 			{
 				if (count($plugins))
 				{

@@ -69,6 +69,7 @@
 			<language tag="en-GB">en-GB/en-GB.com_tjreports.sys.ini</language>
         </languages>
     </administration>
+    <scriptfile>script.tjreports.php</scriptfile>
     <config>
         <fields name="params">
             <fieldset name="component">
@@ -78,6 +79,8 @@
     </config>
     <plugins>
         <plugin group="search" plugin="tjreports"/>
+        <plugin group="actionlog" plugin="tjreports"/>
+        <plugin group="privacy" plugin="tjreports"/>
     </plugins>
 
 </extension>

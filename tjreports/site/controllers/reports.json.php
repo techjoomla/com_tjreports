@@ -85,6 +85,14 @@ class TjreportsControllerReports extends JControllerAdmin
 			}
 			else
 			{
+				$id = $db->insertid();
+				$insert_object->id = $id;
+
+				$dispatcher = JEventDispatcher::getInstance();
+				$extension = JFactory::getApplication()->input->get('option');
+				JPluginHelper::importPlugin('tjreports');
+				$dispatcher->trigger('tjReportsOnAfterReportSave', array($extension, $insert_object, true));
+
 				$app->enqueueMessage('Data save successfully.');
 				echo new JResponseJson('Done');
 			}

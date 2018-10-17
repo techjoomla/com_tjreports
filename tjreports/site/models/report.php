@@ -33,16 +33,16 @@ class  TjreportsModelReport extends JModelAdmin
 		return JTable::getInstance($type, $prefix, $config);
 	}
 
-/**
-	* Method to get the record form.
-	*
-	* @param   array    $data      Data for the form.
-	* @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
-	*
-	* @return  mixed    A JForm object on success, false on failure
-	*
-	* @since   1.6
-	*/
+	/**
+	 * Method to get the record form.
+	 *
+	 * @param   array    $data      Data for the form.
+	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 *
+	 * @return  mixed    A JForm object on success, false on failure
+	 *
+	 * @since   1.6
+	 */
 	public function getForm($data = array(), $loadData = true)
 	{
 		// Get the form.
@@ -101,10 +101,16 @@ class  TjreportsModelReport extends JModelAdmin
 		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
 		$tjrTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
 		$tjrTable->load(array('id' => &$pks));
+		$data = $tjrTable;
 
 		if ($tjrTable->userid == JFactory::getUser()->id)
 		{
 			$tjrTable->delete($pks);
+
+			$dispatcher = JEventDispatcher::getInstance();
+			$extension = JFactory::getApplication()->input->get('option');
+			JPluginHelper::importPlugin('tjreports');
+			$dispatcher->trigger('tjReportsOnAfterReportDelete', array($extension, $data));
 
 			return true;
 		}

@@ -69,6 +69,7 @@
 			<language tag="en-GB">en-GB/en-GB.com_tjreports.sys.ini</language>
         </languages>
     </administration>
+    <scriptfile>script.tjreports.php</scriptfile>
     <config>
         <fields name="params">
             <fieldset name="component">

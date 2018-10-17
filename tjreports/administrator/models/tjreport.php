@@ -16,6 +16,21 @@ defined('_JEXEC') or die;
 class TjreportsModelTjreport extends JModelAdmin
 {
 	/**
+	 * Constructor.
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *
+	 * @since   3.2
+	 */
+	public function __construct($config = array())
+	{
+		$config['event_after_save']   = 'tjReportsOnAfterReportSave';
+		$config['event_after_delete'] = 'tjReportsOnAfterReportDelete';
+
+		parent::__construct($config);
+	}
+
+	/**
 	 * Method to get a table object, load it if necessary.
 	 *
 	 * @param   string  $type    The table name. Optional.

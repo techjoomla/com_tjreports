@@ -35,7 +35,7 @@ jimport('joomla.application.component.helper');
 
 
 /**
- * Script file of JTicketing component
+ * Script file of TJReports component
  *
  * @since  1.0.0
  **/

@@ -1,7 +1,7 @@
 <?php
 /**
- * @package     PeopleSuggest
- * @subpackage  Plg_Actionlog_PeopleSuggest
+ * @package     TJReport
+ * @subpackage  PlgActionlogTjreports
  *
  * @author      Techjoomla <extensions@techjoomla.com>
  * @copyright   Copyright (c) 2009-2018 Techjoomla. All rights reserved.
@@ -18,9 +18,9 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
 /**
- * People Suggest Actions Logging Plugin.
+ * TJReports Actions Logging Plugin.
  *
- * @since  1.5.0
+ * @since  __DEPLOY_VERSION__
  */
 class PlgActionlogTjreports extends CMSPlugin
 {
@@ -28,7 +28,7 @@ class PlgActionlogTjreports extends CMSPlugin
 	 * Application object.
 	 *
 	 * @var    JApplicationCms
-	 * @since  1.5.0
+	 * @since  __DEPLOY_VERSION__
 	 */
 	protected $app;
 
@@ -36,7 +36,7 @@ class PlgActionlogTjreports extends CMSPlugin
 	 * Database object.
 	 *
 	 * @var    JDatabaseDriver
-	 * @since  1.5.0
+	 * @since  __DEPLOY_VERSION__
 	 */
 	protected $db;
 
@@ -44,7 +44,7 @@ class PlgActionlogTjreports extends CMSPlugin
 	 * Load plugin language file automatically so that it can be used inside component
 	 *
 	 * @var    boolean
-	 * @since  1.5.0
+	 * @since  __DEPLOY_VERSION__
 	 */
 	protected $autoloadLanguage = true;
 
@@ -60,7 +60,7 @@ class PlgActionlogTjreports extends CMSPlugin
 	 *
 	 * @return  void
 	 *
-	 * @since   1.5.0
+	 * @since   __DEPLOY_VERSION__
 	 */
 	protected function addLog($messages, $messageLanguageKey, $context, $userId = null)
 	{

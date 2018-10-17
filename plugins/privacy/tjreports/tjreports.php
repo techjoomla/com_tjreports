@@ -1,7 +1,7 @@
 <?php
 /**
- * @package     Quick2Cart
- * @subpackage  Plg_Privacy_Quick2Cart
+ * @package     TJReports
+ * @subpackage  PlgPrivacyTjreports
  *
  * @author      Techjoomla <extensions@techjoomla.com>
  * @copyright   Copyright (C) 2009 - 2018 Techjoomla. All rights reserved.
@@ -20,7 +20,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
 /**
- * Quick2Cart Privacy Plugin.
+ * TJReports Privacy Plugin.
  *
  * @since  __DEPLOY_VERSION__
  */

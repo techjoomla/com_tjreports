@@ -79,8 +79,6 @@
     </config>
     <plugins>
         <plugin group="search" plugin="tjreports"/>
-        <plugin group="actionlog" plugin="tjreports"/>
-        <plugin group="privacy" plugin="tjreports"/>
     </plugins>
 
 </extension>

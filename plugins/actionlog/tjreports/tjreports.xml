@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="3.9" type="plugin" group="actionlog" method="upgrade">
-	<name>PLG_ACTIONLOG_TJREPORTS</name>
+	<name>plg_actionlog_tjreports</name>
 	<author>Techjoomla</author>
 	<creationDate>19th Sept 2018</creationDate>
 	<copyright>Copyright (C) 2009 - 2018 Techjoomla. All rights reserved.</copyright>

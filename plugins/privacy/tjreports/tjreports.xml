@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="3.4" type="plugin" group="privacy" method="upgrade">
-	<name>PLG_PRIVACY_TJREPORTS</name>
+	<name>plg_privacy_tjreports</name>
 	<version>__DEPLOY_VERSION__</version>
 	<creationDate>__RELEASE_DATE__</creationDate>
 	<author>Techjoomla</author>

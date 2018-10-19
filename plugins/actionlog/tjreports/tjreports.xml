@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="3.9" type="plugin" group="actionlog" method="upgrade">
-	<name>PLG_ACTIONLOG_JTREPORTS</name>
+	<name>PLG_ACTIONLOG_TJREPORTS</name>
 	<author>Techjoomla</author>
 	<creationDate>19th Sept 2018</creationDate>
 	<copyright>Copyright (C) 2009 - 2018 Techjoomla. All rights reserved.</copyright>
@@ -8,7 +8,7 @@
 	<authorEmail>extensions@techjoomla.com</authorEmail>
 	<authorUrl>https://techjoomla.com</authorUrl>
 	<version>__DEPLOY_VERSION__</version>
-	<description>PLG_ACTIONLOG_JTREPORTS_XML_DESCRIPTION</description>
+	<description>PLG_ACTIONLOG_TJREPORTS_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="tjreports">tjreports.php</filename>
 		<filename>index.html</filename>
@@ -20,11 +20,11 @@
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
-				<field name="logActionForReportCreate" type="radio" label="PLG_ACTIONLOG_JTREPORTS_LOG_ACTION_REPORT_CREATE" description="PLG_ACTIONLOG_JTREPORTS_LOG_ACTION_COMMON_DESC" default="1" class="btn-group btn-group-yesno">
+				<field name="logActionForReportCreate" type="radio" label="PLG_ACTIONLOG_TJREPORTS_LOG_ACTION_REPORT_CREATE" description="PLG_ACTIONLOG_TJREPORTS_LOG_ACTION_COMMON_DESC" default="1" class="btn-group btn-group-yesno">
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 				</field>
-				<field name="logActionForReportDelete" type="radio" label="PLG_ACTIONLOG_JTREPORTS_LOG_ACTION_REPORT_DELETE" description="PLG_ACTIONLOG_JTREPORTS_LOG_ACTION_COMMON_DESC" default="1" class="btn-group btn-group-yesno">
+				<field name="logActionForReportDelete" type="radio" label="PLG_ACTIONLOG_TJREPORTS_LOG_ACTION_REPORT_DELETE" description="PLG_ACTIONLOG_TJREPORTS_LOG_ACTION_COMMON_DESC" default="1" class="btn-group btn-group-yesno">
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 				</field>

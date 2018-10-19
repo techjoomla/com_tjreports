@@ -98,17 +98,17 @@ class PlgActionlogTjreports extends CMSPlugin
 
 		if ($isNew && !empty($table->client))
 		{
-			$messageLanguageKey = 'PLG_ACTIONLOGS_JTREPORTS_REPORT_ADDED_WITH_CLIENT';
+			$messageLanguageKey = 'PLG_ACTIONLOG_TJREPORTS_REPORT_ADDED_WITH_CLIENT';
 			$action             = 'add';
 		}
 		elseif($isNew && empty($table->client))
 		{
-			$messageLanguageKey = 'PLG_ACTIONLOGS_JTREPORTS_REPORT_ADDED';
+			$messageLanguageKey = 'PLG_ACTIONLOG_TJREPORTS_REPORT_ADDED';
 			$action             = 'add';
 		}
 		else
 		{
-			$messageLanguageKey = 'PLG_ACTIONLOGS_JTREPORTS_REPORT_UPDATED';
+			$messageLanguageKey = 'PLG_ACTIONLOG_TJREPORTS_REPORT_UPDATED';
 			$action             = 'update';
 		}
 
@@ -161,11 +161,11 @@ class PlgActionlogTjreports extends CMSPlugin
 			$language = JFactory::getLanguage();
 			$language->load($table->client);
 
-			$messageLanguageKey = 'PLG_ACTIONLOGS_JTREPORTS_REPORT_DELETED_WITH_CLIENT';
+			$messageLanguageKey = 'PLG_ACTIONLOG_TJREPORTS_REPORT_DELETED_WITH_CLIENT';
 		}
 		else
 		{
-			$messageLanguageKey = 'PLG_ACTIONLOGS_JTREPORTS_REPORT_DELETED';
+			$messageLanguageKey = 'PLG_ACTIONLOG_TJREPORTS_REPORT_DELETED';
 		}
 
 		$message = array(

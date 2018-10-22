@@ -55,8 +55,8 @@ class PlgPrivacyTjreports extends PrivacyPlugin
 		$this->loadLanguage();
 
 		return array(
-			Text::_('PLG_PRIVACY_JTREPORTS') => array(
-				Text::_('PLG_PRIVACY_JTREPORTS_PRIVACY_CAPABILITY_USER_REPORTS_DETAIL')
+			Text::_('PLG_PRIVACY_TJREPORTS') => array(
+				Text::_('PLG_PRIVACY_TJREPORTS_PRIVACY_CAPABILITY_USER_REPORTS_DETAIL')
 			)
 		);
 	}

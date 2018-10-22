@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="3.4" type="plugin" group="privacy" method="upgrade">
-	<name>PLG_PRIVACY_JTREPORTS</name>
+	<name>plg_privacy_tjreports</name>
 	<version>__DEPLOY_VERSION__</version>
 	<creationDate>__RELEASE_DATE__</creationDate>
 	<author>Techjoomla</author>
@@ -8,7 +8,7 @@
 	<authorUrl>https://techjoomla.com</authorUrl>
 	<copyright>Copyright (c) 2009-2018 Techjoomla. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<description>PLG_PRIVACY_JTREPORTS_XML_DESCRIPTION</description>
+	<description>PLG_PRIVACY_TJREPORTS_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="tjreports">tjreports.php</filename>
 		<filename>index.html</filename>

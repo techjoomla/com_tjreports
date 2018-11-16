@@ -48,11 +48,10 @@ $versionFile = 'PATH_OF_VERSION_FILE';
 
 // This file will vary from component to component
 $coreXmlFiles = array(
-						'/tjreports/tjreports.xml',
-						'/plugins/actionlog/tjreports/tjreports.xml',
-						'/plugins/privacy/tjreports/tjreports.xml'
-
-					);
+	'/tjreports/tjreports.xml',
+	'/plugins/actionlog/tjreports/tjreports.xml',
+	'/plugins/privacy/tjreports/tjreports.xml'
+);
 
 $antJobFile = '/build.xml';
 
@@ -67,7 +66,6 @@ $directoryLoopExcludeDirectories = array(
 	'/.gitlab',
 	'/scripts/ansible-deploy',
 	'/scripts/gulp',
-	'/src/packages/com_jlike',
 	'/tests/codeception',
 );
 

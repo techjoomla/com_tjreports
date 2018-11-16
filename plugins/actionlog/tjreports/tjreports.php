@@ -20,7 +20,7 @@ use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 /**
  * TJReports Actions Logging Plugin.
  *
- * @since  __DEPLOY_VERSION__
+ * @since  1.0.3
  */
 class PlgActionlogTjreports extends CMSPlugin
 {
@@ -28,7 +28,7 @@ class PlgActionlogTjreports extends CMSPlugin
 	 * Application object.
 	 *
 	 * @var    JApplicationCms
-	 * @since  __DEPLOY_VERSION__
+	 * @since  1.0.3
 	 */
 	protected $app;
 
@@ -36,7 +36,7 @@ class PlgActionlogTjreports extends CMSPlugin
 	 * Database object.
 	 *
 	 * @var    JDatabaseDriver
-	 * @since  __DEPLOY_VERSION__
+	 * @since  1.0.3
 	 */
 	protected $db;
 
@@ -44,7 +44,7 @@ class PlgActionlogTjreports extends CMSPlugin
 	 * Load plugin language file automatically so that it can be used inside component
 	 *
 	 * @var    boolean
-	 * @since  __DEPLOY_VERSION__
+	 * @since  1.0.3
 	 */
 	protected $autoloadLanguage = true;
 
@@ -60,7 +60,7 @@ class PlgActionlogTjreports extends CMSPlugin
 	 *
 	 * @return  void
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   1.0.3
 	 */
 	protected function addLog($messages, $messageLanguageKey, $context, $userId = null)
 	{
@@ -83,7 +83,7 @@ class PlgActionlogTjreports extends CMSPlugin
 	 *
 	 * @return  void
 	 *
-	 * @since    __DEPLOY_VERSION__
+	 * @since    1.0.3
 	 */
 	public function tjReportsOnAfterReportSave($context, $table, $isNew)
 	{
@@ -144,7 +144,7 @@ class PlgActionlogTjreports extends CMSPlugin
 	 *
 	 * @return  void
 	 *
-	 * @since    __DEPLOY_VERSION__
+	 * @since    1.0.3
 	 */
 	public function tjReportsOnAfterReportDelete($context, $table)
 	{

@@ -2,12 +2,12 @@
 <extension version="3.9" type="plugin" group="actionlog" method="upgrade">
 	<name>plg_actionlog_tjreports</name>
 	<author>Techjoomla</author>
-	<creationDate>19th Sept 2018</creationDate>
-	<copyright>Copyright (C) 2009 - 2018 Techjoomla. All rights reserved.</copyright>
-	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<creationDate>16th Nov 2018</creationDate>
+	<copyright>Copyright (C) 2016 - 2018 Techjoomla. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>extensions@techjoomla.com</authorEmail>
 	<authorUrl>https://techjoomla.com</authorUrl>
-	<version>__DEPLOY_VERSION__</version>
+	<version>1.0.3</version>
 	<description>PLG_ACTIONLOG_TJREPORTS_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="tjreports">tjreports.php</filename>

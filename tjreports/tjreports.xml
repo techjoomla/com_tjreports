@@ -4,10 +4,10 @@
 	<author>Techjoomla</author>
 	<authorEmail>extensions@techjoomla.com</authorEmail>
 	<authorUrl>https://techjoomla.com</authorUrl>
-	<copyright>Copyright (c) 2009-2018 Techjoomla. All rights reserved.</copyright>
+	<copyright>Copyright (C) 2016 - 2018 Techjoomla. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<creationDate>2016-08-30</creationDate>
-	<version>1.0.2</version>
+	<creationDate>16th Nov 2018</creationDate>
+	<version>1.0.3</version>
 	<description>This component is used to access all the report at single place.</description>
 	<install>
 		<!-- Runs on install -->

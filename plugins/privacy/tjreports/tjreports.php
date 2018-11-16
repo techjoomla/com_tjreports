@@ -22,7 +22,7 @@ use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 /**
  * TJReports Privacy Plugin.
  *
- * @since  __DEPLOY_VERSION__
+ * @since  1.0.3
  */
 class PlgPrivacyTjreports extends PrivacyPlugin
 {
@@ -31,7 +31,7 @@ class PlgPrivacyTjreports extends PrivacyPlugin
 	 *
 	 * @var    boolean
 	 *
-	 * @since  __DEPLOY_VERSION__
+	 * @since  1.0.3
 	 */
 	protected $autoloadLanguage = true;
 
@@ -39,7 +39,7 @@ class PlgPrivacyTjreports extends PrivacyPlugin
 	 * Database object
 	 *
 	 * @var    JDatabaseDriver
-	 * @since  __DEPLOY_VERSION__
+	 * @since  1.0.3
 	 */
 	protected $db;
 
@@ -48,7 +48,7 @@ class PlgPrivacyTjreports extends PrivacyPlugin
 	 *
 	 * @return  array
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   1.0.3
 	 */
 	public function onPrivacyCollectAdminCapabilities()
 	{
@@ -73,7 +73,7 @@ class PlgPrivacyTjreports extends PrivacyPlugin
 	 *
 	 * @return  PrivacyExportDomain[]
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   1.0.3
 	 */
 	public function onPrivacyExportRequest(PrivacyTableRequest $request, JUser $user = null)
 	{
@@ -99,7 +99,7 @@ class PlgPrivacyTjreports extends PrivacyPlugin
 	 *
 	 * @return  PrivacyExportDomain
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   1.0.3
 	 */
 	private function createTJReportsUserReports(JTableUser $user)
 	{
@@ -133,7 +133,7 @@ class PlgPrivacyTjreports extends PrivacyPlugin
 	 *
 	 * @return  void
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   1.0.3
 	 */
 	public function onPrivacyRemoveData(PrivacyTableRequest $request, JUser $user = null)
 	{

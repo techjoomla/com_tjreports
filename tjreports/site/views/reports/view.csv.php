@@ -36,7 +36,7 @@ class TjreportsViewReports extends TjExportCsv
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
 	 *
-	 * @return  Toolbar|Boolean in case of success instance and failure - boolean
+	 * @return  Object|Boolean in case of success instance and failure - boolean
 	 *
 	 * @since	1.6
 	 */

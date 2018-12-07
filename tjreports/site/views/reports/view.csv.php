@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.view');
 jimport('techjoomla.view.csv');
+JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_ADMINISTRATOR);
 
 /**
  * CSV class for a list of Tjreports.
@@ -41,8 +42,33 @@ class TjreportsViewReports extends TjExportCsv
 	 */
 	public function display($tpl = null)
 	{
-		$this->getItems();
-		parent::display();
+		$input = JFactory::getApplication()->input;
+
+		if ($input->get('task') == 'download')
+		{
+			$fileName = $input->get('file_name');
+			$user = JFactory::getUser();
+
+			$canDo 		= TjreportsHelper::getActions();
+			if ($canDo->get('core.export') && $user)
+			{
+				$this->download($fileName);
+			}
+			else
+			{
+				JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR'));
+
+				return false;
+			}
+
+			JFactory::getApplication()->close();
+		}
+		else
+		{
+			$this->getItems();
+
+			parent::display();
+		}
 	}
 
 	/**

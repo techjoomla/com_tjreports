@@ -49,7 +49,8 @@ class TjreportsViewReports extends TjExportCsv
 			$fileName = $input->get('file_name');
 			$user = JFactory::getUser();
 
-			$canDo 		= TjreportsHelper::getActions();
+			$canDo = TjreportsHelper::getActions();
+
 			if ($canDo->get('core.export') && $user)
 			{
 				$this->download($fileName);

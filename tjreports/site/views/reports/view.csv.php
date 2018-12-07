@@ -43,32 +43,31 @@ class TjreportsViewReports extends TjExportCsv
 	public function display($tpl = null)
 	{
 		$input = JFactory::getApplication()->input;
+		$user = JFactory::getUser();
+		$canDo 		= TjreportsHelper::getActions();
 
-		if ($input->get('task') == 'download')
+		if (!$canDo->get('core.export') || !$user)
 		{
-			$fileName = $input->get('file_name');
-			$user = JFactory::getUser();
+			// Redirect to the list screen.
+			$redirect = JRoute::_('index.php?option=com_tjreports&view=reports', false);
+			JFactory::getApplication()->redirect($redirect, JText::_('JERROR_ALERTNOAUTHOR'));
 
-			$canDo = TjreportsHelper::getActions();
-
-			if ($canDo->get('core.export') && $user)
-			{
-				$this->download($fileName);
-			}
-			else
-			{
-				JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR'));
-
-				return false;
-			}
-
-			JFactory::getApplication()->close();
+			return false;
 		}
 		else
 		{
-			$this->getItems();
+			if ($input->get('task') == 'download')
+			{
+				$fileName = $input->get('file_name');
+				$this->download($fileName);
+				JFactory::getApplication()->close();
+			}
+			else
+			{
+				$this->getItems();
 
-			parent::display();
+				parent::display();
+			}
 		}
 	}
 

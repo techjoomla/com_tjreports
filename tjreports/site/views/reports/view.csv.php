@@ -45,6 +45,8 @@ class TjreportsViewReports extends TjExportCsv
 		$input = JFactory::getApplication()->input;
 		$user  = JFactory::getUser();
 		$canDo = TjreportsHelper::getActions();
+		$reportId = $input->post->get('reportId');
+		$userAuthorisedExport = $user->authorise('core.export', 'com_tjreports.tjreport.' . $reportId);
 
 		if (!$canDo->get('core.export') || !$user)
 		{
@@ -64,9 +66,20 @@ class TjreportsViewReports extends TjExportCsv
 			}
 			else
 			{
-				$this->getItems();
+				if ($userAuthorisedExport)
+				{
+					$this->getItems();
 
-				parent::display();
+					parent::display();
+				}
+				else
+				{
+					$redirect = JRoute::_('index.php?option=com_tjreports&view=reports', false);
+					JFactory::getApplication()->redirect($redirect, JText::_('JERROR_ALERTNOAUTHOR'));
+
+					return false;
+
+				}
 			}
 		}
 	}

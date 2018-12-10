@@ -43,8 +43,8 @@ class TjreportsViewReports extends TjExportCsv
 	public function display($tpl = null)
 	{
 		$input = JFactory::getApplication()->input;
-		$user = JFactory::getUser();
-		$canDo 		= TjreportsHelper::getActions();
+		$user  = JFactory::getUser();
+		$canDo = TjreportsHelper::getActions();
 
 		if (!$canDo->get('core.export') || !$user)
 		{

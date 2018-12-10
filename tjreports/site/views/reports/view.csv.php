@@ -74,7 +74,7 @@ class TjreportsViewReports extends TjExportCsv
 				}
 				else
 				{
-					JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR'));
+					JFactory::getApplication()->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
 
 					return false;
 				}

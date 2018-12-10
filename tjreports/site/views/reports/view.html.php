@@ -55,9 +55,12 @@ class TjreportsViewReports extends ReportsViewBase
 	 */
 	protected function addToolbar()
 	{
-		$app   = JFactory::getApplication();
-		$bar   = JToolBar::getInstance('toolbar');
-		$canDo = TjreportsHelper::getActions();
+		$app                  = JFactory::getApplication();
+		$reportId             = $app->getUserStateFromRequest('reportId', 'reportId', '');
+		$user                 = JFactory::getUser();
+		$userAuthorisedExport = $user->authorise('core.export', 'com_tjreports.tjreport.' . $reportId);
+		$bar                  = JToolBar::getInstance('toolbar');
+		$canDo                = TjreportsHelper::getActions();
 
 		if ($app->isAdmin())
 		{
@@ -95,7 +98,7 @@ class TjreportsViewReports extends ReportsViewBase
 			$this->document->setTitle($title);
 		}
 
-		if ($canDo->get('core.export'))
+		if ($canDo->get('core.export') && $userAuthorisedExport)
 		{
 			$message = array();
 			$message['success'] = JText::_("COM_TJREPORTS_EXPORT_FILE_SUCCESS");

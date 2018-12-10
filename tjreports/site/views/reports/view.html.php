@@ -55,8 +55,9 @@ class TjreportsViewReports extends ReportsViewBase
 	 */
 	protected function addToolbar()
 	{
-		$app = JFactory::getApplication();
-		$bar = JToolBar::getInstance('toolbar');
+		$app   = JFactory::getApplication();
+		$bar   = JToolBar::getInstance('toolbar');
+		$canDo = TjreportsHelper::getActions();
 
 		if ($app->isAdmin())
 		{
@@ -94,12 +95,15 @@ class TjreportsViewReports extends ReportsViewBase
 			$this->document->setTitle($title);
 		}
 
-		$message = array();
-		$message['success'] = JText::_("COM_TJREPORTS_EXPORT_FILE_SUCCESS");
-		$message['error'] = JText::_("COM_TJREPORTS_EXPORT_FILE_ERROR");
-		$message['inprogress'] = JText::_("COM_TJREPORTS_EXPORT_FILE_NOTICE");
-		$message['text'] = JText::_("COM_TJREPORTS_CSV_EXPORT");
-		$bar->appendButton('CsvExport', $message);
+		if ($canDo->get('core.export'))
+		{
+			$message = array();
+			$message['success'] = JText::_("COM_TJREPORTS_EXPORT_FILE_SUCCESS");
+			$message['error'] = JText::_("COM_TJREPORTS_EXPORT_FILE_ERROR");
+			$message['inprogress'] = JText::_("COM_TJREPORTS_EXPORT_FILE_NOTICE");
+			$message['text'] = JText::_("COM_TJREPORTS_CSV_EXPORT");
+			$bar->appendButton('CsvExport', $message);
+		}
 
 		$button = '<span id="btn-cancel">
 						<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName" />

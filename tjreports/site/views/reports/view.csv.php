@@ -74,11 +74,9 @@ class TjreportsViewReports extends TjExportCsv
 				}
 				else
 				{
-					$redirect = JRoute::_('index.php?option=com_tjreports&view=reports', false);
-					JFactory::getApplication()->redirect($redirect, JText::_('JERROR_ALERTNOAUTHOR'));
+					JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR'));
 
 					return false;
-
 				}
 			}
 		}

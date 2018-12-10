@@ -12,11 +12,11 @@ defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
-$app = JFactory::getApplication();
-$headerLevel    = $this->headerLevel;
-$this->listOrder      = $this->state->get('list.ordering');
-$this->listDirn       = $this->state->get('list.direction');
-$totalCount = 0;
+$app             = JFactory::getApplication();
+$headerLevel     = $this->headerLevel;
+$this->listOrder = $this->state->get('list.ordering');
+$this->listDirn  = $this->state->get('list.direction');
+$totalCount      = 0;
 
 foreach ($this->colToshow as $key=>$data)
 {
@@ -30,21 +30,21 @@ foreach ($this->colToshow as $key=>$data)
 	}
 }
 
-$input  = JFactory::getApplication()->input;
-$displayFilters = $this->userFilters;
-$totalHeadRows = count($displayFilters);
-$reportId = $app->getUserStateFromRequest('reportId', 'reportId', '');
-$user  = JFactory::getUser();
+$input                = JFactory::getApplication()->input;
+$displayFilters       = $this->userFilters;
+$totalHeadRows        = count($displayFilters);
+$reportId             = $app->getUserStateFromRequest('reportId', 'reportId', '');
+$user                 = JFactory::getUser();
 $userAuthorisedExport = $user->authorise('core.export', 'com_tjreports.tjreport.' . $reportId);
 
 if ($app->isSite())
 {
 	$siteUrl = JUri::root();
 	$message = array();
-	$message['success'] = JText::_("COM_TJREPORTS_EXPORT_FILE_SUCCESS");
-	$message['error'] = JText::_("COM_TJREPORTS_EXPORT_FILE_ERROR");
+	$message['success']    = JText::_("COM_TJREPORTS_EXPORT_FILE_SUCCESS");
+	$message['error']      = JText::_("COM_TJREPORTS_EXPORT_FILE_ERROR");
 	$message['inprogress'] = JText::_("COM_TJREPORTS_EXPORT_FILE_NOTICE");
-	$message['text'] = JText::_("COM_TJREPORTS_CSV_EXPORT");
+	$message['text']       = JText::_("COM_TJREPORTS_CSV_EXPORT");
 
 	JHtml::script(JUri::base() . 'libraries/techjoomla/assets/js/tjexport.js');
 	$document = JFactory::getDocument();

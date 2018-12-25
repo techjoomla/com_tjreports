@@ -6,8 +6,8 @@
 	<authorUrl>https://techjoomla.com</authorUrl>
 	<copyright>Copyright (C) 2016 - 2018 Techjoomla. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<creationDate>16th Nov 2018</creationDate>
-	<version>1.0.3</version>
+	<creationDate>25th Dec 2018</creationDate>
+	<version>1.0.4</version>
 	<description>This component is used to access all the report at single place.</description>
 	<install>
 		<!-- Runs on install -->

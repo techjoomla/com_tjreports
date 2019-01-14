@@ -548,6 +548,8 @@ class TjreportsModelReports extends JModelList
 			}
 		}
 
+		$reports = array_values($reports);
+
 		return $reports;
 	}
 

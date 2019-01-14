@@ -548,6 +548,10 @@ class TjreportsModelReports extends JModelList
 			}
 		}
 
+		// In view layouts - reports[0] is used, and since array indexes are unset above, 
+		// Let's re-arrange index accordingly
+		$reports = array_values($reports);
+
 		return $reports;
 	}
 

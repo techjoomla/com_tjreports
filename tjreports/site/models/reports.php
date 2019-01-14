@@ -548,6 +548,7 @@ class TjreportsModelReports extends JModelList
 			}
 		}
 
+		// In view base reports used as reports[0] so need to arrange index accordingly
 		$reports = array_values($reports);
 
 		return $reports;

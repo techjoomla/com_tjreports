@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="3.4" type="plugin" group="privacy" method="upgrade">
 	<name>plg_privacy_tjreports</name>
-	<version>1.0.4</version>
-	<creationDate>25th Dec 2018</creationDate>
+	<version>1.0.5</version>
+	<creationDate>7th Feb 2019</creationDate>
 	<author>Techjoomla</author>
 	<authorEmail>extensions@techjoomla.com</authorEmail>
 	<authorUrl>https://techjoomla.com</authorUrl>
-	<copyright>Copyright (C) 2016 - 2018 Techjoomla. All rights reserved.</copyright>
+	<copyright>Copyright (C) 2016 - 2019 Techjoomla. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<description>PLG_PRIVACY_TJREPORTS_XML_DESCRIPTION</description>
 	<files>

@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.view');
 jimport('techjoomla.view.csv');
+JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_ADMINISTRATOR);
 
 /**
  * CSV class for a list of Tjreports.
@@ -35,14 +36,50 @@ class TjreportsViewReports extends TjExportCsv
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
 	 *
-	 * @return  Toolbar instance
+	 * @return  Object|Boolean in case of success instance and failure - boolean
 	 *
 	 * @since	1.6
 	 */
 	public function display($tpl = null)
 	{
-		$this->getItems();
-		parent::display();
+		$input = JFactory::getApplication()->input;
+		$user  = JFactory::getUser();
+		$canDo = TjreportsHelper::getActions();
+		$reportId = $input->post->get('reportId');
+		$userAuthorisedExport = $user->authorise('core.export', 'com_tjreports.tjreport.' . $reportId);
+
+		if (!$canDo->get('core.export') || !$user)
+		{
+			// Redirect to the list screen.
+			$redirect = JRoute::_('index.php?option=com_tjreports&view=reports', false);
+			JFactory::getApplication()->redirect($redirect, JText::_('JERROR_ALERTNOAUTHOR'));
+
+			return false;
+		}
+		else
+		{
+			if ($input->get('task') == 'download')
+			{
+				$fileName = $input->get('file_name');
+				$this->download($fileName);
+				JFactory::getApplication()->close();
+			}
+			else
+			{
+				if ($userAuthorisedExport)
+				{
+					$this->getItems();
+
+					parent::display();
+				}
+				else
+				{
+					JFactory::getApplication()->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+
+					return false;
+				}
+			}
+		}
 	}
 
 	/**

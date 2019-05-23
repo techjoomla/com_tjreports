@@ -33,6 +33,8 @@ jimport('joomla.installer.installer');
 jimport('joomla.filesystem.file');
 jimport('joomla.application.component.helper');
 
+Use Joomla\CMS\Table\Table;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
 /**
  * Script file of TJReports component
@@ -225,6 +227,34 @@ class Com_TjreportsInstallerScript
 					}
 				}
 			}
+		}
+
+		$this->migrateReportsOrdering();
+	}
+
+	/**
+	 * Migrate report ordering
+	 *
+	 * @return  void
+	 *
+	 * @since    1.0.6
+	 */
+	public function migrateReportsOrdering()
+	{
+		JLoader::import('components.com_tjreports.models.tjreports', JPATH_ADMINISTRATOR);
+		$tjreportsModel = BaseDatabaseModel::getInstance('Tjreports', 'TjreportsModel');
+
+		$reportList = $tjreportsModel->getItems();
+
+		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
+		$reportTable = Table::getInstance('Tjreport', 'TjreportsTable');
+
+		foreach ($reportList as $key => $report)
+		{
+			$data = (array) $report;
+			$data['ordering'] = ++$key;
+
+			$reportTable->save($data);
 		}
 	}
 }

@@ -186,4 +186,33 @@ class TjreportsModelTjreport extends JModelAdmin
 
 		return $report;
 	}
+
+	/**
+	 * Prepare and sanitise the table prior to saving.
+	 *
+	 * @param   Jtable  $table  table instance
+	 *
+	 * @return  void
+	 *
+	 * @since    1.6
+	 */
+	protected function prepareTable($table)
+	{
+		jimport('joomla.filter.output');
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+
+		if (empty($table->id))
+		{
+			// Set ordering to the last item if not set
+			if (@$table->ordering == '')
+			{
+				$query->select('MAX(ordering)');
+				$query->from($db->quoteName('#__tj_reports'));
+				$db->setQuery($query);
+				$max             = $db->loadResult();
+				$table->ordering = $max + 1;
+			}
+		}
+	}
 }

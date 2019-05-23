@@ -47,12 +47,12 @@ $input = JFactory::getApplication()->input;
 	<table class="table table-striped table-hover" id="reportList">
 		<thead>
 			<tr>
-				<th width="2%">
-					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" />
-				</th>
-
 				<th width="2%" class="nowrap hidden-phone center">
 					<?php echo JHtml::_('grid.sort', '<i class="icon-menu-2"></i>', 'ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'); ?>
+				</th>
+
+				<th width="2%">
+					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" />
 				</th>
 
 				<th width="30%">
@@ -104,9 +104,6 @@ $input = JFactory::getApplication()->input;
 				?>
 				<tr>
 					<td>
-						<?php echo JHtml::_('grid.id', $i, $row->id); ?>
-					</td>
-					<td>
 						<?php $canChange = $user->authorise('core.edit.state', 'com_tjreports'); ?>
 						<?php $iconClass = ''; ?>
 						<?php if (!$canChange) : ?>
@@ -120,6 +117,9 @@ $input = JFactory::getApplication()->input;
 						<?php if ($canChange && $saveOrder) : ?>
 							<input type="text" style="display:none" name="order[]" size="5" value="<?php echo $row->ordering; ?>" />
 						<?php endif; ?>
+					</td>
+					<td>
+						<?php echo JHtml::_('grid.id', $i, $row->id); ?>
 					</td>
 					<td>
 						<?php

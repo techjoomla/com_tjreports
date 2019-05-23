@@ -91,7 +91,7 @@ class TjreportsModelTjreports extends JModelList
 
 		// Add the list ordering clause.
 		$orderCol	= $this->state->get('list.ordering', 'id');
-		$orderDirn 	= $this->state->get('list.direction', 'asc');
+		$orderDirn 	= $this->state->get('list.direction', 'desc');
 		$query->order($db->escape($orderCol) . ' ' . $db->escape($orderDirn));
 
 		return $query;

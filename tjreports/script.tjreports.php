@@ -243,7 +243,7 @@ class Com_TjreportsInstallerScript
 	{
 		JLoader::import('components.com_tjreports.models.tjreports', JPATH_ADMINISTRATOR);
 		$tjreportsModel = BaseDatabaseModel::getInstance('Tjreports', 'TjreportsModel');
-
+		$tjreportsModel->setState('list.ordering', 'id');
 		$reportList = $tjreportsModel->getItems();
 
 		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');

@@ -90,7 +90,7 @@ class TjreportsModelTjreports extends JModelList
 		$query->where($db->quoteName('parent') . ' = 0');
 
 		// Add the list ordering clause.
-		$orderCol	= $this->state->get('list.ordering', 'id');
+		$orderCol	= $this->state->get('list.ordering', 'ordering');
 		$orderDirn 	= $this->state->get('list.direction', 'desc');
 		$query->order($db->escape($orderCol) . ' ' . $db->escape($orderDirn));
 

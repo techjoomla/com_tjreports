@@ -56,26 +56,26 @@ $input = JFactory::getApplication()->input;
 				</th>
 
 				<th width="30%">
-					<?php echo JHtml::_('searchtools.sort', 'COM_TJREPORTS_FORM_LBL_REPORT_TITLE', 'title', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_TJREPORTS_FORM_LBL_REPORT_TITLE', 'title', $listDirn, $listOrder); ?>
 				</th>
 
 				<th width="20%">
-					<?php echo JHtml::_('searchtools.sort', 'COM_TJREPORTS_FORM_LBL_REPORT_PLUGIN', 'plugin', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_TJREPORTS_FORM_LBL_REPORT_PLUGIN', 'plugin', $listDirn, $listOrder); ?>
 				</th>
 
 				<th width="20%" class="center">
-					<?php echo JHtml::_('searchtools.sort', 'COM_TJREPORTS_FORM_LBL_REPORT_CLIENT', 'client', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_TJREPORTS_FORM_LBL_REPORT_CLIENT', 'client', $listDirn, $listOrder); ?>
 				</th>
 
 				<th width="10%" class="center">
-					<?php echo JHtml::_('searchtools.sort', 'COM_TJREPORTS_LIST_SAVED_QUERY', 'savedquery', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_TJREPORTS_LIST_SAVED_QUERY', 'savedquery', $listDirn, $listOrder); ?>
 				</th>
 
 				<th width="17%" class="center">
 					<?php echo JText::_('COM_TJREPORTS_REPORTS_VIEW_REPORT');?>
 				</th>
 				<th width="17%" class="center">
-					<?php echo JHtml::_('searchtools.sort', 'COM_TJREPORTS_LIST_ID', 'id', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_TJREPORTS_LIST_ID', 'id', $listDirn, $listOrder); ?>
 				</th>
 			</tr>
 		</thead>

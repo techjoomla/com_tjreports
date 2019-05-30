@@ -85,7 +85,7 @@ class TjreportsModelReports extends JModelList
 	 *
 	 * @return  BOOLEAN
 	 *
-	 * @since   2.9.14
+	 * @since   1.1.0
 	 */
 	protected function tableExists()
 	{
@@ -110,7 +110,7 @@ class TjreportsModelReports extends JModelList
 	 *
 	 * @return  void
 	 *
-	 * @since   __DEPLY_VERSION__
+	 * @since   1.1.0
 	 */
 	protected function setCustomFieldsColumns()
 	{
@@ -183,7 +183,7 @@ class TjreportsModelReports extends JModelList
 	 *
 	 * @return  void
 	 *
-	 * @since   __DEPLY_VERSION__
+	 * @since   1.1.0
 	 */
 	protected function setCustomFieldsDisplayFilters(&$displayFilters)
 	{
@@ -308,7 +308,7 @@ class TjreportsModelReports extends JModelList
 	 *
 	 * @return  object
 	 *
-	 * @since   __DEPLY_VERSION__
+	 * @since   1.1.0
 	 */
 	protected function getCustomFieldsDisplayFilterOptions($column)
 	{

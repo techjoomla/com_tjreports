@@ -20,7 +20,7 @@ use Joomla\CMS\MVC\Model\BaseDatabaseModel;
  * @package     TJReports
  * @subpackage  com_tjreports
  *
- * @since       __DEPLOY_VERSION__
+ * @since       1.1.0
  */
 class TjreportsModelIndexer extends BaseDatabaseModel
 {
@@ -33,7 +33,7 @@ class TjreportsModelIndexer extends BaseDatabaseModel
 	 *
 	 * @return  boolean
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   1.1.0
 	 */
 	public function createTable($context)
 	{
@@ -95,7 +95,7 @@ class TjreportsModelIndexer extends BaseDatabaseModel
 	 *
 	 * @return  boolean
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   1.1.0
 	 */
 	protected function tableExists()
 	{

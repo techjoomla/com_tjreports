@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 /**
  * Class for Tjreportsfields Content Plugin
  *
- * @since  1.0.0
+ * @since  1.1.0
  */
 class PlgContentTjreportsfields extends JPlugin
 {
@@ -196,7 +196,7 @@ class PlgContentTjreportsfields extends JPlugin
 	 *
 	 * @return  boolean
 	 *
-	 * @since   2.9.14
+	 * @since   1.1.0
 	 */
 	protected function tableExists()
 	{
@@ -224,6 +224,8 @@ class PlgContentTjreportsfields extends JPlugin
 	 * @param   string  $newColumn  Column name to be addd
 	 *
 	 * @return  void
+	 *
+	 * @since  1.1.0
 	 */
 	protected function addColumn($newColumn)
 	{
@@ -246,6 +248,8 @@ class PlgContentTjreportsfields extends JPlugin
 	 * @param   string  $newColumn  New column name
 	 *
 	 * @return  void
+	 *
+	 * @since  1.1.0
 	 */
 	protected function updateColumn($oldColumn, $newColumn)
 	{
@@ -254,7 +258,7 @@ class PlgContentTjreportsfields extends JPlugin
 
 		// ALTER TABLE tableName CHANGE oldColumn newColumn dataType
 		$query = 'ALTER TABLE ' . $db->quoteName($this->customFieldsTable) . '
-		 CHANGE ' . $db->quoteName($oldColumn) . ' 
+		 CHANGE ' . $db->quoteName($oldColumn) . '
 		 ' . $db->quoteName($newColumn) . ' ' . $this->fieldTypeToColumnTypeMapping[$this->customFieldBeingEdited->type];
 
 		$db->setQuery($query);
@@ -267,6 +271,8 @@ class PlgContentTjreportsfields extends JPlugin
 	 * @param   string  $column  Column name to be deleted
 	 *
 	 * @return  void
+	 *
+	 * @since  1.1.0
 	 */
 	protected function deleteColumn($column)
 	{

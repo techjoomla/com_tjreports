@@ -46,7 +46,7 @@ class Com_TjreportsInstallerScript
 /** @var array The list of extra modules and plugins to install */
 	private $queue = array(
 
-		// plugins => { (folder) => { (element) => (published) }* }*
+		// @plugins => { (folder) => { (element) => (published) }* }*
 		'plugins' => array(
 				'actionlog' => array(
 					'tjreports' => 1

@@ -13,7 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * Class for Tjreportsindexer User Plugin
  *
- * @since  1.0.0
+ * @since  1.1.0
  */
 class PlgUserTjreportsindexer extends JPlugin
 {
@@ -96,6 +96,8 @@ class PlgUserTjreportsindexer extends JPlugin
 	 * @param   array  $user  Holds the user data
 	 *
 	 * @return  void
+	 *
+	 * @since  1.1.0
 	 */
 	protected function addIndexerEntry($user)
 	{
@@ -249,6 +251,8 @@ class PlgUserTjreportsindexer extends JPlugin
 	 * @param   int  $userId  userid
 	 *
 	 * @return  boolean
+	 *
+	 * @since  1.1.0
 	 */
 	protected function deleteIndexerEntry($userId)
 	{

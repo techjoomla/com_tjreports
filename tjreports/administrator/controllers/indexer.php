@@ -20,7 +20,7 @@ use Joomla\CMS\MVC\Controller\BaseController;
  * @package     TJReports
  * @subpackage  com_tjreports
  *
- * @since       __DEPLOY_VERSION__
+ * @since       1.1.0
  */
 class TjreportsControllerIndexer extends BaseController
 {

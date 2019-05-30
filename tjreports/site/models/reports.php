@@ -525,7 +525,7 @@ class TjreportsModelReports extends JModelList
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
 
-		$query->select(array('id as reportId, title, plugin'));
+		$query->select(array('id as reportId, title, plugin, ordering'));
 		$query->from($db->quoteName('#__tj_reports'));
 		$query->where($db->quoteName('plugin') . ' IN (' . implode(',', $db->quote($pluginNames)) . ')');
 		$query->where($db->quoteName('userid') . ' = ' . $db->quote(0));
@@ -534,6 +534,8 @@ class TjreportsModelReports extends JModelList
 		{
 			$query->where($db->quoteName('client') . ' = ' . $db->quote($client));
 		}
+
+		$query->order('ordering ASC');
 
 		$db->setQuery($query);
 		$reports = $db->loadAssocList();

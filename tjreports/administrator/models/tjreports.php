@@ -33,6 +33,7 @@ class TjreportsModelTjreports extends JModelList
 				'client',
 				'savedquery',
 				'id',
+				'ordering'
 			);
 		}
 
@@ -89,8 +90,8 @@ class TjreportsModelTjreports extends JModelList
 		$query->where($db->quoteName('parent') . ' = 0');
 
 		// Add the list ordering clause.
-		$orderCol	= $this->state->get('list.ordering', 'title');
-		$orderDirn 	= $this->state->get('list.direction', 'asc');
+		$orderCol	= $this->state->get('list.ordering', 'ordering');
+		$orderDirn 	= $this->state->get('list.direction', 'desc');
 		$query->order($db->escape($orderCol) . ' ' . $db->escape($orderDirn));
 
 		return $query;
@@ -127,11 +128,26 @@ class TjreportsModelTjreports extends JModelList
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
-		// List state information.
-		parent::populateState($ordering, $direction);
-
 		// Initialise variables.
 		$app = JFactory::getApplication();
+
+		// Set ordering.
+		$orderCol = $app->getUserStateFromRequest($this->context . '.filter_order', 'filter_order');
+
+		$this->setState('list.ordering', $orderCol);
+
+		// Set ordering direction.
+		$listOrder = $app->getUserStateFromRequest($this->context . 'filter_order_Dir', 'filter_order_Dir');
+
+		if (!in_array(strtoupper($listOrder), array('ASC', 'DESC', '')))
+		{
+			$listOrder = 'DESC';
+		}
+
+		$this->setState('list.direction', $listOrder);
+
+		// List state information.
+		parent::populateState($ordering, $direction);
 
 		// Load the filter state.
 		$search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');

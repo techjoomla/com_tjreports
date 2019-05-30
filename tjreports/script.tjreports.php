@@ -51,8 +51,14 @@ class Com_TjreportsInstallerScript
 				'actionlog' => array(
 					'tjreports' => 1
 				),
+				'content' => array(
+					'tjreportsfields' => 0
+				),
 				'privacy' => array(
 					'tjreports' => 1
+				),
+				'user' => array(
+					'tjreportsindexer' => 0
 				)
 			)
 		);

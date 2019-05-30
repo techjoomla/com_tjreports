@@ -188,14 +188,14 @@ class PlgUserTjreportsindexer extends JPlugin
 							$userTable = JTable::getInstance('User');
 							$userTable->load((int) $val);
 
-							echo '<br/> username is <br/>' . $tempVal[] = $userTable->name;
+							// @echo '<br/> username is <br/>' . $tempVal[] = $userTable->name;
 						}
 						elseif ($fieldsDetails[$key]['type'] == 'usergrouplist')
 						{
 							$userGroupTable = JTable::getInstance('Usergroup');
 							$userGroupTable->load(array('id' => (int) $v));
 
-							echo '<br/> group title is <br/>' . $tempVal[] = $userGroupTable->title;
+							// @echo '<br/> group title is <br/>' . $tempVal[] = $userGroupTable->title;
 						}
 					}
 

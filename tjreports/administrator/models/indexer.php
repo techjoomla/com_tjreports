@@ -14,6 +14,9 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
+// Load TJReports db helper
+JLoader::import('database', JPATH_SITE . '/components/com_tjreports/helpers');
+
 /**
  * TJReports Indexer Model Class
  *
@@ -47,71 +50,63 @@ class TjreportsModelIndexer extends BaseDatabaseModel
 		$this->customFieldsTable = '#__tjreports_' . $context;
 
 		// If no table, return
-		if ($this->tableExists())
+		$tjreportsDbHelper = new TjreportsfieldsHelperDatabase;
+
+		try
 		{
-			echo 'Error creating DB table - Table exists already';
+			if ($tjreportsDbHelper->tableExists($this->customFieldsTable))
+			{
+				throw new Exception('Error creating DB table - Table exists already');
 
-			return false;
+				return false;
+			}
+
+			// Decide primary key name
+
+			/*
+			$pKey          = 'tjr_';
+			$contextArray = explode('_', $context);
+
+			foreach ($contextArray as $v)
+			{
+				$pKey .= substr($v, 0, 1);
+			}
+
+			$pKey .= '_id';*/
+
+			// Create table
+			$db    = Factory::getDbo();
+			$query = $db->getQuery(true);
+
+			/*$query = 'CREATE TABLE IF NOT EXISTS ' . $db->quoteName($this->customFieldsTable) . ' ( ' .
+				$db->quoteName($pKey) . ' int(11) NOT NULL AUTO_INCREMENT,
+				`record_id` int(11) NOT NULL,
+				PRIMARY KEY (' . $db->quoteName($pKey) . ')
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8';*/
+
+			$query = 'CREATE TABLE IF NOT EXISTS ' . $db->quoteName($this->customFieldsTable) . ' (
+				`record_id` int(11) NOT NULL
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8';
+
+			$db->setQuery($query);
+
+			if ($db->execute())
+			{
+				$msg = 'DB table - ' . $db->quoteName($this->customFieldsTable) . ' created successfully';
+				echo new JResponseJson($msg);
+
+				return true;
+			}
+			else
+			{
+				throw new Exception('Error creating DB table - ' . $db->quoteName($this->customFieldsTable));
+
+				return false;
+			}
 		}
-
-		// Decide primary key name
-		$pKey          = 'tjr_';
-		$contextArray = explode('_', $context);
-
-		foreach ($contextArray as $v)
+		catch (Exception $e)
 		{
-			$pKey .= substr($v, 0, 1);
+			echo new JResponseJson(null, $e->getMessage(), true);
 		}
-
-		$pKey .= '_id';
-
-		// Create table
-		$db    = Factory::getDbo();
-		$query = $db->getQuery(true);
-		$query = 'CREATE TABLE IF NOT EXISTS ' . $db->quoteName($this->customFieldsTable) . ' ( ' .
-			$db->quoteName($pKey) . ' int(11) NOT NULL AUTO_INCREMENT,
-			`record_id` int(11) NOT NULL,
-			PRIMARY KEY (' . $db->quoteName($pKey) . ')
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8';
-
-		$db->setQuery($query);
-
-		if ($db->execute())
-		{
-			echo 'DB table - ' . $db->quoteName($this->customFieldsTable) . ' created successfully';
-
-			return true;
-		}
-		else
-		{
-			echo 'Error creating DB table - ' . $db->quoteName($this->customFieldsTable);
-
-			return false;
-		}
-	}
-
-	/**
-	 * Function to check if table exists
-	 *
-	 * @return  boolean
-	 *
-	 * @since   1.1.0
-	 */
-	protected function tableExists()
-	{
-		// Check if table exists
-		$db        = JFactory::getDbo();
-		$dbPrefix  = $db->getPrefix();
-		$allTables = $db->getTableList();
-
-		$tableName = $this->customFieldsTable;
-		$tableName = str_replace('#__', '', $tableName);
-
-		if (in_array($dbPrefix . $tableName, $allTables))
-		{
-			return true;
-		}
-
-		return false;
 	}
 }

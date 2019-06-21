@@ -1,19 +1,19 @@
 <?php
 /**
- * @version    SVN: <svn_id>
- * @package    Com_Tjreports
- * @copyright  Copyright (C) 2005 - 2014. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
- * Shika is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * @package     TJReports
+ * @subpackage  com_tjreports
+ *
+ * @copyright   Copyright (C) 2009 - 2019 Techjoomla. All rights reserved.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 // No direct access
-defined('_JEXEC') or die;
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.modellist');
+
+// Load TJReports db helper
+JLoader::import('database', JPATH_SITE . '/components/com_tjreports/helpers');
 
 /**
  * Methods supporting a list of Tjreports records.
@@ -75,34 +75,20 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function __construct($config = array())
 	{
+		// Joomla custom field (com_fields) integration
+		if (!empty($this->customFieldsTable))
+		{
+			$this->tjreportsDbHelper = new TjreportsfieldsHelperDatabase;
+			// Check if table exists
+			$this->customFieldsTableExists = $this->tjreportsDbHelper->tableExists($this->customFieldsTable);
+
+			// Set custom fields columns
+			$this->setCustomFieldsColumns();
+		}
+
 		$this->initData();
 
 		parent::__construct($config);
-	}
-
-	/**
-	 * Function to check if table exists
-	 *
-	 * @return  BOOLEAN
-	 *
-	 * @since   1.1.0
-	 */
-	protected function tableExists()
-	{
-		// Check if table exists
-		$db        = JFactory::getDbo();
-		$dbPrefix  = $db->getPrefix();
-		$alltables = $db->getTableList();
-
-		$tableName = $this->customFieldsTable;
-		$tableName = str_replace('#__', '', $tableName);
-
-		if (in_array($dbPrefix . $tableName, $alltables))
-		{
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
@@ -138,11 +124,7 @@ class TjreportsModelReports extends JModelList
 
 		// Extract column names from $columnDetails
 		$columnNames = array();
-
-		foreach ($columnsDetails as $key => $val)
-		{
-			$columnNames[] = $key;
-		}
+		$columnNames = array_keys($columnsDetails);
 
 		// Get column labels from #__fields table for all indexed custom fields from this table
 		$query = $db->getQuery(true);
@@ -644,8 +626,34 @@ class TjreportsModelReports extends JModelList
 
 		if (!empty($sortKey) && !in_array($sortKey, $this->sortableWoQuery))
 		{
-			$query->order($sortKey . ' ' . $orderDir);
+			$query->order($db->quoteName($sortKey) . ' ' . $orderDir);
 			$this->canLimitQuery = true;
+		}
+
+		// Joomla fields integration - Get custom fields data
+		// Proceed if table eixists, and at least one custom field is seleced for showing
+		if ($this->customFieldsTableExists && !empty($this->customFieldsTableColumnsForQuery) && !empty($this->customFieldsQueryJoinOn))
+		{
+			// Since in actual query columns are used as tablealias.columnname,
+			// Lets build such array
+			$customFieldColumns = array();
+
+			foreach ($this->customFieldsTableColumnsForQuery as $cfc)
+			{
+				$customFieldColumns[] = $this->customFieldsTableAlias . '.' . $cfc;
+			}
+
+			// If at least one custom field is seleced for showing, select record_id column as well
+			if (!empty($customFieldColumns))
+			{
+				$customFieldColumns[] = $this->customFieldsTableAlias . '.record_id';
+
+				$query->select($db->quoteName($customFieldColumns));
+				$query->join(
+					'LEFT', $db->quoteName($this->customFieldsTable, $this->customFieldsTableAlias) .
+					' ON ' . $db->quoteName($this->customFieldsTableAlias . '.record_id') . ' = ' . $db->quoteName($this->customFieldsQueryJoinOn)
+				);
+			}
 		}
 
 		return $query;

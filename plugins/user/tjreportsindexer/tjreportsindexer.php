@@ -13,7 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * Class for Tjreportsindexer User Plugin
  *
- * @since  1.1.0
+ * @since  __DELPOY_VERSION__
  */
 class PlgUserTjreportsindexer extends JPlugin
 {
@@ -97,7 +97,7 @@ class PlgUserTjreportsindexer extends JPlugin
 	 *
 	 * @return  void
 	 *
-	 * @since  1.1.0
+	 * @since  __DELPOY_VERSION__
 	 */
 	protected function addIndexerEntry($user)
 	{
@@ -106,32 +106,29 @@ class PlgUserTjreportsindexer extends JPlugin
 		// Get column name, type for custom fields index table
 		$columnsDetails = $db->getTableColumns($this->customFieldsTable);
 
-		// Extract column names from $columnDetails
+		// Extract column names from $columnsDetails
 		$columnNames = array();
-
-		foreach ($columnsDetails as $key => $val)
-		{
-			$columnNames[] = $key;
-		}
-
-		// Get field names
-		$fieldsPosted = array_keys($user['com_fields']);
+		$columnNames = array_keys($columnsDetails);
 
 		// For all fields get type, fieldparams
 		$query = $db->getQuery(true);
 
-		// Prepare the insert query.
-		$query
-			->select(array($db->quoteName('name'), $db->quoteName('type'), $db->quoteName('fieldparams')))
-			->from($db->quoteName('#__fields'))
-			->where($db->quoteName('name') . ' IN (' . implode(',', $db->quote($fieldsPosted)) . ')');
-		$db->setQuery($query);
+		// Register FieldsHelper,
+		// Get fields data fro current entry
+		JLoader::register('FieldsHelper', JPATH_ADMINISTRATOR . '/components/com_fields/helpers/fields.php');
+		$userTableObj = JTable::getInstance('User');
+		$userTableObj->load((int) $user['id']);
+		$fields = FieldsHelper::getFields('com_users.user', $userTableObj, true);
 
-		$fieldsDetails = $db->loadAssocList('name');
+		$fieldsDetails = array();
 
-		// Add new user-data entry
-		$query = $db->getQuery(true);
+		// We need array of fields as $fields[$fieldName] format, lets get that
+		foreach ($fields as $field)
+		{
+			$fieldsDetails[$field->name] = $field;
+		}
 
+		// Generate new user-data entry
 		$columns = array();
 		$values  = array();
 
@@ -147,100 +144,27 @@ class PlgUserTjreportsindexer extends JPlugin
 				continue;
 			}
 
-			// For below types save text instead of values
-			// Checkboxes / list / radio / user / usergrouplist
-			if (in_array($fieldsDetails[$key]['type'], $this->listTypeFields))
+			if ($fieldsDetails[$key]->type !== 'url')
 			{
-				$fieldParams = new JRegistry($fieldsDetails[$key]['fieldparams']);
-				$data = array();
-
-				foreach ($fieldParams->get('options', array()) as $option)
-				{
-					$op               = (object) $option;
-					$data[$op->value] = $op->name;
-				}
-
-				// Checkboxes, select with multiple
-				if (is_array($val) && count($val))
-				{
-					$tempVal = array();
-
-					foreach ($val as $v)
-					{
-						$tempVal[] = $data[$v];
-					}
-
-					$val = $tempVal;
-				}
-				else
-				{
-					$val = $data[$val];
-				}
+				$value = $fieldsDetails[$key]->value;
 			}
-			elseif (in_array($fieldsDetails[$key]['type'], $this->listTypeCoreFields))
+			else
 			{
-				if (is_array($val) && count($val))
-				{
-					$tempVal = array();
-
-					foreach ($val as $v)
-					{
-						if ($fieldsDetails[$key]['type'] == 'user')
-						{
-							$userTable = JTable::getInstance('User');
-							$userTable->load((int) $val);
-
-							// @echo '<br/> username is <br/>' . $tempVal[] = $userTable->name;
-						}
-						elseif ($fieldsDetails[$key]['type'] == 'usergrouplist')
-						{
-							$userGroupTable = JTable::getInstance('Usergroup');
-							$userGroupTable->load(array('id' => (int) $v));
-
-							// @echo '<br/> group title is <br/>' . $tempVal[] = $userGroupTable->title;
-						}
-					}
-
-					$val = $tempVal;
-				}
-				else
-				{
-					if ($fieldsDetails[$key]['type'] == 'user')
-					{
-						$userTable = JTable::getInstance('User');
-						$userTable->load((int) $val);
-
-						$val = $userTable->name;
-					}
-					elseif ($fieldsDetails[$key]['type'] == 'usergrouplist')
-					{
-						$userGroupTable = JTable::getInstance('Usergroup');
-						$userGroupTable->load(array('id' => (int) $val));
-
-						$val = $userGroupTable->title;
-					}
-				}
-			}
-
-			// Checkboxes, select with multiple
-			if (is_array($val) && count($val))
-			{
-				$val = implode(',', $val);
+				$value = $fieldsDetails[$key]->rawvalue;
 			}
 
 			$columns[] = $db->quoteName($key);
-			$values[]  = $db->quote($val);
+			$values[]  = $db->quote($value);
 		}
 
-		// Prepare the insert query.
+		// Prepare the insert query
+		$query = $db->getQuery(true);
 		$query
 			->insert($db->quoteName($this->customFieldsTable))
 			->columns($columns)
 			->values(implode(',', $values));
 
 		$db->setQuery($query);
-
-		// @echo $query->dump(); die;
 
 		$db->execute();
 	}
@@ -252,7 +176,7 @@ class PlgUserTjreportsindexer extends JPlugin
 	 *
 	 * @return  boolean
 	 *
-	 * @since  1.1.0
+	 * @since  __DELPOY_VERSION__
 	 */
 	protected function deleteIndexerEntry($userId)
 	{

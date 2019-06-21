@@ -7,12 +7,15 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-defined('_JEXEC') or die;
+defined('_JEXEC') or die('Restricted access');
+
+// Load TJReports db helper
+JLoader::import('database', JPATH_SITE . '/components/com_tjreports/helpers');
 
 /**
  * Class for Tjreportsfields Content Plugin
  *
- * @since  1.1.0
+ * @since  __DELPOY_VERSION__
  */
 class PlgContentTjreportsfields extends JPlugin
 {
@@ -29,7 +32,7 @@ class PlgContentTjreportsfields extends JPlugin
 
 	protected $customFieldBeingEdited;
 
-	protected $unSupportedFields = array ('imagelist', 'media', 'repeatable', 'sql');
+	protected $unSupportedFields = array ('imagelist', 'media', 'repeatable');
 
 	protected $fieldTypeToColumnTypeMapping = array (
 		'calendar'      => 'datetime',
@@ -39,12 +42,27 @@ class PlgContentTjreportsfields extends JPlugin
 		'integer'       => 'int(11)',
 		'list'          => 'varchar(255)',
 		'radio'         => 'varchar(255)',
+		'sql'           => 'text',
 		'text'          => 'text',
 		'textarea'      => 'text',
 		'url'           => 'varchar(250)',
 		'user'          => 'varchar(400)',
 		'usergrouplist' => 'varchar(100)'
 	);
+
+	/**
+	 * Constructor
+	 *
+	 * @param   string  &$subject  subject
+	 *
+	 * @param   string  $config    config
+	 */
+	public function __construct(&$subject, $config)
+	{
+		$this->tjreportsDbHelper = new TjreportsfieldsHelperDatabase;
+
+		parent::__construct($subject, $config);
+	}
 
 	/**
 	 * Smart Search before content save method.
@@ -73,8 +91,6 @@ class PlgContentTjreportsfields extends JPlugin
 		$this->customFieldBeingEdited->id   = $row->id;
 		$this->customFieldBeingEdited->name = $fieldsTable->name;
 		$this->customFieldBeingEdited->type = $fieldsTable->type;
-
-		// @echo '<br/>' . $context; echo '<br/>';  var_dump($row->id); print_r($this->customFieldBeingEdited); die;
 
 		return true;
 	}
@@ -115,11 +131,11 @@ class PlgContentTjreportsfields extends JPlugin
 			return;
 		}
 
-		// Set table name as #__tjreports_context eg: #__tjreports_com_users_user
-		$this->customFieldsTable = '#__tjreports_' . str_replace('.', '_', trim($field->context));
+		// Call set custom field table name
+		$this->setCustomFieldsTableName($field->context);
 
 		// If no table, return
-		if (!$this->tableExists())
+		if (!$this->tjreportsDbHelper->tableExists($this->customFieldsTable))
 		{
 			return;
 		}
@@ -130,11 +146,7 @@ class PlgContentTjreportsfields extends JPlugin
 
 		// Extract column names from $columnDetails
 		$columnNames = array();
-
-		foreach ($columnsDetails as $key => $val)
-		{
-			$columnNames[] = $key;
-		}
+		$columnNames = array_keys($columnsDetails);
 
 		$oldColumnName = $this->customFieldBeingEdited->name;
 		$newColumnName = $field->name;
@@ -142,13 +154,8 @@ class PlgContentTjreportsfields extends JPlugin
 		// If current being edited already exits in indexed DB
 		if (in_array($oldColumnName, $columnNames))
 		{
-			// If current filed name is same, do nothing
-			if ($newColumnName == $oldColumnName)
-			{
-				// Do nothing
-			}
-			// If current file name is changed, update column name in DB table
-			else
+			// If current field name is changed, update column name in DB table
+			if ($newColumnName !== $oldColumnName)
 			{
 				$this->updateColumn($oldColumnName, $newColumnName);
 			}
@@ -174,8 +181,8 @@ class PlgContentTjreportsfields extends JPlugin
 	 */
 	public function onContentAfterDelete($context, $field)
 	{
-		// Set table name as #__tjreports_context eg: #__tjreports_com_users_user
-		$this->customFieldsTable = '#__tjreports_' . str_replace('.', '_', trim($field->context));
+		// Call set custom field table name
+		$this->setCustomFieldsTableName($field->context);
 
 		// If no table, return
 		if (!$this->tableExists())
@@ -187,35 +194,21 @@ class PlgContentTjreportsfields extends JPlugin
 		{
 			$this->deleteColumn($field->name);
 		}
-
-		// @echo "<pre>"; print_r($context); print_r($field); echo "</pre>"; die;
 	}
 
 	/**
-	 * Function to check if table exists
+	 * Function to set custom fields table name
 	 *
-	 * @return  boolean
+	 * @param   string  $context  Context name eg. com_users.user
 	 *
-	 * @since   1.1.0
+	 * @return  void
+	 *
+	 * @since   __DEPLOY_VERSION__
 	 */
-	protected function tableExists()
+	protected function setCustomFieldsTableName($context)
 	{
-		// Check if table exists
-		$db        = JFactory::getDbo();
-		$dbPrefix  = $db->getPrefix();
-		$allTables = $db->getTableList();
-
-		$tableName = $this->customFieldsTable;
-		$tableName = str_replace('#__', '', $tableName);
-
-		// @print_r($allTables); echo $dbPrefix . $tableName; die;
-
-		if (in_array($dbPrefix . $tableName, $allTables))
-		{
-			return true;
-		}
-
-		return false;
+		// Set table name as #__tjreports_context eg: #__tjreports_com_users_user
+		$this->customFieldsTable = '#__tjreports_' . str_replace('.', '_', trim($context));
 	}
 
 	/**
@@ -225,12 +218,11 @@ class PlgContentTjreportsfields extends JPlugin
 	 *
 	 * @return  void
 	 *
-	 * @since  1.1.0
+	 * @since  __DELPOY_VERSION__
 	 */
 	protected function addColumn($newColumn)
 	{
-		$db    = JFactory::getDbo();
-		$query = $db->getQuery(true);
+		$db = JFactory::getDbo();
 
 		// ALTER TABLE tableName ADD newColumn dataType
 		// eg. ALTER TABLE `#__tjreports_com_users_user` ADD `dob` datetime
@@ -249,12 +241,11 @@ class PlgContentTjreportsfields extends JPlugin
 	 *
 	 * @return  void
 	 *
-	 * @since  1.1.0
+	 * @since  __DELPOY_VERSION__
 	 */
 	protected function updateColumn($oldColumn, $newColumn)
 	{
-		$db    = JFactory::getDbo();
-		$query = $db->getQuery(true);
+		$db = JFactory::getDbo();
 
 		// ALTER TABLE tableName CHANGE oldColumn newColumn dataType
 		$query = 'ALTER TABLE ' . $db->quoteName($this->customFieldsTable) . '
@@ -272,12 +263,11 @@ class PlgContentTjreportsfields extends JPlugin
 	 *
 	 * @return  void
 	 *
-	 * @since  1.1.0
+	 * @since  __DELPOY_VERSION__
 	 */
 	protected function deleteColumn($column)
 	{
-		$db    = JFactory::getDbo();
-		$query = $db->getQuery(true);
+		$db = JFactory::getDbo();
 
 		// ALTER TABLE tableName CHANGE oldColumn newColumn dataType
 		$query = 'ALTER TABLE ' . $db->quoteName($this->customFieldsTable) . '

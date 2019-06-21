@@ -16,7 +16,7 @@ defined('_JEXEC') or die('Restricted access');
  * @package     TJReports
  * @subpackage  com_tjreports
  *
- * @since       __DEPLOY_VERSION__
+ * @since       1.1.0
  */
 class TjreportsfieldsHelperDatabase
 {
@@ -27,7 +27,7 @@ class TjreportsfieldsHelperDatabase
 	 *
 	 * @return  boolean
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   1.1.0
 	 */
 	public function tableExists($tableName)
 	{

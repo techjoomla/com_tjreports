@@ -15,7 +15,7 @@ JLoader::import('database', JPATH_SITE . '/components/com_tjreports/helpers');
 /**
  * Class for Tjreportsfields Content Plugin
  *
- * @since  __DELPOY_VERSION__
+ * @since  1.1.0
  */
 class PlgContentTjreportsfields extends JPlugin
 {
@@ -24,7 +24,7 @@ class PlgContentTjreportsfields extends JPlugin
 	 *
 	 * @var    boolean
 	 *
-	 * @since  3.2.11
+	 * @since  1.1.0
 	 */
 	protected $autoloadLanguage = true;
 
@@ -74,7 +74,7 @@ class PlgContentTjreportsfields extends JPlugin
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @since   2.5
+	 * @since   1.1.0
 	 * @throws  Exception on database error.
 	 */
 	public function onContentBeforeSave($context, $row, $isNew)
@@ -106,7 +106,7 @@ class PlgContentTjreportsfields extends JPlugin
 	 *
 	 * @return  void
 	 *
-	 * @since   1.0.0
+	 * @since   1.1.0
 	 */
 	public function onContentAfterSave($context, $field, $isNew)
 	{
@@ -177,7 +177,7 @@ class PlgContentTjreportsfields extends JPlugin
 	 *
 	 * @return  void
 	 *
-	 * @since   3.9.0
+	 * @since   1.1.0
 	 */
 	public function onContentAfterDelete($context, $field)
 	{
@@ -203,7 +203,7 @@ class PlgContentTjreportsfields extends JPlugin
 	 *
 	 * @return  void
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   1.1.0
 	 */
 	protected function setCustomFieldsTableName($context)
 	{
@@ -218,7 +218,7 @@ class PlgContentTjreportsfields extends JPlugin
 	 *
 	 * @return  void
 	 *
-	 * @since  __DELPOY_VERSION__
+	 * @since  1.1.0
 	 */
 	protected function addColumn($newColumn)
 	{
@@ -241,7 +241,7 @@ class PlgContentTjreportsfields extends JPlugin
 	 *
 	 * @return  void
 	 *
-	 * @since  __DELPOY_VERSION__
+	 * @since  1.1.0
 	 */
 	protected function updateColumn($oldColumn, $newColumn)
 	{
@@ -263,7 +263,7 @@ class PlgContentTjreportsfields extends JPlugin
 	 *
 	 * @return  void
 	 *
-	 * @since  __DELPOY_VERSION__
+	 * @since  1.1.0
 	 */
 	protected function deleteColumn($column)
 	{

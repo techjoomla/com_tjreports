@@ -235,11 +235,23 @@ class TjreportsModelReports extends JModelList
 		$app = JFactory::getApplication();
 		$input = JFactory::getApplication()->input;
 
+		if (!($reportId = $input->get('reportId', 0, 'uint')))
+		{
+			if ($reportName = $input->get('report', 0, 'string'))
+			{
+				$reportId = $this->getDefaultReport($reportName);
+			}
+		}
+
+		$this->setState('reportId', $reportId);
+
 		$colToshow = $input->get('colToshow', array(), 'ARRAY');
 
-		if ($reportId = $input->get('reportId', 0, 'uint'))
+		if (empty($colToshow))
 		{
-			$this->setState('reportId', $reportId);
+			$reportParams = $this->getReportParams($reportId);
+
+			$colToshow = $reportParams->get("colToshow");
 		}
 
 		$this->filterReportColumns($reportId, $colToshow);

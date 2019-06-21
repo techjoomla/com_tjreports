@@ -1,85 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.0" method="upgrade">
-    <name>com_tjreports</name>
-    <creationDate>2016-08-30</creationDate>
-    <copyright>2016 Parth Lawate</copyright>
-    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-    <author>Parth Lawate</author>
-    <authorEmail>contact@techjoomla.com</authorEmail>
-    <authorUrl>http://techjoomla.com</authorUrl>
-    <version>1.0.2</version>
-    <description>This component is used to access all the report at single place.</description>
-
-    <install> <!-- Runs on install -->
-        <sql>
-            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
-        </sql>
-    </install>
-    <update>
+	<name>com_tjreports</name>
+	<author>Techjoomla</author>
+	<authorEmail>extensions@techjoomla.com</authorEmail>
+	<authorUrl>https://techjoomla.com</authorUrl>
+	<copyright>Copyright (C) 2016 - 2019 Techjoomla. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<creationDate>7th Feb 2019</creationDate>
+	<version>1.0.5</version>
+	<description>This component is used to access all the report at single place.</description>
+	<install>
+		<!-- Runs on install -->
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+		</sql>
+	</install>
+	<update>
 		<schemas>
 			<schemapath type="mysql">sql/updates/mysql</schemapath>
 		</schemas>
 	</update>
-    <uninstall> <!-- Runs on uninstall -->
-        <sql>
-            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
-        </sql>
-    </uninstall>
-
-    <files folder="site">
-        <filename>index.html</filename>
-        <filename>tjreports.php</filename>
-        <filename>controller.php</filename>
-        <folder>views</folder>
-        <folder>models</folder>
-        <folder>controllers</folder>
-        <folder>assets</folder>
-        <folder>layouts</folder>
-    </files>
-    <media destination="com_tjreports" folder="media">
-        <folder>js</folder>
-        <folder>css</folder>
-    </media>
-    <languages folder="languages/site">
-
-			<language tag="en-GB">en-GB/en-GB.com_tjreports.ini</language>
-    </languages>
-    <administration>
-        <menu img="media/com_tjreports/images/s_com_tjreports.png" >COM_TJREPORTS</menu>
-        <submenu>
+	<uninstall>
+		<!-- Runs on uninstall -->
+		<sql>
+			<file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+		</sql>
+	</uninstall>
+	<files folder="site">
+		<filename>index.html</filename>
+		<filename>tjreports.php</filename>
+		<filename>controller.php</filename>
+		<folder>views</folder>
+		<folder>models</folder>
+		<folder>controllers</folder>
+		<folder>assets</folder>
+		<folder>layouts</folder>
+	</files>
+	<media destination="com_tjreports" folder="media">
+		<folder>js</folder>
+		<folder>css</folder>
+	</media>
+	<languages folder="languages/site">
+		<language tag="en-GB">en-GB/en-GB.com_tjreports.ini</language>
+	</languages>
+	<administration>
+		<menu img="media/com_tjreports/images/s_com_tjreports.png">COM_TJREPORTS</menu>
+		<submenu>
 			<menu link="option=com_tjreports&amp;view=tjreports" view="tjreports" img="media/com_tjreports/images/s_.png" alt="Tjreports/Tjreports">COM_TJREPORTS_TITLE_TJREPORTS</menu>
-        </submenu>
-        <files folder="administrator">
-            <filename>access.xml</filename>
-            <filename>config.xml</filename>
-            <filename>controller.php</filename>
-            <filename>index.html</filename>
-            <filename>tjreports.php</filename>
-            <folder>controllers</folder>
-            <folder>assets</folder>
-            <folder>helpers</folder>
-            <folder>models</folder>
-            <folder>sql</folder>
-            <folder>tables</folder>
-            <folder>views</folder>
-        </files>
-        <languages folder="languages/administrator">
-
+		</submenu>
+		<files folder="administrator">
+			<filename>access.xml</filename>
+			<filename>config.xml</filename>
+			<filename>controller.php</filename>
+			<filename>index.html</filename>
+			<filename>tjreports.php</filename>
+			<folder>controllers</folder>
+			<folder>assets</folder>
+			<folder>helpers</folder>
+			<folder>models</folder>
+			<folder>sql</folder>
+			<folder>tables</folder>
+			<folder>views</folder>
+		</files>
+		<languages folder="languages/administrator">
 			<language tag="en-GB">en-GB/en-GB.com_tjreports.ini</language>
 			<language tag="en-GB">en-GB/en-GB.com_tjreports.sys.ini</language>
-        </languages>
-    </administration>
-    <config>
-        <fields name="params">
-            <fieldset name="component">
-                <field name="save_history" default="0" />
-            </fieldset>
-        </fields>
-    </config>
-    <plugins>
-        <plugin group="search" plugin="tjreports"/>
-    </plugins>
-
+		</languages>
+	</administration>
+	<scriptfile>script.tjreports.php</scriptfile>
+	<config>
+		<fields name="params">
+			<fieldset name="component">
+				<field name="save_history" default="0" />
+			</fieldset>
+		</fields>
+	</config>
+	<plugins>
+		<plugin group="search" plugin="tjreports" />
+	</plugins>
 </extension>
-<!-- Component built by the Joomla Component Creator -->
-<!-- http://www.component-creator.com/ -->

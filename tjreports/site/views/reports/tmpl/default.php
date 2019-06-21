@@ -1,60 +1,62 @@
 <?php
-   /**
-    * @version     1.0.0
-    * @package     com_tjreports
-    * @copyright   Copyright (C) 2014. All rights reserved.
-    * @license     GNU General Public License version 2 or later; see LICENSE.txt
-    * @author      TechJoomla <extensions@techjoomla.com> - http://www.techjoomla.com
-    */
+/**
+ * @version     1.0.0
+ * @package     com_tjreports
+ * @copyright   Copyright (C) 2014. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @author      TechJoomla <extensions@techjoomla.com> - http://www.techjoomla.com
+*/
 
-   // no direct access
-   defined('_JEXEC') or die;
+// no direct access
+defined('_JEXEC') or die;
 
-   JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
+JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
-   $app = JFactory::getApplication();
-   $headerLevel    = $this->headerLevel;
-   $this->listOrder      = $this->state->get('list.ordering');
-   $this->listDirn       = $this->state->get('list.direction');
-   $totalCount = 0;
+$app             = JFactory::getApplication();
+$headerLevel     = $this->headerLevel;
+$this->listOrder = $this->state->get('list.ordering');
+$this->listDirn  = $this->state->get('list.direction');
+$totalCount      = 0;
 
-   foreach ($this->colToshow as $key=>$data)
-   {
-   	if (is_array($data))
-   	{
-   		$totalCount = $totalCount + count($data);
-   	}
-   	else
-   	{
-   		$totalCount++;
-   	}
-   }
+foreach ($this->colToshow as $key=>$data)
+{
+	if (is_array($data))
+	{
+		$totalCount = $totalCount + count($data);
+	}
+	else
+	{
+		$totalCount++;
+	}
+}
 
-   $input  = JFactory::getApplication()->input;
-   $displayFilters = $this->userFilters;
-   $totalHeadRows = count($displayFilters);
+$input                = JFactory::getApplication()->input;
+$displayFilters       = $this->userFilters;
+$totalHeadRows        = count($displayFilters);
+$reportId             = $app->getUserStateFromRequest('reportId', 'reportId', '');
+$user                 = JFactory::getUser();
+$userAuthorisedExport = $user->authorise('core.export', 'com_tjreports.tjreport.' . $reportId);
 
-   if ($app->isSite())
-   {
-      $siteUrl = JUri::root();
-      $message = array();
-      $message['success'] = JText::_("COM_TJREPORTS_EXPORT_FILE_SUCCESS");
-      $message['error'] = JText::_("COM_TJREPORTS_EXPORT_FILE_ERROR");
-      $message['inprogress'] = JText::_("COM_TJREPORTS_EXPORT_FILE_NOTICE");
-      $message['text'] = JText::_("COM_TJREPORTS_CSV_EXPORT");
+if ($app->isSite())
+{
+	$siteUrl = JUri::root();
+	$message = array();
+	$message['success']    = JText::_("COM_TJREPORTS_EXPORT_FILE_SUCCESS");
+	$message['error']      = JText::_("COM_TJREPORTS_EXPORT_FILE_ERROR");
+	$message['inprogress'] = JText::_("COM_TJREPORTS_EXPORT_FILE_NOTICE");
+	$message['text']       = JText::_("COM_TJREPORTS_CSV_EXPORT");
 
-      JHtml::script(JUri::base() . 'libraries/techjoomla/assets/js/tjexport.js');
-      $document = JFactory::getDocument();
-      $csv_url = 'index.php?option=' . $input->get('option') . '&view=' . $input->get('view') . '&format=csv';
+	JHtml::script(JUri::base() . 'libraries/techjoomla/assets/js/tjexport.js');
+	$document = JFactory::getDocument();
+	$csv_url = 'index.php?option=' . $input->get('option') . '&view=' . $input->get('view') . '&format=csv';
 
-      $document->addScriptDeclaration("var csv_export_url='{$csv_url}';");
-      $document->addScriptDeclaration("var csv_export_success='{$message['success']}';");
-      $document->addScriptDeclaration("var csv_export_error='{$message['error']}';");
-      $document->addScriptDeclaration("var csv_export_inprogress='{$message['inprogress']}';");
-      $document->addScriptDeclaration("var tj_csv_site_root='{$siteUrl}';");
-   }
-
-   ?>
+	$document->addScriptDeclaration("var csv_export_url='{$csv_url}';");
+	$document->addScriptDeclaration("var csv_export_success='{$message['success']}';");
+	$document->addScriptDeclaration("var csv_export_error='{$message['error']}';");
+	$document->addScriptDeclaration("var csv_export_inprogress='{$message['inprogress']}';");
+	$document->addScriptDeclaration("var tj_csv_site_root='{$siteUrl}';");
+}
+?>
 <div id="reports-container">
 	<div class="<?php echo COM_TJLMS_WRAPPER_DIV ?> tjBs3">
 	<?php
@@ -74,7 +76,7 @@
 		if ($app->isSite() && isset($this->reportData->title))
 		{
 		?>
-			<h2 class="title"><?php echo $this->reportData->title?></h2>
+			<h2 class="title"><?php echo htmlspecialchars($this->reportData->title, ENT_COMPAT, 'UTF-8'); ?></h2>
 		<?php
 		}
 		?>
@@ -222,7 +224,7 @@
 							</div>
 					<!--/col-md-2-->
 					  <?php
-						if (!$app->isAdmin())
+						if (!$app->isAdmin() && $userAuthorisedExport && $user)
 						{
 						?>
 							<div class="col-sm-5 col-md-8">

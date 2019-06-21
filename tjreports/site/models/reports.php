@@ -525,7 +525,7 @@ class TjreportsModelReports extends JModelList
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
 
-		$query->select(array('id as reportId, title, plugin'));
+		$query->select(array('id as reportId, title, plugin, ordering'));
 		$query->from($db->quoteName('#__tj_reports'));
 		$query->where($db->quoteName('plugin') . ' IN (' . implode(',', $db->quote($pluginNames)) . ')');
 		$query->where($db->quoteName('userid') . ' = ' . $db->quote(0));
@@ -534,6 +534,8 @@ class TjreportsModelReports extends JModelList
 		{
 			$query->where($db->quoteName('client') . ' = ' . $db->quote($client));
 		}
+
+		$query->order('ordering ASC');
 
 		$db->setQuery($query);
 		$reports = $db->loadAssocList();
@@ -547,6 +549,10 @@ class TjreportsModelReports extends JModelList
 				unset($reports[$key]);
 			}
 		}
+
+		// In view layouts - reports[0] is used, and since array indexes are unset above, 
+		// Let's re-arrange index accordingly
+		$reports = array_values($reports);
 
 		return $reports;
 	}
@@ -928,6 +934,7 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function getDefaultReport($pluginName)
 	{
+		$db        = JFactory::getDBO();
 		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
 		$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
 		$reportTable->load(array('plugin' => $pluginName, 'default' => 1));

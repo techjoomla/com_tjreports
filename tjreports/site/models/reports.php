@@ -235,11 +235,23 @@ class TjreportsModelReports extends JModelList
 		$app = JFactory::getApplication();
 		$input = JFactory::getApplication()->input;
 
+		if (!($reportId = $input->get('reportId', 0, 'uint')))
+		{
+			if ($reportName = $input->get('report', 0, 'string'))
+			{
+				$reportId = $this->getDefaultReport($reportName);
+			}
+		}
+
+		$this->setState('reportId', $reportId);
+
 		$colToshow = $input->get('colToshow', array(), 'ARRAY');
 
-		if ($reportId = $input->get('reportId', 0, 'uint'))
+		if (empty($colToshow))
 		{
-			$this->setState('reportId', $reportId);
+			$reportParams = $this->getReportParams($reportId);
+
+			$colToshow = $reportParams->get("colToshow");
 		}
 
 		$this->filterReportColumns($reportId, $colToshow);
@@ -935,7 +947,6 @@ class TjreportsModelReports extends JModelList
 	public function getDefaultReport($pluginName)
 	{
 		$db        = JFactory::getDBO();
-
 		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
 		$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
 		$reportTable->load(array('plugin' => $pluginName, 'default' => 1));

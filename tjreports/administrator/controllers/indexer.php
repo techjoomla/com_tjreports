@@ -59,7 +59,7 @@ class TjreportsControllerIndexer extends BaseController
 			return;
 		}
 
-		$model       = $this->getModel('indexer');
-		$createTable = $model->createTable($context);
+		$model = $this->getModel('indexer');
+		$model->createTable($context);
 	}
 }

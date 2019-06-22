@@ -59,11 +59,15 @@ class TjreportsModelReports extends JModelList
 
 	public $customFieldsTableAlias = '';
 
-	public $customFieldsTableExists = false;
+	private $customFieldsTableExists = false;
+
+	public $customFieldsQueryJoinOn = '';
+
+	public $customFieldsTableColumnsForQuery = array();
 
 	public $customFieldsTypesNotAllowedAsFilter = array ('color', 'imagelist', 'media' /*, 'repeatable'*/);
 
-	public $customFieldsTableColumnsForQuery = array();
+	protected $tjreportsDbHelper;
 
 	/**
 	 * Constructor.
@@ -79,6 +83,7 @@ class TjreportsModelReports extends JModelList
 		if (!empty($this->customFieldsTable))
 		{
 			$this->tjreportsDbHelper = new TjreportsfieldsHelperDatabase;
+
 			// Check if table exists
 			$this->customFieldsTableExists = $this->tjreportsDbHelper->tableExists($this->customFieldsTable);
 
@@ -123,7 +128,6 @@ class TjreportsModelReports extends JModelList
 		}
 
 		// Extract column names from $columnDetails
-		$columnNames = array();
 		$columnNames = array_keys($columnsDetails);
 
 		// Get column labels from #__fields table for all indexed custom fields from this table
@@ -631,7 +635,7 @@ class TjreportsModelReports extends JModelList
 		}
 
 		// Joomla fields integration - Get custom fields data
-		// Proceed if table eixists, and at least one custom field is seleced for showing
+		// Proceed if table exists, and at least one custom field is seleced for showing
 		if ($this->customFieldsTableExists && !empty($this->customFieldsTableColumnsForQuery) && !empty($this->customFieldsQueryJoinOn))
 		{
 			// Since in actual query columns are used as tablealias.columnname,

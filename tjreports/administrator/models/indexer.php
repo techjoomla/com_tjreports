@@ -29,6 +29,8 @@ class TjreportsModelIndexer extends BaseDatabaseModel
 {
 	protected $customFieldsTable = '';
 
+	private $whiteListedContexts = array ('com_users.user');
+
 	/**
 	 * Function to create indexer table for given context
 	 *
@@ -45,45 +47,27 @@ class TjreportsModelIndexer extends BaseDatabaseModel
 			return false;
 		}
 
-		// Set table name as #__tjreports_context eg: #__tjreports_com_users_user
-		$context                 = str_replace('.', '_', trim($context));
-		$this->customFieldsTable = '#__tjreports_' . $context;
-
-		// If no table, return
-		$tjreportsDbHelper = new TjreportsfieldsHelperDatabase;
-
 		try
 		{
+			if (!in_array($context, $this->whiteListedContexts))
+			{
+				throw new Exception('Context not allowed for creating DB table');
+			}
+
+			// Set table name as #__tjreports_context eg: #__tjreports_com_users_user
+			$context                 = str_replace('.', '_', trim($context));
+			$this->customFieldsTable = '#__tjreports_' . $context;
+
+			// If no table, return
+			$tjreportsDbHelper = new TjreportsfieldsHelperDatabase;
+
 			if ($tjreportsDbHelper->tableExists($this->customFieldsTable))
 			{
 				throw new Exception('Error creating DB table - Table exists already');
-
-				return false;
 			}
-
-			// Decide primary key name
-
-			/*
-			$pKey          = 'tjr_';
-			$contextArray = explode('_', $context);
-
-			foreach ($contextArray as $v)
-			{
-				$pKey .= substr($v, 0, 1);
-			}
-
-			$pKey .= '_id';*/
 
 			// Create table
 			$db    = Factory::getDbo();
-			$query = $db->getQuery(true);
-
-			/*$query = 'CREATE TABLE IF NOT EXISTS ' . $db->quoteName($this->customFieldsTable) . ' ( ' .
-				$db->quoteName($pKey) . ' int(11) NOT NULL AUTO_INCREMENT,
-				`record_id` int(11) NOT NULL,
-				PRIMARY KEY (' . $db->quoteName($pKey) . ')
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8';*/
-
 			$query = 'CREATE TABLE IF NOT EXISTS ' . $db->quoteName($this->customFieldsTable) . ' (
 				`record_id` int(11) NOT NULL
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8';
@@ -100,8 +84,6 @@ class TjreportsModelIndexer extends BaseDatabaseModel
 			else
 			{
 				throw new Exception('Error creating DB table - ' . $db->quoteName($this->customFieldsTable));
-
-				return false;
 			}
 		}
 		catch (Exception $e)

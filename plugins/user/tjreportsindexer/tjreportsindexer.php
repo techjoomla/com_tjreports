@@ -107,14 +107,10 @@ class PlgUserTjreportsindexer extends JPlugin
 		$columnsDetails = $db->getTableColumns($this->customFieldsTable);
 
 		// Extract column names from $columnsDetails
-		$columnNames = array();
 		$columnNames = array_keys($columnsDetails);
 
 		// For all fields get type, fieldparams
-		$query = $db->getQuery(true);
-
-		// Register FieldsHelper,
-		// Get fields data fro current entry
+		// Register FieldsHelper, Get fields data from current entry
 		JLoader::register('FieldsHelper', JPATH_ADMINISTRATOR . '/components/com_fields/helpers/fields.php');
 		$userTableObj = JTable::getInstance('User');
 		$userTableObj->load((int) $user['id']);

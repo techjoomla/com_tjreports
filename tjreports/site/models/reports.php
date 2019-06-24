@@ -135,6 +135,7 @@ class TjreportsModelReports extends JModelList
 		$query->select(array($db->quoteName('name'), $db->quoteName('label')));
 		$query->from($db->quoteName('#__fields'));
 		$query->where($db->quoteName('name') . ' IN (' . implode(',', $db->quote($columnNames)) . ')');
+		$query->where($db->quoteName('state') . ' = 1');
 		$db->setQuery($query);
 		$columnLabels = $db->loadAssocList('name', 'label');
 
@@ -223,6 +224,7 @@ class TjreportsModelReports extends JModelList
 		$query->select(array($db->quoteName('name'), $db->quoteName('type')));
 		$query->from($db->quoteName('#__fields'));
 		$query->where($db->quoteName('name') . ' IN (' . implode(',', $db->quote($columnNames)) . ')');
+		$query->where($db->quoteName('state') . ' = 1');
 		$db->setQuery($query);
 		$fields = $db->loadAssocList('name', 'type');
 

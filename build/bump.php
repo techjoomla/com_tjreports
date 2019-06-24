@@ -50,7 +50,9 @@ $versionFile = 'PATH_OF_VERSION_FILE';
 $coreXmlFiles = array(
 	'/tjreports/tjreports.xml',
 	'/plugins/actionlog/tjreports/tjreports.xml',
-	'/plugins/privacy/tjreports/tjreports.xml'
+	'/plugins/content/tjreportsfields/tjreportsfields.xml',
+	'/plugins/privacy/tjreports/tjreports.xml',
+	'/plugins/user/tjreportsindexer/tjreportsindexer.xml'
 );
 
 $antJobFile = '/build.xml';

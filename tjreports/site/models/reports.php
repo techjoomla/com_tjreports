@@ -1,19 +1,19 @@
 <?php
 /**
- * @version    SVN: <svn_id>
- * @package    Com_Tjreports
- * @copyright  Copyright (C) 2005 - 2014. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
- * Shika is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * @package     TJReports
+ * @subpackage  com_tjreports
+ *
+ * @copyright   Copyright (C) 2009 - 2019 Techjoomla. All rights reserved.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 // No direct access
-defined('_JEXEC') or die;
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.modellist');
+
+// Load TJReports db helper
+JLoader::import('database', JPATH_SITE . '/components/com_tjreports/helpers');
 
 /**
  * Methods supporting a list of Tjreports records.
@@ -55,6 +55,20 @@ class TjreportsModelReports extends JModelList
 	// Used for to limit query
 	protected $canLimitQuery = false;
 
+	public $customFieldsTable = '';
+
+	public $customFieldsTableAlias = '';
+
+	private $customFieldsTableExists = false;
+
+	public $customFieldsQueryJoinOn = '';
+
+	public $customFieldsTableColumnsForQuery = array();
+
+	public $customFieldsTypesNotAllowedAsFilter = array ('color', 'imagelist', 'media' /*, 'repeatable'*/);
+
+	protected $tjreportsDbHelper;
+
 	/**
 	 * Constructor.
 	 *
@@ -65,9 +79,245 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function __construct($config = array())
 	{
+		// Joomla custom field (com_fields) integration
+		if (!empty($this->customFieldsTable))
+		{
+			$this->tjreportsDbHelper = new TjreportsfieldsHelperDatabase;
+
+			// Check if table exists
+			$this->customFieldsTableExists = $this->tjreportsDbHelper->tableExists($this->customFieldsTable);
+
+			// Set custom fields columns
+			$this->setCustomFieldsColumns();
+		}
+
 		$this->initData();
 
 		parent::__construct($config);
+	}
+
+	/**
+	 * Set custom fields columns
+	 *
+	 * @return  void
+	 *
+	 * @since   1.1.0
+	 */
+	protected function setCustomFieldsColumns()
+	{
+		// If no custom fields index table for current plugin, return
+		if (empty($this->customFieldsTable))
+		{
+			return;
+		}
+
+		// If table is not reated yet, return
+		if (!$this->customFieldsTableExists)
+		{
+			return;
+		}
+
+		// Get column name, type for custom fields index table
+		$db             = JFactory::getDbo();
+		$columnsDetails = $db->getTableColumns($this->customFieldsTable);
+
+		// If no columns, return
+		if (!count($columnsDetails))
+		{
+			return;
+		}
+
+		// Extract column names from $columnDetails
+		$columnNames = array_keys($columnsDetails);
+
+		// Get column labels from #__fields table for all indexed custom fields from this table
+		$query = $db->getQuery(true);
+		$query->select(array($db->quoteName('name'), $db->quoteName('label')));
+		$query->from($db->quoteName('#__fields'));
+		$query->where($db->quoteName('name') . ' IN (' . implode(',', $db->quote($columnNames)) . ')');
+		$db->setQuery($query);
+		$columnLabels = $db->loadAssocList('name', 'label');
+
+		// Set columns from custom fields table into tjreports plugin's column list
+		foreach ($columnNames as $columnName)
+		{
+			// Skip primary key, record_id of indexed table
+			// As those are not part of custom fields
+			if (!isset($columnLabels[$columnName]))
+			{
+				continue;
+			}
+
+			$customField = array (
+				'title'              => $columnLabels[$columnName],
+				'table_column'       => $this->customFieldsTableAlias . '.' . $columnName
+
+				// , 'disable_sorting' => true
+			);
+
+			// Eg. tuf.dob
+			$this->columns[$this->customFieldsTableAlias . '.' . $columnName] = $customField;
+		}
+
+		// @print_r($this->columns);
+	}
+
+	/**
+	 * Set Custom Fields Display Filters
+	 *
+	 * @param   array  &$displayFilters  Array of display filters
+	 *
+	 * @return  void
+	 *
+	 * @since   1.1.0
+	 */
+	protected function setCustomFieldsDisplayFilters(&$displayFilters)
+	{
+		// If no custom fields index table for current plugin, return
+		if (empty($this->customFieldsTable))
+		{
+			return;
+		}
+
+		if (!$this->customFieldsTableExists)
+		{
+			return;
+		}
+
+		// Get column name, type for custom fields index table
+		$db             = JFactory::getDbo();
+		$columnsDetails = $db->getTableColumns($this->customFieldsTable);
+
+		// If no columns, return
+		if (!count($columnsDetails))
+		{
+			return;
+		}
+
+		// Extract column names from $columnDetails
+		$columnNames   = array();
+		$colToshow     = $this->getState('colToshow');
+		$colToShowKeys = array_keys($colToshow);
+
+		foreach ($columnsDetails as $key => $val)
+		{
+			$columnNameWithTableAlias = $this->customFieldsTableAlias . '.' . $key;
+
+			// Skip columns which are not set in model state
+			if (in_array($columnNameWithTableAlias, $colToShowKeys))
+			{
+				$columnNames[] = $key;
+			}
+		}
+
+		if (empty($columnNames))
+		{
+			return;
+		}
+
+		// Set this,this would be used by plugins to query fields
+		$this->customFieldsTableColumnsForQuery = $columnNames;
+
+		// Get column labels from #__fields table for all indexed custom fields from this table
+		$query = $db->getQuery(true);
+		$query->select(array($db->quoteName('name'), $db->quoteName('type')));
+		$query->from($db->quoteName('#__fields'));
+		$query->where($db->quoteName('name') . ' IN (' . implode(',', $db->quote($columnNames)) . ')');
+		$db->setQuery($query);
+		$fields = $db->loadAssocList('name', 'type');
+
+		// Extract column names from $columnDetails
+		// key = field name, $val = field type
+		foreach ($fields as $key => $val)
+		{
+			// Skip column types not allowerd as filter
+			if (in_array($val, $this->customFieldsTypesNotAllowedAsFilter))
+			{
+				continue;
+			}
+
+			switch ($val)
+			{
+				case 'calendar':
+					$displayFilters[0][$this->customFieldsTableAlias . '.' . $key] = array(
+						'search_type'    => 'date.range',
+						'searchin'       => $this->customFieldsTableAlias . '.' . $key,
+						$this->customFieldsTableAlias . '.' . $key . '_from' => array (
+							'attrib' => array (
+								'placeholder' => 'YYYY-MM-DD',
+								'onChange' => 'tjrContentUI.report.attachCalSubmit(this);'
+							)
+						),
+						$this->customFieldsTableAlias . '.' . $key . '_to' => array (
+							'attrib' => array (
+								'placeholder' => 'YYYY-MM-DD',
+								'onChange' => 'tjrContentUI.report.attachCalSubmit(this);'
+							)
+						)
+					);
+				break;
+
+				case 'checkboxes':
+				case 'integer':
+				case 'list':
+				case 'radio':
+				case 'sql':
+				case 'user':
+				case 'usergrouplist':
+					$displayFilters[0][$this->customFieldsTableAlias . '.' . $key] = array(
+						'search_type'    => 'select',
+						'type'           => 'equal',
+						'searchin'       => $this->customFieldsTableAlias . '.' . $key,
+						'select_options' => $this->getCustomFieldsDisplayFilterOptions($key)
+					);
+				break;
+
+				case 'editor':
+				case 'text':
+				case 'url':
+					$displayFilters[0][$this->customFieldsTableAlias . '.' . $key] = array(
+						'search_type' => 'text',
+						'type'        => 'equal',
+						'searchin'    => $this->customFieldsTableAlias . '.' . $key
+					);
+				break;
+
+				default:
+			}
+		}
+	}
+
+	/**
+	 * Set Custom Fields Display Filters
+	 *
+	 * @param   string  $column  Column name
+	 *
+	 * @return  object
+	 *
+	 * @since   1.1.0
+	 */
+	protected function getCustomFieldsDisplayFilterOptions($column)
+	{
+		$objArray     = array();
+		$obj          = new stdClass;
+		$obj->text    = JText::_('- Select ' . $column . ' -');
+		$obj->value   = '';
+		$objArray[]   = $obj;
+
+		// Get column name, type for custom fields index table
+		$db = JFactory::getDbo();
+
+		// Get column labels from #__fields table for all indexed custom fields from this table
+		$query = $db->getQuery(true);
+		$query->select('DISTINCT(' . $db->quoteName($column) . ') AS text, ' . $db->quoteName($column) . ' AS value');
+		$query->from($db->quoteName($this->customFieldsTable));
+		$db->setQuery($query);
+
+		$options = $db->loadObjectList();
+
+		$options = (object) array_merge((array) $objArray, (array) $options);
+
+		return $options;
 	}
 
 	/**
@@ -392,8 +642,34 @@ class TjreportsModelReports extends JModelList
 
 		if (!empty($sortKey) && !in_array($sortKey, $this->sortableWoQuery))
 		{
-			$query->order($sortKey . ' ' . $orderDir);
+			$query->order($db->quoteName($sortKey) . ' ' . $orderDir);
 			$this->canLimitQuery = true;
+		}
+
+		// Joomla fields integration - Get custom fields data
+		// Proceed if table exists, and at least one custom field is seleced for showing
+		if ($this->customFieldsTableExists && !empty($this->customFieldsTableColumnsForQuery) && !empty($this->customFieldsQueryJoinOn))
+		{
+			// Since in actual query columns are used as tablealias.columnname,
+			// Lets build such array
+			$customFieldColumns = array();
+
+			foreach ($this->customFieldsTableColumnsForQuery as $cfc)
+			{
+				$customFieldColumns[] = $this->customFieldsTableAlias . '.' . $cfc;
+			}
+
+			// If at least one custom field is seleced for showing, select record_id column as well
+			if (!empty($customFieldColumns))
+			{
+				$customFieldColumns[] = $this->customFieldsTableAlias . '.record_id';
+
+				$query->select($db->quoteName($customFieldColumns));
+				$query->join(
+					'LEFT', $db->quoteName($this->customFieldsTable, $this->customFieldsTableAlias) .
+					' ON ' . $db->quoteName($this->customFieldsTableAlias . '.record_id') . ' = ' . $db->quoteName($this->customFieldsQueryJoinOn)
+				);
+			}
 		}
 
 		return $query;
@@ -562,7 +838,7 @@ class TjreportsModelReports extends JModelList
 			}
 		}
 
-		// In view layouts - reports[0] is used, and since array indexes are unset above, 
+		// In view layouts - reports[0] is used, and since array indexes are unset above,
 		// Let's re-arrange index accordingly
 		$reports = array_values($reports);
 

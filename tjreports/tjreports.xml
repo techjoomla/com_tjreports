@@ -35,6 +35,7 @@
 		<folder>controllers</folder>
 		<folder>assets</folder>
 		<folder>layouts</folder>
+		<folder>helpers</folder>
 	</files>
 	<media destination="com_tjreports" folder="media">
 		<folder>js</folder>

@@ -944,6 +944,25 @@ class TjreportsModelReports extends JModelList
 	 *
 	 * @since   1.1.0
 	 */
+	public function getReportParams($reportId)
+	{
+		$db        = JFactory::getDBO();
+		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
+		$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
+		$reportTable->load($reportId);
+		
+		return new JRegistry($reportTable->param);
+	}
+
+	/**
+	 * Method to get id of the report having default set as 1
+	 *
+	 * @param   STRING  $pluginName  Plugin Name
+	 *
+	 * @return  Integer
+	 *
+	 * @since   1.1.0
+	 */
 	public function getDefaultReport($pluginName)
 	{
 		$db        = JFactory::getDBO();

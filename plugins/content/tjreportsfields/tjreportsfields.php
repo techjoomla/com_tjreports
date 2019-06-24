@@ -50,6 +50,8 @@ class PlgContentTjreportsfields extends JPlugin
 		'usergrouplist' => 'varchar(100)'
 	);
 
+	protected $tjreportsDbHelper;
+
 	/**
 	 * Constructor
 	 *
@@ -145,7 +147,6 @@ class PlgContentTjreportsfields extends JPlugin
 		$columnsDetails = $db->getTableColumns($this->customFieldsTable);
 
 		// Extract column names from $columnDetails
-		$columnNames = array();
 		$columnNames = array_keys($columnsDetails);
 
 		$oldColumnName = $this->customFieldBeingEdited->name;
@@ -185,7 +186,7 @@ class PlgContentTjreportsfields extends JPlugin
 		$this->setCustomFieldsTableName($field->context);
 
 		// If no table, return
-		if (!$this->tableExists())
+		if (!$this->tjreportsDbHelper->tableExists($this->customFieldsTable))
 		{
 			return;
 		}

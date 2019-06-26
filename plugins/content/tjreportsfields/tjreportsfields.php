@@ -81,6 +81,12 @@ class PlgContentTjreportsfields extends JPlugin
 	 */
 	public function onContentBeforeSave($context, $row, $isNew)
 	{
+		// Run this plugin only for com_fields.field form
+		if ($context !== 'com_fields.field')
+		{
+			return;
+		}
+
 		// $context = com_fields.field
 
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fields/tables');
@@ -182,6 +188,12 @@ class PlgContentTjreportsfields extends JPlugin
 	 */
 	public function onContentAfterDelete($context, $field)
 	{
+		// Run this plugin only for com_fields.field form
+		if ($context !== 'com_fields.field')
+		{
+			return;
+		}
+
 		// Call set custom field table name
 		$this->setCustomFieldsTableName($field->context);
 

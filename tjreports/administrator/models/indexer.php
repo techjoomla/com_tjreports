@@ -57,7 +57,6 @@ class TjreportsModelIndexer extends BaseDatabaseModel
 			// Set table name as #__tjreports_context eg: #__tjreports_com_users_user
 			$context                 = str_replace('.', '_', trim($context));
 			$this->customFieldsTable = '#__tjreports_' . $context;
-			$this->customFieldsTable = '#__tjreports_com_users.user';
 
 			// If no table, return
 			$tjreportsDbHelper = new TjreportsfieldsHelperDatabase;

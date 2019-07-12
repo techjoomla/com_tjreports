@@ -49,10 +49,10 @@ $versionFile = 'PATH_OF_VERSION_FILE';
 // This file will vary from component to component
 $coreXmlFiles = array(
 	'/tjreports/tjreports.xml',
-	'/plugins/actionlog/tjreports/tjreports.xml',
-	'/plugins/content/tjreportsfields/tjreportsfields.xml',
-	'/plugins/privacy/tjreports/tjreports.xml',
-	'/plugins/user/tjreportsindexer/tjreportsindexer.xml'
+	'/tjreports/plugins/actionlog/tjreports/tjreports.xml',
+	'/tjreports/plugins/content/tjreportsfields/tjreportsfields.xml',
+	'/tjreports/plugins/privacy/tjreports/tjreports.xml',
+	'/tjreports/plugins/user/tjreportsindexer/tjreportsindexer.xml'
 );
 
 $antJobFile = '/build.xml';

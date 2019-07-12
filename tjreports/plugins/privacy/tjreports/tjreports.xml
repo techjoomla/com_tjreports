@@ -2,7 +2,7 @@
 <extension version="3.4" type="plugin" group="privacy" method="upgrade">
 	<name>plg_privacy_tjreports</name>
 	<version>1.1.0</version>
-	<creationDate>24th Jun 2019</creationDate>
+	<creationDate>11th Jul 2019</creationDate>
 	<author>Techjoomla</author>
 	<authorEmail>extensions@techjoomla.com</authorEmail>
 	<authorUrl>https://techjoomla.com</authorUrl>

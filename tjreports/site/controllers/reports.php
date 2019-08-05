@@ -67,8 +67,7 @@ class TjreportsControllerReports extends JControllerAdmin
 		$columns   = $model->columns;
 		$colToshow = $model->getState('colToshow');
 
-		$csvData     = null;
-		$csvData_arr = $colTitleArray = array();
+		$colTitleArray = array();
 
 		foreach ($colToshow as $index => $detail)
 		{
@@ -111,19 +110,23 @@ class TjreportsControllerReports extends JControllerAdmin
 			}
 		}
 
-		$csvData .= implode(',', $colTitleArray);
-		$csvData .= "\n";
-		echo $csvData;
-
-		$csvData  = '';
 		$pluginTitle = $reportData->title;
 		$filename = strtolower($pluginTitle) . "_report_" . date("Y-m-d_H-i", time());
 
+		// Create a file pointer connected to the output stream
+		$output = fopen('php://output', 'w');
+
+		// Put CSV headings first
+		fputcsv($output, $colTitleArray);
+
 		// Set CSV headers
-		header("Content-type: text/csv");
-		header("Content-Disposition: attachment; filename=" . $filename . ".csv");
-		header("Pragma: no-cache");
-		header("Expires: 0");
+		header('Pragma: no-cache');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		header('Content-Description: File Transfer');
+		header('Content-Type: text/csv; charset=UTF-16-LE');
+		header('Content-Disposition: attachment; filename=' . $filename . '.csv');
+		header('Content-Transfer-Encoding: binary');
 
 		// Loop through items
 		foreach ((array) $items as $itemKey => $item)
@@ -136,25 +139,19 @@ class TjreportsControllerReports extends JControllerAdmin
 				{
 					foreach ($key as $subkey => $subVal)
 					{
-						$final_text_value = $this->filterValue($item[$arrayKey][$subkey]);
-
-						// Add data in the Quotes and asign it in the csv array
-						$itemCSV[] = '"' . $final_text_value . '"';
+						$itemCSV[] = $this->filterValue($item[$arrayKey][$subkey]);
 					}
 				}
 				else
 				{
-					$final_text_value = $this->filterValue($item[$key]);
-
-					// Add data in the Quotes and asign it in the csv array
-					$itemCSV[] = '"' . $final_text_value . '"';
+					$itemCSV[] = $this->filterValue($item[$key]);
 				}
 			}
 
-			// TRIGGER After csv body add extra fields
-			echo implode(',', $itemCSV) . "\n";
+			fputcsv($output, $itemCSV);
 		}
 
+		fclose($output);
 		jexit();
 	}
 

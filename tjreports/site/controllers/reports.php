@@ -124,7 +124,7 @@ class TjreportsControllerReports extends JControllerAdmin
 		header('Expires: 0');
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 		header('Content-Description: File Transfer');
-		header('Content-Type: text/csv; charset=UTF-16-LE');
+		header('Content-Type: text/csv;');
 		header('Content-Disposition: attachment; filename=' . $filename . '.csv');
 		header('Content-Transfer-Encoding: binary');
 

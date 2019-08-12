@@ -1216,7 +1216,7 @@ class TjreportsModelReports extends JModelList
 	/**
 	 * Method to get id of the report having default set as 1
 	 *
-	 * @param   STRING  $pluginName  Plugin Name
+	 * @param   STRING  $reportId  Report Id
 	 *
 	 * @return  Integer
 	 *
@@ -1228,7 +1228,7 @@ class TjreportsModelReports extends JModelList
 		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
 		$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
 		$reportTable->load($reportId);
-		
+
 		return new JRegistry($reportTable->param);
 	}
 
@@ -1400,5 +1400,43 @@ class TjreportsModelReports extends JModelList
 		}
 
 		return $count;
+	}
+
+	/**
+	 * Method to get report plugin of particular type for inter linking
+	 *
+	 * @param   Int  $userId  User Id
+	 *
+	 * @return  Array
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	protected function getUserGroups($userId)
+	{
+		$usergroups = array();
+
+		if (!$userId)
+		{
+			return $usergroups;
+		}
+
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+
+		// Get the titles for the user groups.
+		$query = $db->getQuery(true)
+		->select($db->quoteName('ug.id'))
+		->select($db->quoteName('ug.title'))
+		->from($db->quoteName('#__usergroups', 'ug'))
+		->join('INNER', $db->qn('#__user_usergroup_map', 'ugm') . ' ON (' .
+			$db->qn('ugm.group_id') . ' = ' . $db->qn('ug.id') . ')')
+		->where($db->quoteName('ugm.user_id') . ' = ' . (int) $userId);
+
+		$db->setQuery($query);
+
+		// Set the titles for the user groups.
+		$usergroups = $db->loadAssocList('id', 'title');
+
+		return $usergroups;
 	}
 }

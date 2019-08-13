@@ -1413,11 +1413,9 @@ class TjreportsModelReports extends JModelList
 	 */
 	protected function getUserGroups($userId)
 	{
-		$usergroups = array();
-
 		if (!$userId)
 		{
-			return $usergroups;
+			return array();
 		}
 
 		$db = JFactory::getDbo();
@@ -1435,8 +1433,6 @@ class TjreportsModelReports extends JModelList
 		$db->setQuery($query);
 
 		// Set the titles for the user groups.
-		$usergroups = $db->loadAssocList('id', 'title');
-
-		return $usergroups;
+		return $db->loadAssocList('id', 'title');
 	}
 }

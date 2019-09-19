@@ -162,6 +162,7 @@ class ReportsViewBase extends JViewLegacy
 		$this->columns         = $this->model->columns;
 		$this->showHideColumns = $this->model->showhideCols;
 		$this->sortable        = $this->model->sortableColumns;
+		$this->sendEmail       = $this->model->sendEmail;
 		$this->srButton        = $this->model->showSearchResetButton;
 
 		$this->colToshow       = $this->model->getState('colToshow');

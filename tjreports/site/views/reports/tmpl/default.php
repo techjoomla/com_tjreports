@@ -289,7 +289,7 @@ if ($app->isSite())
 
 										for($i = $headerLevel; $i > 0 ; $i--)
 										{
-											echo '<tr>';
+											echo '<tr class="report-row">';
 
 											foreach($this->colToshow as $index=>$detail)
 											{
@@ -431,7 +431,12 @@ if ($app->isSite())
 													}
 													else
 													{
-														echo '<td class="' . $key . '">'. $item[$key] .'</td>';
+														$isSendEmailClass = '';
+														if (in_array($key, $this->sendEmail))
+														{
+															$isSendEmailClass = 'td-sendemail';
+														}
+														echo '<td class="' . $key . ' ' . $isSendEmailClass . '">'. $item[$key] .'</td>';
 													}
 												}
 

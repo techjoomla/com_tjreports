@@ -37,6 +37,9 @@ class TjreportsModelReports extends JModelList
 	// Columns array contain columns data
 	public $columns = array();
 
+	// Columns array contain columns data
+	public $sendEmail = array();
+
 	// Columns that a user can select to display
 	public $showhideCols = array();
 
@@ -344,6 +347,12 @@ class TjreportsModelReports extends JModelList
 				unset($this->showhideCols[$key]);
 			}
 
+			if ((isset($column['sendEmail']) && $column['sendEmail'] === true)
+				|| (strpos($key, '::') !== false && !isset($column['sendEmail'])))
+			{
+				array_push($this->sendEmail, $key);
+			}
+
 			if ((isset($column['disable_sorting']) && $column['disable_sorting'])
 				|| (strpos($key, '::') !== false && !isset($column['disable_sorting'])))
 			{
@@ -362,10 +371,12 @@ class TjreportsModelReports extends JModelList
 			}
 		}
 
+		$this->sendEmail        = array_values($this->sendEmail);
 		$this->showhideCols     = array_values($this->showhideCols);
 		$this->sortableColumns  = array_values($this->sortableColumns);
 		$this->sortableWoQuery  = array_values($this->sortableWoQuery);
 		$this->defaultColToShow = array_values($this->defaultColToShow);
+
 	}
 
 	/**
@@ -1065,15 +1076,15 @@ class TjreportsModelReports extends JModelList
 		}
 
 		$query = $this->_db->getQuery(true);
-		$showhideCols = $paramColToshow = array();
+		$showhideCols = $paramColToshow = $sendEmail = array();
 
 		// Process plugin params
-		$parentId = $this->processSavedReportColumns($queryId, $showhideCols, $paramColToshow, $selColToshow);
+		$parentId = $this->processSavedReportColumns($queryId, $showhideCols, $paramColToshow, $selColToshow, $sendEmail);
 
 		// Process if user has saved query is for a plugin
 		if (!empty($parentId))
 		{
-			$this->processSavedReportColumns($parentId, $showhideCols, $paramColToshow, $selColToshow);
+		    $this->processSavedReportColumns($parentId, $showhideCols, $paramColToshow, $selColToshow, $sendEmail);
 		}
 
 		// If plugin has save any column assign that otherwise default plugin param will be applied
@@ -1095,6 +1106,11 @@ class TjreportsModelReports extends JModelList
 		{
 			$this->showhideCols = $showhideCols;
 		}
+
+		if (!empty($sendEmail))
+		{
+		    $this->sendEmail = $sendEmail;
+		}
 	}
 
 	/**
@@ -1109,7 +1125,7 @@ class TjreportsModelReports extends JModelList
 	 *
 	 * @since   3.0
 	 */
-	private function processSavedReportColumns($queryId, &$showhideCols, &$colToshow, &$selColToshow)
+	private function processSavedReportColumns($queryId, &$showhideCols, &$colToshow, &$selColToshow, &$sendEmail)
 	{
 		$query = $this->_db->getQuery(true);
 		$query->select(array('param', 'parent'))
@@ -1132,6 +1148,18 @@ class TjreportsModelReports extends JModelList
 				else
 				{
 					$showhideCols = array_intersect($showhideCols, (array) $param['showHideColumns']);
+				}
+			}
+
+			if (isset($param['sendEmail']))
+			{
+				if (empty($sendEmail))
+				{
+					$sendEmail = (array) $param['sendEmail'];
+				}
+				else
+				{
+					$sendEmail = array_intersect($sendEmail, (array) $param['sendEmail']);
 				}
 			}
 
@@ -1228,7 +1256,7 @@ class TjreportsModelReports extends JModelList
 		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
 		$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
 		$reportTable->load($reportId);
-		
+
 		return new JRegistry($reportTable->param);
 	}
 

@@ -50,13 +50,11 @@ jQuery.extend(tjrContentUI.report, {
 				// If plg_system_sendemail enable
 				if (typeof tjutilitysendemail != 'undefined')
 				{
-					// If sendEmail plug is enable then call the below funcation. To show checkboxes
-					var isSendEmail = jQuery('body').find('.td-sendemail').length;
-					if (isSendEmail)
+					// If sendEmail plug is enabled then try to add a column of checkboxes
+					if (jQuery('body').find('.td-sendemail').length)
 					{
 						tjutilitysendemail.addColumn('report-table');
 					}
-					// END
 				}
 
 				// Reinitialze some js like for calandar, tooltip, chosen

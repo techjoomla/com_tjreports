@@ -47,14 +47,13 @@ jQuery.extend(tjrContentUI.report, {
 				var responseHTML = jQuery(response['html']).find(containerSel).html();
 				jQuery(containerSel).html(responseHTML);
 
-				// If plg_system_sendemail enable
-				if (typeof tjutilitysendemail != 'undefined')
+				// If sendEmail plug is enabled then try to add a column of checkboxes
+				if (
+				  typeof tjutilitysendemail != 'undefined' &&
+				  jQuery('body').find('.td-sendemail').length > 0
+				)
 				{
-					// If sendEmail plug is enabled then try to add a column of checkboxes
-					if (jQuery('body').find('.td-sendemail').length)
-					{
-						tjutilitysendemail.addColumn('report-table');
-					}
+					tjutilitysendemail.addColumn('report-table');
 				}
 
 				// Reinitialze some js like for calandar, tooltip, chosen

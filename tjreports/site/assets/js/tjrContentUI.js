@@ -12,6 +12,7 @@ tjrContentUI.root_url  = (typeof root_url == 'undefined') ? '' : root_url;
 tjrContentUI.base_url = (typeof root_url == 'undefined') ? '' : root_url;
 tjrContentUI.report    = tjrContentUI.report ? tjrContentUI.report : {};
 
+
 jQuery.extend(tjrContentUI.report, {
 	searchToggle: true,
 	$form: null,
@@ -46,13 +47,17 @@ jQuery.extend(tjrContentUI.report, {
 				var responseHTML = jQuery(response['html']).find(containerSel).html();
 				jQuery(containerSel).html(responseHTML);
 
-				// If sendEmail plug is enable then call the below funcation. To show checkboxes
-				var isSendEmail = jQuery('body').find('.td-sendemail').length;
-				if (isSendEmail)
+				// If plg_system_sendemail enable
+				if (typeof tjutilitysendemail != 'undefined')
 				{
-					tjutilitysendemail.addColumn('report-table');
+					// If sendEmail plug is enable then call the below funcation. To show checkboxes
+					var isSendEmail = jQuery('body').find('.td-sendemail').length;
+					if (isSendEmail)
+					{
+						tjutilitysendemail.addColumn('report-table');
+					}
+					// END
 				}
-				// END
 
 				// Reinitialze some js like for calandar, tooltip, chosen
 				jQuery(".hasPopover").popover({"html": true,"trigger": "hover focus","container": "body"});

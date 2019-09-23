@@ -37,8 +37,8 @@ class TjreportsModelReports extends JModelList
 	// Columns array contain columns data
 	public $columns = array();
 
-	// Columns array contain columns data
-	public $sendEmail = array();
+	// Columns array contain email columns
+	private $emailColumn = '';
 
 	// Columns that a user can select to display
 	public $showhideCols = array();
@@ -93,6 +93,9 @@ class TjreportsModelReports extends JModelList
 			// Set custom fields columns
 			$this->setCustomFieldsColumns();
 		}
+
+		// Get email column
+		$this->emailColumn = array_search(1, array_map(function ($ar) {return $ar['emailColumn'];}, $this->columns));
 
 		$this->initData();
 
@@ -347,12 +350,6 @@ class TjreportsModelReports extends JModelList
 				unset($this->showhideCols[$key]);
 			}
 
-			if ((isset($column['sendEmail']) && $column['sendEmail'] === true)
-				|| (strpos($key, '::') !== false && !isset($column['sendEmail'])))
-			{
-				array_push($this->sendEmail, $key);
-			}
-
 			if ((isset($column['disable_sorting']) && $column['disable_sorting'])
 				|| (strpos($key, '::') !== false && !isset($column['disable_sorting'])))
 			{
@@ -371,7 +368,6 @@ class TjreportsModelReports extends JModelList
 			}
 		}
 
-		$this->sendEmail        = array_values($this->sendEmail);
 		$this->showhideCols     = array_values($this->showhideCols);
 		$this->sortableColumns  = array_values($this->sortableColumns);
 		$this->sortableWoQuery  = array_values($this->sortableWoQuery);

@@ -28,6 +28,7 @@ jQuery.extend(tjrContentUI.report, {
 		}
 		jQuery(".hasPopover").popover('destroy')
 		var promise = tjrContentService.postData(this.url, this.$form.serialize());//, {'datatype':'html'}
+
 		promise.fail(
 			function(response) {
 				console.log('Something went wrong.');
@@ -44,6 +45,14 @@ jQuery.extend(tjrContentUI.report, {
 				tjrContentUI.utility.loadingLayer('hide');
 				var responseHTML = jQuery(response['html']).find(containerSel).html();
 				jQuery(containerSel).html(responseHTML);
+
+				// If sendEmail plug is enable then call the below funcation. To show checkboxes
+				var isSendEmail = jQuery('body').find('.td-sendemail').length;
+				if (isSendEmail)
+				{
+					tjutilitysendemail.addColumn('report-table');
+				}
+				// END
 
 				// Reinitialze some js like for calandar, tooltip, chosen
 				jQuery(".hasPopover").popover({"html": true,"trigger": "hover focus","container": "body"});

@@ -433,7 +433,7 @@ if ($app->isSite())
 													}
 													else
 													{
-														$isSendEmailClass = (in_array($key, $this->emailColumn)) ? $emailColmClass : '';
+														$isSendEmailClass = ($key == $this->emailColumn) ? $emailColmClass : '';
 														echo "<td class=\"{$key} {$isSendEmailClass} \">{$item[$key]}</td>";
 													}
 												}

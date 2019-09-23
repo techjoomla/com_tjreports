@@ -1077,15 +1077,15 @@ class TjreportsModelReports extends JModelList
 		}
 
 		$query = $this->_db->getQuery(true);
-		$showhideCols = $paramColToshow = $emailColumn = array();
+		$showhideCols = $paramColToshow = array();
 
 		// Process plugin params
-		$parentId = $this->processSavedReportColumns($queryId, $showhideCols, $paramColToshow, $selColToshow, $emailColumn);
+		$parentId = $this->processSavedReportColumns($queryId, $showhideCols, $paramColToshow, $selColToshow);
 
 		// Process if user has saved query is for a plugin
 		if (!empty($parentId))
 		{
-		    $this->processSavedReportColumns($parentId, $showhideCols, $paramColToshow, $selColToshow, $emailColumn);
+		    $this->processSavedReportColumns($parentId, $showhideCols, $paramColToshow, $selColToshow);
 		}
 
 		// If plugin has save any column assign that otherwise default plugin param will be applied
@@ -1121,13 +1121,12 @@ class TjreportsModelReports extends JModelList
 	 * @param   ARRAY   &$showhideCols  Show Hide columns
 	 * @param   ARRAY   &$colToshow     Columns to show
 	 * @param   ARRAY   &$selColToshow  Selected Cols
-	 * @param   STRING  &$emailColumn   emailColumn
 	 *
 	 * @return  Void
 	 *
 	 * @since   3.0
 	 */
-	private function processSavedReportColumns($queryId, &$showhideCols, &$colToshow, &$selColToshow, &$emailColumn)
+	private function processSavedReportColumns($queryId, &$showhideCols, &$colToshow, &$selColToshow)
 	{
 		$query = $this->_db->getQuery(true);
 		$query->select(array('param', 'parent'))
@@ -1150,18 +1149,6 @@ class TjreportsModelReports extends JModelList
 				else
 				{
 					$showhideCols = array_intersect($showhideCols, (array) $param['showHideColumns']);
-				}
-			}
-
-			if (isset($param['emailColumn']))
-			{
-				if (empty($emailColumn))
-				{
-					$emailColumn = (array) $param['emailColumn'];
-				}
-				else
-				{
-					$emailColumn = array_intersect($emailColumn, (array) $param['emailColumn']);
 				}
 			}
 

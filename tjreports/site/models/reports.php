@@ -532,6 +532,11 @@ class TjreportsModelReports extends JModelList
 		$value = $input->get('limitstart', 0, 'uint');
 		$this->setState('list.start', $value);
 
+		if ($this->emailColumn)
+		{
+			$this->setState('emailColumn', $this->emailColumn);
+		}
+
 		// Ordering
 		$this->default_order = $input->get('filter_order', $this->default_order, 'STRING');
 
@@ -1072,15 +1077,15 @@ class TjreportsModelReports extends JModelList
 		}
 
 		$query = $this->_db->getQuery(true);
-		$showhideCols = $paramColToshow = $sendEmail = array();
+		$showhideCols = $paramColToshow = $emailColumn = array();
 
 		// Process plugin params
-		$parentId = $this->processSavedReportColumns($queryId, $showhideCols, $paramColToshow, $selColToshow, $sendEmail);
+		$parentId = $this->processSavedReportColumns($queryId, $showhideCols, $paramColToshow, $selColToshow, $emailColumn);
 
 		// Process if user has saved query is for a plugin
 		if (!empty($parentId))
 		{
-		    $this->processSavedReportColumns($parentId, $showhideCols, $paramColToshow, $selColToshow, $sendEmail);
+		    $this->processSavedReportColumns($parentId, $showhideCols, $paramColToshow, $selColToshow, $emailColumn);
 		}
 
 		// If plugin has save any column assign that otherwise default plugin param will be applied
@@ -1103,25 +1108,26 @@ class TjreportsModelReports extends JModelList
 			$this->showhideCols = $showhideCols;
 		}
 
-		if (!empty($sendEmail))
+		if (!empty($emailColumn))
 		{
-		    $this->sendEmail = $sendEmail;
+			$this->emailColumn = $emailColumn;
 		}
 	}
 
 	/**
 	 * Method to Process parent Report columns
 	 *
-	 * @param   INT    $queryId        Query Id
-	 * @param   ARRAY  &$showhideCols  Show Hide columns
-	 * @param   ARRAY  &$colToshow     Columns to show
-	 * @param   ARRAY  &$selColToshow  Selected Cols
+	 * @param   INT     $queryId        Query Id
+	 * @param   ARRAY   &$showhideCols  Show Hide columns
+	 * @param   ARRAY   &$colToshow     Columns to show
+	 * @param   ARRAY   &$selColToshow  Selected Cols
+	 * @param   STRING  &$emailColumn   emailColumn
 	 *
 	 * @return  Void
 	 *
 	 * @since   3.0
 	 */
-	private function processSavedReportColumns($queryId, &$showhideCols, &$colToshow, &$selColToshow, &$sendEmail)
+	private function processSavedReportColumns($queryId, &$showhideCols, &$colToshow, &$selColToshow, &$emailColumn)
 	{
 		$query = $this->_db->getQuery(true);
 		$query->select(array('param', 'parent'))
@@ -1147,15 +1153,15 @@ class TjreportsModelReports extends JModelList
 				}
 			}
 
-			if (isset($param['sendEmail']))
+			if (isset($param['emailColumn']))
 			{
-				if (empty($sendEmail))
+				if (empty($emailColumn))
 				{
-					$sendEmail = (array) $param['sendEmail'];
+					$emailColumn = (array) $param['emailColumn'];
 				}
 				else
 				{
-					$sendEmail = array_intersect($sendEmail, (array) $param['sendEmail']);
+					$emailColumn = array_intersect($emailColumn, (array) $param['emailColumn']);
 				}
 			}
 
@@ -1240,7 +1246,7 @@ class TjreportsModelReports extends JModelList
 	/**
 	 * Method to get id of the report having default set as 1
 	 *
-	 * @param   STRING  $pluginName  Plugin Name
+	 * @param   STRING  $reportId  Report id
 	 *
 	 * @return  Integer
 	 *

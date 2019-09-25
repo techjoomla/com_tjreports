@@ -12,4 +12,4 @@ CREATE TABLE IF NOT EXISTS `#__tj_reports` (
   `datadenyset` int(11),
   `param` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;
+) AUTO_INCREMENT=1 ;

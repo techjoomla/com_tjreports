@@ -37,6 +37,9 @@ class TjreportsModelReports extends JModelList
 	// Columns array contain columns data
 	public $columns = array();
 
+	// Columns array contain email columns
+	private $emailColumn = '';
+
 	// Columns that a user can select to display
 	public $showhideCols = array();
 
@@ -90,6 +93,9 @@ class TjreportsModelReports extends JModelList
 			// Set custom fields columns
 			$this->setCustomFieldsColumns();
 		}
+
+		// Get email column
+		$this->emailColumn = array_search(1, array_map(function ($ar) {return $ar['emailColumn'];}, $this->columns));
 
 		$this->initData();
 
@@ -366,6 +372,7 @@ class TjreportsModelReports extends JModelList
 		$this->sortableColumns  = array_values($this->sortableColumns);
 		$this->sortableWoQuery  = array_values($this->sortableWoQuery);
 		$this->defaultColToShow = array_values($this->defaultColToShow);
+
 	}
 
 	/**
@@ -524,6 +531,11 @@ class TjreportsModelReports extends JModelList
 
 		$value = $input->get('limitstart', 0, 'uint');
 		$this->setState('list.start', $value);
+
+		if ($this->emailColumn)
+		{
+			$this->setState('emailColumn', $this->emailColumn);
+		}
 
 		// Ordering
 		$this->default_order = $input->get('filter_order', $this->default_order, 'STRING');
@@ -1073,7 +1085,7 @@ class TjreportsModelReports extends JModelList
 		// Process if user has saved query is for a plugin
 		if (!empty($parentId))
 		{
-			$this->processSavedReportColumns($parentId, $showhideCols, $paramColToshow, $selColToshow);
+		    $this->processSavedReportColumns($parentId, $showhideCols, $paramColToshow, $selColToshow);
 		}
 
 		// If plugin has save any column assign that otherwise default plugin param will be applied
@@ -1095,15 +1107,20 @@ class TjreportsModelReports extends JModelList
 		{
 			$this->showhideCols = $showhideCols;
 		}
+
+		if (!empty($emailColumn))
+		{
+			$this->emailColumn = $emailColumn;
+		}
 	}
 
 	/**
 	 * Method to Process parent Report columns
 	 *
-	 * @param   INT    $queryId        Query Id
-	 * @param   ARRAY  &$showhideCols  Show Hide columns
-	 * @param   ARRAY  &$colToshow     Columns to show
-	 * @param   ARRAY  &$selColToshow  Selected Cols
+	 * @param   INT     $queryId        Query Id
+	 * @param   ARRAY   &$showhideCols  Show Hide columns
+	 * @param   ARRAY   &$colToshow     Columns to show
+	 * @param   ARRAY   &$selColToshow  Selected Cols
 	 *
 	 * @return  Void
 	 *
@@ -1216,7 +1233,7 @@ class TjreportsModelReports extends JModelList
 	/**
 	 * Method to get id of the report having default set as 1
 	 *
-	 * @param   STRING  $pluginName  Plugin Name
+	 * @param   STRING  $reportId  Report id
 	 *
 	 * @return  Integer
 	 *
@@ -1228,7 +1245,7 @@ class TjreportsModelReports extends JModelList
 		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
 		$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
 		$reportTable->load($reportId);
-		
+
 		return new JRegistry($reportTable->param);
 	}
 

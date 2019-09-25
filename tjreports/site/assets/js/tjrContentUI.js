@@ -12,6 +12,7 @@ tjrContentUI.root_url  = (typeof root_url == 'undefined') ? '' : root_url;
 tjrContentUI.base_url = (typeof root_url == 'undefined') ? '' : root_url;
 tjrContentUI.report    = tjrContentUI.report ? tjrContentUI.report : {};
 
+
 jQuery.extend(tjrContentUI.report, {
 	searchToggle: true,
 	$form: null,
@@ -28,6 +29,7 @@ jQuery.extend(tjrContentUI.report, {
 		}
 		jQuery(".hasPopover").popover('destroy')
 		var promise = tjrContentService.postData(this.url, this.$form.serialize());//, {'datatype':'html'}
+
 		promise.fail(
 			function(response) {
 				console.log('Something went wrong.');
@@ -44,6 +46,15 @@ jQuery.extend(tjrContentUI.report, {
 				tjrContentUI.utility.loadingLayer('hide');
 				var responseHTML = jQuery(response['html']).find(containerSel).html();
 				jQuery(containerSel).html(responseHTML);
+
+				// If sendEmail plug is enabled then try to add a column of checkboxes
+				if (
+				  typeof tjutilitysendemail != 'undefined' &&
+				  jQuery('body').find('.td-sendemail').length > 0
+				)
+				{
+					tjutilitysendemail.addColumn('report-table');
+				}
 
 				// Reinitialze some js like for calandar, tooltip, chosen
 				jQuery(".hasPopover").popover({"html": true,"trigger": "hover focus","container": "body"});

@@ -12,6 +12,8 @@ defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
+$emailColmClass = 'td-sendemail';
+
 $app             = JFactory::getApplication();
 $headerLevel     = $this->headerLevel;
 $this->listOrder = $this->state->get('list.ordering');
@@ -289,7 +291,7 @@ if ($app->isSite())
 
 										for($i = $headerLevel; $i > 0 ; $i--)
 										{
-											echo '<tr>';
+											echo '<tr class="report-row">';
 
 											foreach($this->colToshow as $index=>$detail)
 											{
@@ -431,7 +433,8 @@ if ($app->isSite())
 													}
 													else
 													{
-														echo '<td class="' . $key . '">'. $item[$key] .'</td>';
+														$isSendEmailClass = ($key == $this->emailColumn) ? $emailColmClass : '';
+														echo "<td class=\"{$key} {$isSendEmailClass} \">{$item[$key]}</td>";
 													}
 												}
 

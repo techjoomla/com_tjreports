@@ -148,15 +148,8 @@ class TjreportsModelReports extends JModelList
 		// Set columns from custom fields table into tjreports plugin's column list
 		foreach ($columnNames as $columnName)
 		{
-			// Skip primary key, record_id of indexed table
-			// As those are not part of custom fields
-			if (!isset($columnLabels[$columnName]))
-			{
-				continue;
-			}
-
 			$customField = array (
-				'title'              => $columnLabels[$columnName],
+				'title'              => ($columnLabels[$columnName]) ? $columnLabels[$columnName] : $columnName,
 				'table_column'       => $this->customFieldsTableAlias . '.' . $columnName
 
 				// , 'disable_sorting' => true

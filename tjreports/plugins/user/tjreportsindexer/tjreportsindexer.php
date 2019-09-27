@@ -144,7 +144,7 @@ class PlgUserTjreportsindexer extends JPlugin
 
 		// Add username & email hash values
 		array_push($columns, 'username_hash', 'email_hash');
-		array_push($values, " ' " . md5($user['username']) . " ' ", " ' " . md5($user['email']) . " ' ");
+		array_push($values, "'" . md5($user['username']) . "'", "'" . md5($user['email']) . "'");
 
 		// Prepare the insert query
 		$query = $db->getQuery(true);

@@ -95,7 +95,12 @@ class TjreportsModelReports extends JModelList
 		}
 
 		// Get email column
-		$this->emailColumn = array_search(1, array_map(function ($ar) {return $ar['emailColumn'];}, $this->columns));
+		$this->emailColumn = array_search(
+		1, array_map(
+		function ($ar) {return $ar['emailColumn'];
+		}, $this->columns
+		)
+		);
 
 		$this->initData();
 
@@ -365,7 +370,6 @@ class TjreportsModelReports extends JModelList
 		$this->sortableColumns  = array_values($this->sortableColumns);
 		$this->sortableWoQuery  = array_values($this->sortableWoQuery);
 		$this->defaultColToShow = array_values($this->defaultColToShow);
-
 	}
 
 	/**
@@ -1078,7 +1082,7 @@ class TjreportsModelReports extends JModelList
 		// Process if user has saved query is for a plugin
 		if (!empty($parentId))
 		{
-		    $this->processSavedReportColumns($parentId, $showhideCols, $paramColToshow, $selColToshow);
+			$this->processSavedReportColumns($parentId, $showhideCols, $paramColToshow, $selColToshow);
 		}
 
 		// If plugin has save any column assign that otherwise default plugin param will be applied
@@ -1110,10 +1114,10 @@ class TjreportsModelReports extends JModelList
 	/**
 	 * Method to Process parent Report columns
 	 *
-	 * @param   INT     $queryId        Query Id
-	 * @param   ARRAY   &$showhideCols  Show Hide columns
-	 * @param   ARRAY   &$colToshow     Columns to show
-	 * @param   ARRAY   &$selColToshow  Selected Cols
+	 * @param   INT    $queryId        Query Id
+	 * @param   ARRAY  &$showhideCols  Show Hide columns
+	 * @param   ARRAY  &$colToshow     Columns to show
+	 * @param   ARRAY  &$selColToshow  Selected Cols
 	 *
 	 * @return  Void
 	 *

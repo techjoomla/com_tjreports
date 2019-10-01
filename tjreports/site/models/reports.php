@@ -97,7 +97,11 @@ class TjreportsModelReports extends JModelList
 		// Get email column
 		$this->emailColumn = array_search(
 		1, array_map(
-		function ($ar) {return $ar['emailColumn'];
+		function ($ar) {
+			if (!empty($ar['emailColumn']))
+			{
+				return $ar['emailColumn'];
+			}
 		}, $this->columns
 		)
 		);

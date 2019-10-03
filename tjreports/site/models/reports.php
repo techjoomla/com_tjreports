@@ -98,7 +98,16 @@ class TjreportsModelReports extends JModelList
 		}
 
 		// Get email column
-		$this->emailColumn = array_search(1, array_map(function ($ar) {return $ar['emailColumn'];}, $this->columns));
+		$this->emailColumn = array_search(
+		1, array_map(
+		function ($ar) {
+			if (!empty($ar['emailColumn']))
+			{
+				return $ar['emailColumn'];
+			}
+		}, $this->columns
+		)
+		);
 
 		// Check PII data permission
 		$this->piiPermission = $this->checkPiiPermissions();
@@ -154,15 +163,8 @@ class TjreportsModelReports extends JModelList
 		// Set columns from custom fields table into tjreports plugin's column list
 		foreach ($columnNames as $columnName)
 		{
-			// Skip primary key, record_id of indexed table
-			// As those are not part of custom fields
-			if (!isset($columnLabels[$columnName]))
-			{
-				continue;
-			}
-
 			$customField = array (
-				'title'              => $columnLabels[$columnName],
+				'title'              => ($columnLabels[$columnName]) ? $columnLabels[$columnName] : $columnName,
 				'table_column'       => $this->customFieldsTableAlias . '.' . $columnName
 
 				// , 'disable_sorting' => true

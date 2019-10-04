@@ -14,6 +14,7 @@ jimport('joomla.application.component.modellist');
 
 // Load TJReports db helper
 JLoader::import('database', JPATH_SITE . '/components/com_tjreports/helpers');
+JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_ADMINISTRATOR);
 
 /**
  * Methods supporting a list of Tjreports records.
@@ -507,7 +508,7 @@ class TjreportsModelReports extends JModelList
 		$app = JFactory::getApplication();
 		$input = JFactory::getApplication()->input;
 
-		if (!($reportId = $input->get('reportId', 0, 'uint')))
+		if (!($reportId = $input->get('reportId', $input->getString('id'), 'uint')))
 		{
 			if ($reportName = $input->get('report', 0, 'string'))
 			{

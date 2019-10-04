@@ -49,11 +49,11 @@ jQuery.extend(tjrContentUI.report, {
 
 				// If sendEmail plug is enabled then try to add a column of checkboxes
 				if (
-				  typeof tjutilitysendemail != 'undefined' &&
+				  typeof window.tjSendEmail.UI != 'undefined' &&
 				  jQuery('body').find('.td-sendemail').length > 0
 				)
 				{
-					tjutilitysendemail.addColumn('report-table');
+					tjemail = new window.tjSendEmail.UI("report-table", "td-sendemail", "cid");
 				}
 
 				// Reinitialze some js like for calandar, tooltip, chosen

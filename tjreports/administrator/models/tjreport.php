@@ -181,7 +181,7 @@ class TjreportsModelTjreport extends JModelAdmin
 			$params['colToshow']        = $plgModel->getState('colToshow');
 			$params['colToshow']        = array_combine($params['colToshow'], array_fill(0, count($params['colToshow']), true));
 			$params['showHideColumns']  = $plgModel->showhideCols;
-			$params['piiColumn']        = $plgModel->getState('piiColumn');
+			$params['piiColumns']        = $plgModel->getState('piiColumns');
 
 			$report->param = json_encode($params);
 		}

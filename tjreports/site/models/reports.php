@@ -525,15 +525,11 @@ class TjreportsModelReports extends JModelList
 			$reportParams = $this->getReportParams($reportId);
 
 			$colToshow = $reportParams->get("colToshow");
-			$piiColumns = $reportParams->get("piiColumns");
+			$piiColumns = array_flip($reportParams->get("piiColumns"));
 
 			if (!empty($piiColumns))
 			{
-				foreach ($piiColumns as $piicol)
-				{
-					// Unset column if set as pii
-					unset($colToshow->$piicol);
-				}
+				$colToshow = (object) array_diff_key((array) $colToshow, $piiColumns);
 			}
 		}
 

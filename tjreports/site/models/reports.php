@@ -76,6 +76,10 @@ class TjreportsModelReports extends JModelList
 
 	protected $tjreportsDbHelper;
 
+	private $piiPermission;
+
+	private $filterShowhideCols = $filterPiiColumns = $filterParamColToshow = array();
+
 	/**
 	 * Constructor.
 	 *
@@ -552,7 +556,7 @@ class TjreportsModelReports extends JModelList
 		$value = $input->get('limitstart', 0, 'uint');
 		$this->setState('list.start', $value);
 
-		if ($this->piiColumns)
+		if (!empty($this->piiColumns))
 		{
 			$this->setState('piiColumns', $this->piiColumns);
 		}
@@ -1167,7 +1171,7 @@ class TjreportsModelReports extends JModelList
 	 * @param   INT    $queryId        Query Id
 	 * @param   ARRAY  &$selColToshow  Selected Cols
 	 *
-	 * @return  Void
+	 * @return  INTEGER
 	 *
 	 * @since   3.0
 	 */

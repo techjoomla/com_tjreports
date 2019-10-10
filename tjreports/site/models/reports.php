@@ -1106,8 +1106,8 @@ class TjreportsModelReports extends JModelList
 	/**
 	 * Method to Process parent Report columns
 	 *
-	 * @param   string  $queryId        Query Id
-	 * @param   ARRAY   &$selColToshow  Columns to show
+	 * @param   INT    $queryId        Query Id
+	 * @param   ARRAY  &$selColToshow  Columns to show
 	 *
 	 * @return  Void
 	 *

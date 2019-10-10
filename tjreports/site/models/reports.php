@@ -78,7 +78,9 @@ class TjreportsModelReports extends JModelList
 
 	private $piiPermission;
 
-	private $filterShowhideCols = $filterPiiColumns = $filterParamColToshow = array();
+	private $filterShowhideCols = array();
+	private $filterPiiColumns = array();
+	private $filterParamColToshow = array();
 
 	/**
 	 * Constructor.

@@ -79,7 +79,9 @@ class TjreportsModelReports extends JModelList
 	private $piiPermission;
 
 	private $filterShowhideCols = array();
+
 	private $filterPiiColumns = array();
+
 	private $filterParamColToshow = array();
 
 	/**
@@ -514,7 +516,7 @@ class TjreportsModelReports extends JModelList
 		$app = JFactory::getApplication();
 		$input = JFactory::getApplication()->input;
 
-		if (!($reportId = $input->get('reportId', $input->getString('id'), 'uint')))
+		if (!($reportId = $input->get('reportId', 0, 'uint')))
 		{
 			if ($reportName = $input->get('report', 0, 'string'))
 			{

@@ -14,6 +14,7 @@ jimport('joomla.application.component.modellist');
 
 // Load TJReports db helper
 JLoader::import('database', JPATH_SITE . '/components/com_tjreports/helpers');
+JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_ADMINISTRATOR);
 
 /**
  * Methods supporting a list of Tjreports records.
@@ -36,6 +37,9 @@ class TjreportsModelReports extends JModelList
 
 	// Columns array contain columns data
 	public $columns = array();
+
+	// Columns array contain PII columns
+	private $piiColumns = array();
 
 	// Columns array contain email columns
 	private $emailColumn = '';
@@ -72,6 +76,14 @@ class TjreportsModelReports extends JModelList
 
 	protected $tjreportsDbHelper;
 
+	private $piiPermission;
+
+	private $filterShowhideCols = array();
+
+	private $filterPiiColumns = array();
+
+	private $filterParamColToshow = array();
+
 	/**
 	 * Constructor.
 	 *
@@ -105,6 +117,9 @@ class TjreportsModelReports extends JModelList
 		}, $this->columns
 		)
 		);
+
+		// Check PII data permission
+		$this->piiPermission = $this->canViewPiiData();
 
 		$this->initData();
 
@@ -358,6 +373,11 @@ class TjreportsModelReports extends JModelList
 				unset($this->sortableColumns[$key]);
 			}
 
+			if (isset($column['isPiiColumn']) && $column['isPiiColumn'] === true)
+			{
+				array_push($this->piiColumns, $key);
+			}
+
 			if (!isset($column['disable_sorting']) && (!isset($column['table_column']) || !in_array($key, $this->sortableColumns)))
 			{
 				array_push($this->sortableWoQuery, $key);
@@ -370,6 +390,7 @@ class TjreportsModelReports extends JModelList
 			}
 		}
 
+		$this->piiColumns     = array_values($this->piiColumns);
 		$this->showhideCols     = array_values($this->showhideCols);
 		$this->sortableColumns  = array_values($this->sortableColumns);
 		$this->sortableWoQuery  = array_values($this->sortableWoQuery);
@@ -512,6 +533,12 @@ class TjreportsModelReports extends JModelList
 			$reportParams = $this->getReportParams($reportId);
 
 			$colToshow = $reportParams->get("colToshow");
+			$piiColumns = array_flip($reportParams->get("piiColumns"));
+
+			if (!empty($piiColumns))
+			{
+				$colToshow = (object) array_diff_key((array) $colToshow, $piiColumns);
+			}
 		}
 
 		$this->filterReportColumns($reportId, $colToshow);
@@ -532,6 +559,11 @@ class TjreportsModelReports extends JModelList
 
 		$value = $input->get('limitstart', 0, 'uint');
 		$this->setState('list.start', $value);
+
+		if (!empty($this->piiColumns))
+		{
+			$this->setState('piiColumns', $this->piiColumns);
+		}
 
 		if ($this->emailColumn)
 		{
@@ -947,6 +979,21 @@ class TjreportsModelReports extends JModelList
 	/**
 	 * Check for permissions
 	 *
+	 * @return    boolean
+	 *
+	 * @since    1.0
+	 */
+
+	public function canViewPiiData()
+	{
+		$canDo = TjreportsHelper::getActions();
+
+		return $canDo->get('core.view.piidata');
+	}
+
+	/**
+	 * Check for permissions
+	 *
 	 * @param   INT  $reportId  report id
 	 *
 	 * @return    object
@@ -1063,8 +1110,8 @@ class TjreportsModelReports extends JModelList
 	/**
 	 * Method to Process parent Report columns
 	 *
-	 * @param   string  $queryId        Query Id
-	 * @param   ARRAY   &$selColToshow  Columns to show
+	 * @param   INT    $queryId        Query Id
+	 * @param   ARRAY  &$selColToshow  Columns to show
 	 *
 	 * @return  Void
 	 *
@@ -1078,40 +1125,47 @@ class TjreportsModelReports extends JModelList
 		}
 
 		$query = $this->_db->getQuery(true);
-		$showhideCols = $paramColToshow = array();
+		$this->filterShowhideCols = $this->filterPiiColumns = $this->filterParamColToshow = array();
+
+		// $this->filterSelColToshow = $selColToshow;
 
 		// Process plugin params
-		$parentId = $this->processSavedReportColumns($queryId, $showhideCols, $paramColToshow, $selColToshow);
+		$parentId = $this->processSavedReportColumns($queryId, $selColToshow);
 
 		// Process if user has saved query is for a plugin
 		if (!empty($parentId))
 		{
-			$this->processSavedReportColumns($parentId, $showhideCols, $paramColToshow, $selColToshow);
+			$this->processSavedReportColumns($parentId, $selColToshow);
 		}
 
 		// If plugin has save any column assign that otherwise default plugin param will be applied
-		if ($paramColToshow)
+		if ($this->filterParamColToshow)
 		{
 			// If show hide column changes, check if there is any must to hide column
 			if ($selColToshow)
 			{
-				$selColToshow = array_intersect($selColToshow, $paramColToshow);
-				$selColToshow = $selColToshow ? $selColToshow : $paramColToshow;
+				$selColToshow = array_intersect($selColToshow, $this->filterParamColToshow);
+				$selColToshow = $selColToshow ? $selColToshow : $this->filterParamColToshow;
 			}
 			else
 			{
-				$selColToshow = $paramColToshow;
+				$selColToshow = $this->filterParamColToshow;
 			}
 		}
 
-		if (!empty($showhideCols))
+		if (!empty($this->filterShowhideCols))
 		{
-			$this->showhideCols = $showhideCols;
+			$this->showhideCols = $this->filterShowhideCols;
 		}
 
 		if (!empty($emailColumn))
 		{
 			$this->emailColumn = $emailColumn;
+		}
+
+		if (!empty($this->filterPiiColumns))
+		{
+			$this->piiColumns = $this->filterPiiColumns;
 		}
 	}
 
@@ -1119,15 +1173,13 @@ class TjreportsModelReports extends JModelList
 	 * Method to Process parent Report columns
 	 *
 	 * @param   INT    $queryId        Query Id
-	 * @param   ARRAY  &$showhideCols  Show Hide columns
-	 * @param   ARRAY  &$colToshow     Columns to show
 	 * @param   ARRAY  &$selColToshow  Selected Cols
 	 *
-	 * @return  Void
+	 * @return  INTEGER
 	 *
 	 * @since   3.0
 	 */
-	private function processSavedReportColumns($queryId, &$showhideCols, &$colToshow, &$selColToshow)
+	private function processSavedReportColumns($queryId, &$selColToshow)
 	{
 		$query = $this->_db->getQuery(true);
 		$query->select(array('param', 'parent'))
@@ -1143,13 +1195,25 @@ class TjreportsModelReports extends JModelList
 
 			if (isset($param['showHideColumns']))
 			{
-				if (empty($showhideCols))
+				if (empty($this->filterShowhideCols))
 				{
-					$showhideCols = (array) $param['showHideColumns'];
+					$this->filterShowhideCols = (array) $param['showHideColumns'];
 				}
 				else
 				{
-					$showhideCols = array_intersect($showhideCols, (array) $param['showHideColumns']);
+					$this->filterShowhideCols = array_intersect($this->filterShowhideCols, (array) $param['showHideColumns']);
+				}
+			}
+
+			if (isset($param['piiColumns']))
+			{
+				if (empty($this->filterPiiColumns))
+				{
+					$this->filterPiiColumns = (array) $param['piiColumns'];
+				}
+				else
+				{
+					$this->filterPiiColumns = array_intersect($this->filterPiiColumns, (array) $param['piiColumns']);
 				}
 			}
 
@@ -1159,19 +1223,35 @@ class TjreportsModelReports extends JModelList
 				{
 					if ($show !== false || in_array($cols, $selColToshow))
 					{
-						$colToshow[$cols] = $cols;
+						$this->filterParamColToshow[$cols] = $cols;
 					}
 
 					if (!empty($param['showHideColumns']) && !in_array($cols, $param['showHideColumns']) && !empty($selColToshow))
 					{
 						array_splice($selColToshow, $i, 0, $cols);
 						$i++;
-						$colToshow[$cols] = $cols;
+						$this->filterParamColToshow[$cols] = $cols;
 					}
 				}
 			}
 
+			// Check PII permission
+			if (!empty($param['piiColumns']) && !$this->piiPermission)
+			{
+				$this->filterParamColToshow = array_diff($this->filterParamColToshow, $param['piiColumns']);
+				$this->filterShowhideCols = array_diff($this->filterShowhideCols, $param['piiColumns']);
+			}
+
 			$parent = $queryData->parent;
+		}
+		else
+		{
+			// Check PII permission if load params not set
+			if (!empty($this->piiColumns) && !$this->piiPermission)
+			{
+				$this->defaultColToShow = array_diff($this->defaultColToShow, $this->piiColumns);
+				$this->showhideCols = array_diff($this->showhideCols, $this->piiColumns);
+			}
 		}
 
 		return $parent;

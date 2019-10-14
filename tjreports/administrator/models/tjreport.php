@@ -173,13 +173,16 @@ class TjreportsModelTjreport extends JModelAdmin
 			JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $pluginName);
 			$plgModel = JModelLegacy::getInstance($pluginName, 'TjreportsModel');
 
+			$showDefaultHideCol = $plgModel->getState('showDefaultHideCol');
+			$showDefaultHideCol = array_combine($showDefaultHideCol, array_fill(0, count($showDefaultHideCol), false));
+
 			$params = array();
 			$params['filter_order']     = $plgModel->getState('list.ordering');
 			$params['filter_order_Dir'] = $plgModel->getState('list.direction');
 			$params['limit']            = $plgModel->getState('list.limit');
 			$params['emailColumn']      = $plgModel->getState('emailColumn');
 			$params['colToshow']        = $plgModel->getState('colToshow');
-			$params['colToshow']        = array_combine($params['colToshow'], array_fill(0, count($params['colToshow']), true));
+			$params['colToshow'] = array_merge(array_combine($params['colToshow'], array_fill(0, count($params['colToshow']), true)), $showDefaultHideCol);
 			$params['showHideColumns']  = $plgModel->showhideCols;
 			$params['piiColumns']        = $plgModel->getState('piiColumns');
 

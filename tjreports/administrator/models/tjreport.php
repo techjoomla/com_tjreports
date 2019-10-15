@@ -173,8 +173,8 @@ class TjreportsModelTjreport extends JModelAdmin
 			JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $pluginName);
 			$plgModel = JModelLegacy::getInstance($pluginName, 'TjreportsModel');
 
-			$showDefaultHideCol = $plgModel->getState('showDefaultHideCol');
-			$showDefaultHideCol = array_combine($showDefaultHideCol, array_fill(0, count($showDefaultHideCol), false));
+			$defaultColToHide = $plgModel->getState('defaultColToHide');
+			$defaultColToHide = array_combine($defaultColToHide, array_fill(0, count($defaultColToHide), false));
 
 			$params = array();
 			$params['filter_order']     = $plgModel->getState('list.ordering');
@@ -182,9 +182,10 @@ class TjreportsModelTjreport extends JModelAdmin
 			$params['limit']            = $plgModel->getState('list.limit');
 			$params['emailColumn']      = $plgModel->getState('emailColumn');
 			$params['colToshow']        = $plgModel->getState('colToshow');
-			$params['colToshow'] = array_merge(array_combine($params['colToshow'], array_fill(0, count($params['colToshow']), true)), $showDefaultHideCol);
+			$params['colToshow']        = array_combine($params['colToshow'], array_fill(0, count($params['colToshow']), true));
+			$params['colToshow']        = array_merge($params['colToshow'], $defaultColToHide);
 			$params['showHideColumns']  = $plgModel->showhideCols;
-			$params['piiColumns']        = $plgModel->getState('piiColumns');
+			$params['piiColumns']       = $plgModel->getState('piiColumns');
 
 			$report->param = json_encode($params);
 		}

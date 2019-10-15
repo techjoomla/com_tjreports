@@ -173,6 +173,7 @@ class TjreportsModelTjreport extends JModelAdmin
 			JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $pluginName);
 			$plgModel = JModelLegacy::getInstance($pluginName, 'TjreportsModel');
 
+			// Array set hide column in param as false value
 			$defaultColToHide = $plgModel->getState('defaultColToHide');
 			$defaultColToHide = array_combine($defaultColToHide, array_fill(0, count($defaultColToHide), false));
 

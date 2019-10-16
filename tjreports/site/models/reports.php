@@ -581,7 +581,9 @@ class TjreportsModelReports extends JModelList
 
 		if ($this->defaultColToHide)
 		{
-			$this->setState('defaultColToHide', $this->defaultColToHide);
+			// Array set hide column in param as false value
+			$defaultColToHide = array_combine($this->defaultColToHide, array_fill(0, count($this->defaultColToHide), false));
+			$this->setState('defaultColToHide', $defaultColToHide);
 		}
 
 		// Ordering

@@ -183,7 +183,8 @@ class TjreportsModelTjreport extends JModelAdmin
 			$params['colToshow']        = $plgModel->getState('colToshow');
 			$params['colToshow']        = array_combine($params['colToshow'], array_fill(0, count($params['colToshow']), true));
 
-			// Here merge colToshow with not to show default columns
+			/* Here merge colToshow (array value is true) with defaultColToHide (array value is false) column -
+			 * so false value column not display on report by default.*/
 			$params['colToshow']        = array_merge($params['colToshow'], $defaultColToHide);
 			$params['showHideColumns']  = $plgModel->showhideCols;
 			$params['piiColumns']       = $plgModel->getState('piiColumns');

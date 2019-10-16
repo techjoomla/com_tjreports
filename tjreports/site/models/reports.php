@@ -50,7 +50,7 @@ class TjreportsModelReports extends JModelList
 	// Columns which will be displayed by default
 	private $defaultColToShow = array();
 
-	// Columns which will be hied by default
+	// Columns which will be hide by default
 	private $defaultColToHide = array();
 
 	// Columns which are sortable with or without query statement

@@ -167,8 +167,13 @@ class ReportsViewBase extends JViewLegacy
 		/* Array_merge - here colToshow means get all true value array so want to mearg defaultColToHide column and then using
 		 * array_intersect - only remove those column which is force fully added in load param in showhideCols config
 		 */
+		$this->showHideColumns = $this->model->showhideCols;
 
-		$this->showHideColumns = array_intersect($this->model->showhideCols, array_merge($this->model->getState('colToshow'), $this->defaultColToHide));
+		if (!empty($this->defaultColToHide))
+		{
+			$this->showHideColumns = array_intersect($this->model->showhideCols, array_merge($this->model->getState('colToshow'), $this->defaultColToHide));
+		}
+
 		$this->sortable        = $this->model->sortableColumns;
 		$this->emailColumn     = $this->model->getState('emailColumn');
 		$this->srButton        = $this->model->showSearchResetButton;

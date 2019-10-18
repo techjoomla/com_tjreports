@@ -159,13 +159,28 @@ class ReportsViewBase extends JViewLegacy
 		$this->pagination = $this->get('pagination');
 
 		$this->headerLevel     = $this->model->headerLevel;
+
+		// Array_key - defaultColToHide column are present then get the key as value.
+		$this->defaultColToHide = array_keys($this->model->getState('defaultColToHide'));
 		$this->columns         = $this->model->columns;
+
+		/* Array_merge - here colToshow means get all true value array so want to mearg defaultColToHide column and then using
+		 * array_intersect - only remove those column which is force fully added in load param in showhideCols config
+		 */
 		$this->showHideColumns = $this->model->showhideCols;
+
+		if (!empty($this->defaultColToHide))
+		{
+			$this->showHideColumns = array_intersect($this->model->showhideCols, array_merge($this->model->getState('colToshow'), $this->defaultColToHide));
+		}
+
 		$this->sortable        = $this->model->sortableColumns;
 		$this->emailColumn     = $this->model->getState('emailColumn');
 		$this->srButton        = $this->model->showSearchResetButton;
 
-		$this->colToshow       = $this->model->getState('colToshow');
+		// Array_intersect - if column present in colToshow as true/false but not in showHideColumns then remove it
+		$this->colToshow       = array_intersect($this->model->getState('colToshow'), $this->model->showhideCols);
+
 		$this->filterValues    = $this->model->getState('filters');
 
 		$this->userFilters     = $this->model->displayFilters();

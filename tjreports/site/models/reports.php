@@ -50,6 +50,9 @@ class TjreportsModelReports extends JModelList
 	// Columns which will be displayed by default
 	private $defaultColToShow = array();
 
+	// Columns which will be hide by default
+	private $defaultColToHide = array();
+
 	// Columns which are sortable with or without query statement
 	public $sortableColumns = array();
 
@@ -364,7 +367,9 @@ class TjreportsModelReports extends JModelList
 			if ((isset($column['not_show_hide']) && $column['not_show_hide'] === true)
 				|| (strpos($key, '::') !== false && !isset($column['not_show_hide'])))
 			{
+				// If column not_show_hide = true then this column hide from show/hide list as well as on the report
 				unset($this->showhideCols[$key]);
+				unset($this->defaultColToShow[$key]);
 			}
 
 			if ((isset($column['disable_sorting']) && $column['disable_sorting'])
@@ -386,15 +391,19 @@ class TjreportsModelReports extends JModelList
 			if (!isset($column['title']) || (strpos($key, '::') !== false)
 				|| (isset($column['not_show_hide']) && $column['not_show_hide'] === false))
 			{
+				/* If column not_show_hide = false then column does not show on the report
+				 * but shows on Hide / show column list dropdown with unchecking the checkbox.*/
+				array_push($this->defaultColToHide, $key);
 				unset($this->defaultColToShow[$key]);
 			}
 		}
 
-		$this->piiColumns     = array_values($this->piiColumns);
+		$this->piiColumns       = array_values($this->piiColumns);
 		$this->showhideCols     = array_values($this->showhideCols);
 		$this->sortableColumns  = array_values($this->sortableColumns);
 		$this->sortableWoQuery  = array_values($this->sortableWoQuery);
 		$this->defaultColToShow = array_values($this->defaultColToShow);
+		$this->defaultColToHide = array_values($this->defaultColToHide);
 	}
 
 	/**
@@ -568,6 +577,13 @@ class TjreportsModelReports extends JModelList
 		if ($this->emailColumn)
 		{
 			$this->setState('emailColumn', $this->emailColumn);
+		}
+
+		if ($this->defaultColToHide)
+		{
+			// Array set hide column in param as false value
+			$defaultColToHide = array_combine($this->defaultColToHide, array_fill(0, count($this->defaultColToHide), false));
+			$this->setState('defaultColToHide', $defaultColToHide);
 		}
 
 		// Ordering

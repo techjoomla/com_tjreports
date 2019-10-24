@@ -177,9 +177,8 @@ class TjreportsModelReports extends JModelList
 		{
 			$customField = array (
 				'title'              => ($columnLabels[$columnName]) ? $columnLabels[$columnName] : $columnName,
-				'table_column'       => $this->customFieldsTableAlias . '.' . $columnName
-
-				// , 'disable_sorting' => true
+				'table_column'       => $this->customFieldsTableAlias . '.' . $columnName,
+				'not_show_hide'      => false
 			);
 
 			// Eg. tuf.dob

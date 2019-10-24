@@ -48,17 +48,6 @@ class PlgUserTjreportsindexer extends JPlugin
 	 */
 	public function onUserAfterSave($user, $isNew, $success, $msg)
 	{
-		/*
-		  [com_fields] => Array
-		(
-			[job-position] => Developer
-		)*/
-
-		if (empty($user['com_fields']))
-		{
-			return;
-		}
-
 		// Delete existing user-data entry
 		// Here record_id = user_id
 		$this->deleteIndexerEntry($user['id']);
@@ -152,6 +141,10 @@ class PlgUserTjreportsindexer extends JPlugin
 			$columns[] = $db->quoteName($key);
 			$values[]  = $db->quote($value);
 		}
+
+		// Add username & email hash values
+		array_push($columns, 'username_hash', 'email_hash');
+		array_push($values, "'" . md5($user['username']) . "'", "'" . md5($user['email']) . "'");
 
 		// Prepare the insert query
 		$query = $db->getQuery(true);

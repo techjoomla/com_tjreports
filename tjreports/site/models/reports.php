@@ -1171,6 +1171,7 @@ class TjreportsModelReports extends JModelList
 			}
 		}
 
+		// Used to get the columns which are hide by default in load params
 		if (!empty($this->filterDefaultColToHide))
 		{
 			$this->defaultColToHide = $this->filterDefaultColToHide;
@@ -1250,6 +1251,7 @@ class TjreportsModelReports extends JModelList
 					}
 					else
 					{
+						// Used to get the columns which are hide (false) by default in load params
 						$this->filterDefaultColToHide[$cols] = $cols;
 					}
 
@@ -1265,7 +1267,10 @@ class TjreportsModelReports extends JModelList
 			// Check PII permission
 			if (!empty($param['piiColumns']) && !$this->piiPermission)
 			{
+				/* Checked the columns which are hide(false) in load params & if set them as piiColumns
+				* then it only returns the columns which are not available in piiColumns. */
 				$this->filterDefaultColToHide = array_diff($this->filterDefaultColToHide, $param['piiColumns']);
+
 				$this->filterParamColToshow = array_diff($this->filterParamColToshow, $param['piiColumns']);
 				$this->filterShowhideCols = array_diff($this->filterShowhideCols, $param['piiColumns']);
 			}

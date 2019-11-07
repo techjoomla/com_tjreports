@@ -169,17 +169,26 @@ class ReportsViewBase extends JViewLegacy
 		 */
 		$this->showHideColumns = $this->model->showhideCols;
 
+		/* To get the columns from loadparams*/
+		$this->defaultColToshow = $this->model->filterParamColToshow;
+
+		/* Check the columns in loadparams are available or not & show plugin level columns & custom field columns
+		 * in case if load params are not available*/
+		if (empty($this->defaultColToshow))
+		{
+			$this->defaultColToshow = $this->model->defaultColToShow;
+		}
+
 		if (!empty($this->defaultColToHide))
 		{
-			$this->showHideColumns = array_intersect($this->model->showhideCols, array_merge($this->model->getState('colToshow'), $this->defaultColToHide));
+			$this->showHideColumns = array_intersect($this->model->showhideCols, array_merge($this->defaultColToshow, $this->defaultColToHide));
 		}
 
 		$this->sortable        = $this->model->sortableColumns;
 		$this->emailColumn     = $this->model->getState('emailColumn');
 		$this->srButton        = $this->model->showSearchResetButton;
 
-		// Array_intersect - if column present in colToshow as true/false but not in showHideColumns then remove it
-		$this->colToshow       = array_intersect($this->model->getState('colToshow'), $this->model->showhideCols);
+		$this->colToshow       = $this->model->getState('colToshow');
 
 		$this->filterValues    = $this->model->getState('filters');
 

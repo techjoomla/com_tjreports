@@ -48,7 +48,7 @@ class TjreportsModelReports extends JModelList
 	public $showhideCols = array();
 
 	// Columns which will be displayed by default
-	private $defaultColToShow = array();
+	public $defaultColToShow = array();
 
 	// Columns which will be hide by default
 	private $defaultColToHide = array();
@@ -85,7 +85,10 @@ class TjreportsModelReports extends JModelList
 
 	private $filterPiiColumns = array();
 
-	private $filterParamColToshow = array();
+	public $filterParamColToshow = array();
+
+	// Used to get the columns which are hide by default in load params
+	public $filterDefaultColToHide = array();
 
 	/**
 	 * Constructor.
@@ -1140,7 +1143,7 @@ class TjreportsModelReports extends JModelList
 		}
 
 		$query = $this->_db->getQuery(true);
-		$this->filterShowhideCols = $this->filterPiiColumns = $this->filterParamColToshow = array();
+		$this->filterDefaultColToHide = $this->filterShowhideCols = $this->filterPiiColumns = $this->filterParamColToshow = array();
 
 		// $this->filterSelColToshow = $selColToshow;
 
@@ -1166,6 +1169,11 @@ class TjreportsModelReports extends JModelList
 			{
 				$selColToshow = $this->filterParamColToshow;
 			}
+		}
+
+		if (!empty($this->filterDefaultColToHide))
+		{
+			$this->defaultColToHide = $this->filterDefaultColToHide;
 		}
 
 		if (!empty($this->filterShowhideCols))
@@ -1240,6 +1248,10 @@ class TjreportsModelReports extends JModelList
 					{
 						$this->filterParamColToshow[$cols] = $cols;
 					}
+					else
+					{
+						$this->filterDefaultColToHide[$cols] = $cols;
+					}
 
 					if (!empty($param['showHideColumns']) && !in_array($cols, $param['showHideColumns']) && !empty($selColToshow))
 					{
@@ -1253,6 +1265,7 @@ class TjreportsModelReports extends JModelList
 			// Check PII permission
 			if (!empty($param['piiColumns']) && !$this->piiPermission)
 			{
+				$this->filterDefaultColToHide = array_diff($this->filterDefaultColToHide, $param['piiColumns']);
 				$this->filterParamColToshow = array_diff($this->filterParamColToshow, $param['piiColumns']);
 				$this->filterShowhideCols = array_diff($this->filterShowhideCols, $param['piiColumns']);
 			}

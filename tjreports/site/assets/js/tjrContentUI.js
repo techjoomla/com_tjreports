@@ -49,7 +49,7 @@ jQuery.extend(tjrContentUI.report, {
 
 				// If sendEmail plug is enabled then try to add a column of checkboxes
 				if (
-				  typeof window.tjSendEmail.UI != 'undefined' &&
+				  typeof window.tjSendEmail != 'undefined' &&
 				  jQuery('body').find('.td-sendemail').length > 0
 				)
 				{

@@ -59,6 +59,9 @@ class Com_TjreportsInstallerScript
 				),
 				'user' => array(
 					'tjreportsindexer' => 0
+				),
+				'api' => array(
+					'reports' => 1
 				)
 			)
 		);

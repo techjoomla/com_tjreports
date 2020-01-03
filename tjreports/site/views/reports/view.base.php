@@ -154,15 +154,15 @@ class ReportsViewBase extends JViewLegacy
 		}
 
 		$this->model->loadLanguage($this->pluginName);
-		$this->state      = $this->get('State');
-		$this->items      = $this->model->getItems();
-		$this->pagination = $this->get('pagination');
-
-		$this->headerLevel     = $this->model->headerLevel;
+		$this->state       = $this->get('State');
+		$this->items       = $this->model->getItems();
+		$this->pagination  = $this->get('pagination');
+		$this->headerLevel = $this->model->headerLevel;
 
 		// Array_key - defaultColToHide column are present then get the key as value.
-		$this->defaultColToHide = array_keys($this->model->getState('defaultColToHide'));
-		$this->columns         = $this->model->columns;
+		$defaultColToHide       = (array) $this->model->getState('defaultColToHide');
+		$this->defaultColToHide = array_keys($defaultColToHide);
+		$this->columns          = $this->model->columns;
 
 		/* Array_merge - here colToshow means get all true value array so want to mearg defaultColToHide column and then using
 		 * array_intersect - only remove those column which is force fully added in load param in showhideCols config

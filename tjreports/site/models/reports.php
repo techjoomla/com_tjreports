@@ -179,7 +179,7 @@ class TjreportsModelReports extends JModelList
 		foreach ($columnNames as $columnName)
 		{
 			$customField = array (
-				'title'              => ($columnLabels[$columnName]) ? $columnLabels[$columnName] : $columnName,
+				'title'              => isset($columnLabels[$columnName]) ? $columnLabels[$columnName] : $columnName,
 				'table_column'       => $this->customFieldsTableAlias . '.' . $columnName,
 				'not_show_hide'      => false
 			);
@@ -542,13 +542,13 @@ class TjreportsModelReports extends JModelList
 		if (empty($colToshow))
 		{
 			$reportParams = $this->getReportParams($reportId);
-
-			$colToshow = $reportParams->get("colToshow");
-			$piiColumns = array_flip($reportParams->get("piiColumns"));
+			$colToshow    = (array) $reportParams->get("colToshow");
+			$piiColumns   = (array) $reportParams->get("piiColumns");
+			$piiColumns   = array_flip($piiColumns);
 
 			if (!empty($piiColumns))
 			{
-				$colToshow = (object) array_diff_key((array) $colToshow, $piiColumns);
+				$colToshow = (object) array_diff_key($colToshow, $piiColumns);
 			}
 		}
 

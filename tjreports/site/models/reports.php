@@ -539,8 +539,8 @@ class TjreportsModelReports extends ListModel
 	protected function populateState($ordering = '', $direction = 'ASC')
 	{
 		// List state information
-		$app = Factory::getApplication();
-		$input = Factory::getApplication()->input;
+		$app   = Factory::getApplication();
+		$input = $app->input;
 
 		if (!($reportId = $input->get('reportId', 0, 'uint')))
 		{
@@ -874,7 +874,7 @@ class TjreportsModelReports extends ListModel
 	/**
 	 * Get all plugins names
 	 *
-	 * @return    object
+	 * @return    Array
 	 *
 	 * @since    1.0
 	 */

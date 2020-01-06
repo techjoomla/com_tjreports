@@ -15,7 +15,6 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-use Joomla\CMS\MVC\View\HtmlView;
 
 jimport('joomla.application.component.view');
 JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_ADMINISTRATOR);
@@ -28,7 +27,7 @@ JLoader::register('JToolBarHelper', JPATH_ADMINISTRATOR . '/includes/toolbar.php
  *
  * @since  1.0.0
  */
-class ReportsViewBase extends HtmlView
+class ReportsViewBase extends JViewLegacy
 {
 	protected $items;
 
@@ -73,7 +72,6 @@ class ReportsViewBase extends HtmlView
 	 */
 	public function processData($type = 'html')
 	{
-		$app   = Factory::getApplication();
 		$canDo = TjreportsHelper::getActions();
 		$input = Factory::getApplication()->input;
 		$user  = Factory::getUser();

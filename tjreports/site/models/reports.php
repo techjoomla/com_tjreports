@@ -1292,6 +1292,18 @@ class TjreportsModelReports extends ListModel
 				$this->filterShowhideCols     = array_diff($this->filterShowhideCols, $param['piiColumns']);
 			}
 
+			if (isset($param['customParam']))
+			{
+				if (empty($this->customParam))
+				{
+					$this->customParam = (array) $param['customParam'];
+				}
+				else
+				{
+					$this->customParam = (array) $param['customParam'];
+				}
+			}
+
 			$parent = $queryData->parent;
 		}
 		else

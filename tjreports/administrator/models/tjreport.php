@@ -175,7 +175,9 @@ class TjreportsModelTjreport extends JModelAdmin
 
 			$defaultColToHide = $plgModel->getState('defaultColToHide');
 
-			$params = array();
+			$params      = array();
+			$customParam = new stdClass;
+
 			$params['filter_order']     = $plgModel->getState('list.ordering');
 			$params['filter_order_Dir'] = $plgModel->getState('list.direction');
 			$params['limit']            = $plgModel->getState('list.limit');
@@ -192,6 +194,7 @@ class TjreportsModelTjreport extends JModelAdmin
 
 			$params['showHideColumns']  = $plgModel->showhideCols;
 			$params['piiColumns']       = $plgModel->getState('piiColumns');
+			$params['customParam']      = $customParam;
 
 			$report->param = json_encode($params);
 		}

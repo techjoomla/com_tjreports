@@ -1164,7 +1164,7 @@ class TjreportsModelReports extends ListModel
 		}
 
 		$query = $this->_db->getQuery(true);
-		$this->filterDefaultColToHide = $this->filterShowhideCols = $this->filterPiiColumns = $this->filterParamColToshow = $this->customParam = array();
+		$this->filterDefaultColToHide = $this->filterShowhideCols = $this->filterPiiColumns = $this->filterParamColToshow = array();
 
 		// $this->filterSelColToshow = $selColToshow;
 
@@ -1206,11 +1206,6 @@ class TjreportsModelReports extends ListModel
 		if (!empty($emailColumn))
 		{
 			$this->emailColumn = $emailColumn;
-		}
-
-		if (!empty($customParam))
-		{
-			$this->customParam = $customParam;
 		}
 
 		if (!empty($this->filterPiiColumns))

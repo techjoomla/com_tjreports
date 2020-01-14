@@ -49,6 +49,9 @@ class TjreportsModelReports extends ListModel
 	// Columns array contain PII columns
 	private $piiColumns = array();
 
+	// Columns array contain Custom Param
+	public $customParam = array();
+
 	// Columns array contain email columns
 	private $emailColumn = '';
 
@@ -1161,7 +1164,7 @@ class TjreportsModelReports extends ListModel
 		}
 
 		$query = $this->_db->getQuery(true);
-		$this->filterDefaultColToHide = $this->filterShowhideCols = $this->filterPiiColumns = $this->filterParamColToshow = array();
+		$this->filterDefaultColToHide = $this->filterShowhideCols = $this->filterPiiColumns = $this->filterParamColToshow = $this->customParam = array();
 
 		// $this->filterSelColToshow = $selColToshow;
 
@@ -1203,6 +1206,11 @@ class TjreportsModelReports extends ListModel
 		if (!empty($emailColumn))
 		{
 			$this->emailColumn = $emailColumn;
+		}
+
+		if (!empty($customParam))
+		{
+			$this->customParam = $customParam;
 		}
 
 		if (!empty($this->filterPiiColumns))
@@ -1294,14 +1302,7 @@ class TjreportsModelReports extends ListModel
 
 			if (isset($param['customParam']))
 			{
-				if (empty($this->customParam))
-				{
-					$this->customParam = (array) $param['customParam'];
-				}
-				else
-				{
-					$this->customParam = (array) $param['customParam'];
-				}
+				$this->customParam = (array) $param['customParam'];
 			}
 
 			$parent = $queryData->parent;

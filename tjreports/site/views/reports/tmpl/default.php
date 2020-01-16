@@ -231,6 +231,10 @@ if ($app->isClient('site'))
 								?>
 								</ul>
 							</div>
+							<div class="col-md-2 col-sm-4 col-xs-12">
+							<span id="sendEmail">
+								</span>
+							</div>
 					<!--/col-md-2-->
 					  <?php
 						if (!$app->isClient('administrator') && $userAuthorisedExport && $user)

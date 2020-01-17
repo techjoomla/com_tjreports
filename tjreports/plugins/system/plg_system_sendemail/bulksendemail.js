@@ -71,7 +71,7 @@ var tjutilitysendemail = {
 			jQuery('#sendEmail').append(btnHtml);
 		}
 		catch (err) {
-			/*console.log(err.message);*/
+			console.log(err.message);
 		}
 	},
 	openEmailPopup: function () {
@@ -163,7 +163,7 @@ var tjutilitysendemail = {
 			// alert(values.join (", "));
 		}
 		catch (err) {
-			/*console.log(err.message);*/
+			console.log(err.message);
 		}
 	},
 	validate: function () {

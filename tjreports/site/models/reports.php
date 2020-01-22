@@ -1552,4 +1552,38 @@ class TjreportsModelReports extends ListModel
 
 		return $count;
 	}
+
+	/**
+	 * Method to get report plugin of particular type for inter linking
+	 *
+	 * @param   Int  $userId  User Id
+	 *
+	 * @return  Array
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	protected function getUserGroups($userId)
+	{
+		if (!$userId)
+		{
+			return array();
+		}
+
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+
+		// Get the titles for the user groups.
+		$query = $db->getQuery(true)
+		->select($db->quoteName('ug.id'))
+		->select($db->quoteName('ug.title'))
+		->from($db->quoteName('#__usergroups', 'ug'))
+		->join('INNER', $db->qn('#__user_usergroup_map', 'ugm') . ' ON (' .
+			$db->qn('ugm.group_id') . ' = ' . $db->qn('ug.id') . ')')
+		->where($db->quoteName('ugm.user_id') . ' = ' . (int) $userId);
+
+		$db->setQuery($query);
+
+		// Set the titles for the user groups.
+		return $db->loadAssocList('id', 'title');
+	}
 }

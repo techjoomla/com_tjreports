@@ -24,6 +24,8 @@ jimport('joomla.application.component.modellist');
 JLoader::import('database', JPATH_SITE . '/components/com_tjreports/helpers');
 JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_ADMINISTRATOR);
 
+use Joomla\CMS\Date\Date;
+
 /**
  * Methods supporting a list of Tjreports records.
  *
@@ -687,12 +689,14 @@ class TjreportsModelReports extends ListModel
 						if (!empty($filters[$fromCol]))
 						{
 							$fromTime = $filters[$fromCol] . ' 00:00:00';
+							$fromTime = new Date($fromTime, 'UTC');
 							$query->where($dispFilter['searchin'] . ' >= ' . $db->quote($fromTime));
 						}
 
 						if (!empty($filters[$toCol]))
 						{
 							$toTime = $filters[$toCol] . ' 23:59:59';
+							$toTime = new Date($toTime, 'UTC');
 							$query->where($dispFilter['searchin'] . ' <= ' . $db->quote($toTime));
 						}
 					}
@@ -1363,7 +1367,7 @@ class TjreportsModelReports extends ListModel
 	/**
 	 * Method to get id of the report having default set as 1
 	 *
-	 * @param   STRING  $reportId  Report id
+	 * @param   STRING  $reportId  Report Id
 	 *
 	 * @return  Object
 	 *

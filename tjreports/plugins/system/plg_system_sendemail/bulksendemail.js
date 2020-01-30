@@ -21,7 +21,6 @@ jQuery(document).ready(function() {
 
 var tjutilitysendemail = {
     loadTinymce: function() {
-		console.log('tjutilitysendemail.loadTinymce');
 		tinymce.remove();
 		tinymce.init({
 			selector: 'textarea#email-message',
@@ -31,7 +30,6 @@ var tjutilitysendemail = {
 				});
 			}
 		});
-
 	},
     initialize: function() {
 		var isSendEmail = jQuery('body').find(tjutilitysendemail.tjTdClass).length;
@@ -71,12 +69,13 @@ var tjutilitysendemail = {
 			jQuery('#sendEmail').append(btnHtml);
 		}
 		catch (err) {
-			console.log(err.message);
+			/*console.log(err.message);*/
 		}
 	},
 	openEmailPopup: function () {
 		try {
 			tjutilitysendemail.loadTinymce();
+
 			var emailSubject = 'email-subject';
 			var emailMessage = 'email-message';
 
@@ -139,13 +138,15 @@ var tjutilitysendemail = {
 				modelEmail += '</div>';
 
 			// Confirm this class to append popup
-			jQuery('#j-main-container').append(modelEmail);
+			if (!jQuery("#bulkEmailModal").hasClass("custom-modal"))
+			{
+				jQuery('#j-main-container').append(modelEmail);
+			}
 
 			jQuery('div').find("#preload").hide();
 			jQuery('div').find(".is-progress").removeClass('is-progress');
 			jQuery('div').find("#send-email").attr("disabled", false);
 			jQuery("#" + emailSubject).val('');
-			jQuery("#" + emailMessage).val('');
 
 			var values = new Array();
 			jQuery("#emailsDiv").empty();
@@ -163,7 +164,7 @@ var tjutilitysendemail = {
 			// alert(values.join (", "));
 		}
 		catch (err) {
-			console.log(err.message);
+			/*console.log(err.message);*/
 		}
 	},
 	validate: function () {

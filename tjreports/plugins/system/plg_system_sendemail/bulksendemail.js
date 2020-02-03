@@ -1,9 +1,9 @@
 /*
- * @package     Plg_System_Tjlms
- * @subpackage  Plg_System_Tjlms
+ * @package     Tjreports.Plugins
+ * @subpackage  Plugins,system,plg_system_sendemail
  *
  * @author      Techjoomla <extensions@techjoomla.com>
- * @copyright   Copyright (C) 2009 - 2018 Techjoomla. All rights reserved.
+ * @copyright   Copyright (C) 2009 - 2020 Techjoomla. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -164,15 +164,11 @@ var tjutilitysendemail = {
 			// alert(values.join (", "));
 		}
 		catch (err) {
+			alert(err.message);
 			/*console.log(err.message);*/
 		}
 	},
 	validate: function () {
-
-		jQuery('textarea').each(function (index, ta) {
-			var $ta = jQuery(ta);
-			var emailMessageValue = $ta.val();
-		});
 
 		var emailSubjectValue = jQuery("#email-subject").val();
 		var emailMessageValue = jQuery("#email-message").val();
@@ -248,13 +244,12 @@ var tjutilitysendemail = {
 	send: function (emailData, index, batchCount) {
 		index ++;
 
-		var url = "index.php?option=com_ajax&plugin=plg_System_Sendemail&format=json";
+		var url = Joomla.getOptions('system.paths').base + "index.php?option=com_ajax&plugin=plg_System_Sendemail&format=json";
 
 		var promise = jQuery.ajax({url: url, type: 'POST', async:true, data:emailData,dataType: 'json'});
 
 		promise.fail(
 			function(response) {
-				console.log('Something went wrong.');
 
 				var errormsg = '<div class="alert alert-error alert-danger"><button type="button" data-dismiss="alert" class="close">×</button><h4 class="alert-heading"></h4><div>' + response.message + '</div></div>';
 				jQuery("#bulkEmailModal").find("#errorMessage").append(errormsg);
@@ -273,10 +268,6 @@ var tjutilitysendemail = {
 
 					 Joomla.renderMessages({"success":[response.message]});
 				}
-			}
-		).always(
-			function(response) {
-				// console.log('response always.' , response);
 			}
 		);
 	}

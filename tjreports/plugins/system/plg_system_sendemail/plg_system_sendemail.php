@@ -1,10 +1,10 @@
 <?php
 /**
- * @package     Plg_System_Tjlms
- * @subpackage  Plg_System_Tjlms
+ * @package     Tjreports.Plugins
+ * @subpackage  Plugins,system,plg_system_sendemail
  *
  * @author      Techjoomla <extensions@techjoomla.com>
- * @copyright   Copyright (C) 2009 - 2018 Techjoomla. All rights reserved.
+ * @copyright   Copyright (C) 2009 - 2020 Techjoomla. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -87,7 +87,7 @@ class PlgSystemplg_System_Sendemail extends JPlugin
 	 *
 	 * @since  __DEPLOY_VERSION__
 	 */
-	public function onAjaxplg_System_Sendemail()
+	public function onAjaxplg_System_sendEmail()
 	{
 		Session::checkToken('post') or new JResponseJson(null, Text::_('JINVALID_TOKEN_NOTICE'), true);
 

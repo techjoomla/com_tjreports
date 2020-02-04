@@ -1,15 +1,17 @@
 <?php
 /**
  * @package      Tjreports
- * @subpackage   com_api
+ * @subpackage   API
  *
  * @author       Techjoomla <extensions@techjoomla.com>
- * @copyright    Copyright (C) 2009 - 2018 Techjoomla. All rights reserved.
+ * @copyright    Copyright (C) 2009 - 2020 Techjoomla. All rights reserved.
  * @license      GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access.
 defined('_JEXEC') or die;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 /**
  * Tjreports API report class
@@ -25,7 +27,7 @@ class ReportsApiResourceReport extends ApiResource
 	 */
 	public function post()
 	{
-		$app        = JFactory::getApplication();
+		$app        = Factory::getApplication();
 		$jinput     = $app->input;
 		$formData   = $jinput->post;
 		$reportName = $app->input->getString('id');
@@ -37,23 +39,23 @@ class ReportsApiResourceReport extends ApiResource
 
 		if (!isset($reportName))
 		{
-			ApiError::raiseError(400, JText::_('PLG_API_REPORTS_REPORT_NAME_MISSSING'), 'APIValidationException');
+			ApiError::raiseError(400, Text::_('PLG_API_REPORTS_REPORT_NAME_MISSSING'), 'APIValidationException');
 		}
 
 		// Create object of tjreports plugin class
-		
+
 		JLoader::import('plugins.tjreports.' . $reportName . "." . $reportName, JPATH_SITE);
 		$className = 'TjreportsModel' . ucfirst($reportName);
 
 		if (!class_exists($className))
 		{
-			ApiError::raiseError(400, JText::_('PLG_API_REPORTS_REPORT_NAME_INVALID'), 'APIValidationException');
+			ApiError::raiseError(400, Text::_('PLG_API_REPORTS_REPORT_NAME_INVALID'), 'APIValidationException');
 		}
 
 		$reportPlugin = new $className;
-		
+
 		// Load language files
-		$lang = JFactory::getLanguage();
+		$lang = Factory::getLanguage();
 		$lang->load('com_tjreports', JPATH_ADMINISTRATOR, 'en-GB', true);
 		$lang->load('plg_tjreports_' . $reportName, JPATH_SITE . "/plugins/tjreports/" . $reportName, 'en-GB', true);
 
@@ -61,7 +63,10 @@ class ReportsApiResourceReport extends ApiResource
 		$reportId = $reportPlugin->getDefaultReport($reportName);
 		$reportFilters = ($formData->get('filters')) ? $formData->get('filters') : [];
 		$reportCols    = ($formData->get('colToshow')) ? $formData->get('colToshow') : [];
-		
+
+		// Set reportId in input
+		$app->input->set('reportId', $reportId);
+
 		$reportPlugin->setState('filters', $reportFilters);
 		$reportPlugin->setState('colToshow', $reportCols);
 		$reportPlugin->setState('reportId', $reportId);
@@ -92,6 +97,7 @@ class ReportsApiResourceReport extends ApiResource
 			}
 		}
 
+		$this->plugin->customAttributes->set("total", $reportPlugin->getTotal());
 		$this->plugin->setResponse($report);
 	}
 }

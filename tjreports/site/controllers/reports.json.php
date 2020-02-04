@@ -131,37 +131,4 @@ class TjreportsControllerReports extends JControllerAdmin
 			echo new JResponseJson($e);
 		}
 	}
-
-	/**
-	 * Get the reports with function that sends fields in the form Google Data suit wants
-	 *
-	 * @return  array
-	 *
-	 * @since  __DEPLOY_VERSION__
-	 */
-	public function getGoogleDsReports()
-	{
-		try
-		{
-			$model		= $this->getModel('reports');
-			$reports 	= $model->getenableReportPlugins();
-			$reportsArray = array();
-
-			foreach ($reports as $report)
-			{
-				$pluginModel = $model->getPluginModel($report['plugin']);
-
-				if (method_exists($pluginModel, 'getGoogleDsFields'))
-				{
-					$reportsArray[] = $report;
-				}
-			}
-
-			echo new JResponseJson($reportsArray);
-		}
-		catch (Exception $e)
-		{
-			echo new JResponseJson($e);
-		}
-	}
 }

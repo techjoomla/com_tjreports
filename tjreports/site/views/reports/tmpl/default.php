@@ -224,6 +224,8 @@ if ($app->isSite())
 								?>
 								</ul>
 							</div>
+							<span id="sendEmail">
+							</span>
 					<!--/col-md-2-->
 					  <?php
 						if (!$app->isAdmin() && $userAuthorisedExport && $user)

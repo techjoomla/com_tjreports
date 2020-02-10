@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 $emailColmClass = 'td-sendemail';
-
+$emailColumCnt  = 0;
 $app             = JFactory::getApplication();
 $headerLevel     = $this->headerLevel;
 $this->listOrder = $this->state->get('list.ordering');
@@ -433,7 +433,14 @@ if ($app->isSite())
 													}
 													else
 													{
-														$isSendEmailClass = ($key == $this->emailColumn) ? $emailColmClass : '';
+														$isSendEmailClass = '';
+
+														if ($key == $this->emailColumn)
+														{
+															$isSendEmailClass = $emailColmClass;
+															$emailColumCnt++;
+														}
+
 														echo "<td class=\"{$key} {$isSendEmailClass} \">{$item[$key]}</td>";
 													}
 												}
@@ -493,3 +500,11 @@ if ($app->isSite())
 	<!-- COM_TJLMS_WRAPPER_DIV -->
 </div>
 <!-- reports-container -->
+<!-- reports-container -->
+<?php
+// If plg_system_sendemail enable then load following js
+if ($emailColumCnt > 0 && JPluginHelper::isEnabled('system', 'tjsendemail'))
+{
+	JHtml::script('media/editors/tinymce/tinymce.min.js');
+	JHtml::script('plugins/system/tjsendemail/bulksendemail.min.js');
+}

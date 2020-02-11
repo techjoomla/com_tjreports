@@ -20,7 +20,7 @@ use Joomla\CMS\Filter\OutputFilter;
 HTMLHelper::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 $emailColmClass = 'td-sendemail';
-
+$emailColumCnt  = 0;
 $app             = Factory::getApplication();
 $headerLevel     = $this->headerLevel;
 $this->listOrder = $this->state->get('list.ordering');
@@ -231,6 +231,8 @@ if ($app->isClient('site'))
 								?>
 								</ul>
 							</div>
+							<span id="sendEmail">
+							</span>
 					<!--/col-md-2-->
 					  <?php
 						if (!$app->isClient('administrator') && $userAuthorisedExport && $user)
@@ -440,8 +442,15 @@ if ($app->isClient('site'))
 													}
 													else
 													{
-														$isSendEmailClass = ($key == $this->emailColumn) ? $emailColmClass : '';
-														$value = isset($item[$key]) ? $item[$key] : '';
+														$isSendEmailClass = '';
+
+														if ($key == $this->emailColumn)
+														{
+															$isSendEmailClass = $emailColmClass;
+															$emailColumCnt++;
+														}
+                            
+                            $value = isset($item[$key]) ? $item[$key] : '';
 														echo "<td class=\"{$key} {$isSendEmailClass} \">{$value}</td>";
 													}
 												}
@@ -501,3 +510,11 @@ if ($app->isClient('site'))
 	<!-- COM_TJLMS_WRAPPER_DIV -->
 </div>
 <!-- reports-container -->
+<!-- reports-container -->
+<?php
+// If plg_system_sendemail enable then load following js
+if ($emailColumCnt > 0 && JPluginHelper::isEnabled('system', 'tjsendemail'))
+{
+	JHtml::script('media/editors/tinymce/tinymce.min.js');
+	JHtml::script('plugins/system/tjsendemail/bulksendemail.min.js');
+}

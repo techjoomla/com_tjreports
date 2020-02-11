@@ -13,6 +13,9 @@
 // No direct access
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+
 jimport('joomla.application.component.view');
 JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_ADMINISTRATOR);
 JLoader::import('components.com_tjreports.models.tjreports', JPATH_SITE);
@@ -38,11 +41,27 @@ class ReportsViewBase extends JViewLegacy
 
 	protected $reportData;
 
-	protected $savedQueries = array();
+	protected $headerLevel;
 
 	protected $reportId = 0;
 
 	protected $queryId = 0;
+
+	protected $savedQueries = array();
+
+	protected $defaultColToHide;
+
+	protected $columns;
+
+	protected $showhideCols;
+
+	protected $filterParamColToshow;
+
+	protected $defaultColToShow;
+
+	protected $sortableColumns;
+
+	protected $showSearchResetButton;
 
 	/**
 	 * Execute and display a template script.
@@ -53,15 +72,14 @@ class ReportsViewBase extends JViewLegacy
 	 */
 	public function processData($type = 'html')
 	{
-		$app 		= JFactory::getApplication();
-		$canDo 		= TjreportsHelper::getActions();
-		$input 		= JFactory::getApplication()->input;
-		$user		= JFactory::getUser();
+		$canDo = TjreportsHelper::getActions();
+		$input = Factory::getApplication()->input;
+		$user  = Factory::getUser();
 
 		$this->reportId = $input->get('reportId', 0, 'INT');
-		$this->model = $this->getModel('reports');
+		$this->model    = $this->getModel('reports');
 
-		$reports = $this->model->getenableReportPlugins();
+		$reports        = $this->model->getenableReportPlugins();
 		$this->reportId = $this->reportId ? $this->reportId : (isset($reports['0']['reportId']) ? $reports['0']['reportId'] : '');
 
 		$this->reportData = $this->model->getReportNameById($this->reportId);
@@ -81,7 +99,11 @@ class ReportsViewBase extends JViewLegacy
 		}
 
 		$this->model = $this->getModel($this->pluginName);
-		$this->setModel($this->model, true);
+
+		if ($this->model)
+		{
+			$this->setModel($this->model, true);
+		}
 
 		if ($this->reportId)
 		{
@@ -131,8 +153,8 @@ class ReportsViewBase extends JViewLegacy
 
 		if (!empty($savedQueries))
 		{
-			$qOptions	= array();
-			$qOptions[] 	= JHTML::_('select.option', '', JText::_('COM_TJREPORTS_SELONE_QUERY'));
+			$qOptions   = array();
+			$qOptions[] = JHTML::_('select.option', '', JText::_('COM_TJREPORTS_SELONE_QUERY'));
 
 			foreach ($savedQueries as $savedQuery)
 			{
@@ -154,15 +176,15 @@ class ReportsViewBase extends JViewLegacy
 		}
 
 		$this->model->loadLanguage($this->pluginName);
-		$this->state      = $this->get('State');
-		$this->items      = $this->model->getItems();
-		$this->pagination = $this->get('pagination');
-
-		$this->headerLevel     = $this->model->headerLevel;
+		$this->state       = $this->get('State');
+		$this->items       = $this->model->getItems();
+		$this->pagination  = $this->get('pagination');
+		$this->headerLevel = $this->model->headerLevel;
 
 		// Array_key - defaultColToHide column are present then get the key as value.
-		$this->defaultColToHide = array_keys($this->model->getState('defaultColToHide'));
-		$this->columns         = $this->model->columns;
+		$defaultColToHide       = (array) $this->model->getState('defaultColToHide');
+		$this->defaultColToHide = array_keys($defaultColToHide);
+		$this->columns          = $this->model->columns;
 
 		/* Array_merge - here colToshow means get all true value array so want to mearg defaultColToHide column and then using
 		 * array_intersect - only remove those column which is force fully added in load param in showhideCols config
@@ -184,19 +206,16 @@ class ReportsViewBase extends JViewLegacy
 			$this->showHideColumns = array_intersect($this->model->showhideCols, array_merge($this->defaultColToshow, $this->defaultColToHide));
 		}
 
-		$this->sortable        = $this->model->sortableColumns;
-		$this->emailColumn     = $this->model->getState('emailColumn');
-		$this->srButton        = $this->model->showSearchResetButton;
-
-		$this->colToshow       = $this->model->getState('colToshow');
-
-		$this->filterValues    = $this->model->getState('filters');
-
-		$this->userFilters     = $this->model->displayFilters();
-		$this->messages        = $this->model->getTJRMessages();
+		$this->sortable     = $this->model->sortableColumns;
+		$this->emailColumn  = $this->model->getState('emailColumn');
+		$this->srButton     = $this->model->showSearchResetButton;
+		$this->colToshow    = $this->model->getState('colToshow');
+		$this->filterValues = $this->model->getState('filters');
+		$this->userFilters  = $this->model->displayFilters();
+		$this->messages     = $this->model->getTJRMessages();
 
 		$this->enableReportPlugins = $this->model->getenableReportPlugins($this->client);
-		$this->isExport = $user->authorise('core.export', 'com_tjreports.tjreport.' . $this->reportId);
+		$this->isExport            = $user->authorise('core.export', 'com_tjreports.tjreport.' . $this->reportId);
 
 		return true;
 	}
@@ -208,14 +227,14 @@ class ReportsViewBase extends JViewLegacy
 	 * @param   string  $prefix  The class prefix. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
-	 * @return  JModelLegacy|boolean  Model object on success; otherwise false on failure.
+	 * @return  BaseDatabaseModel|boolean  Model object on success; otherwise false on failure.
 	 *
 	 * @since   3.0
 	 */
 	public function getModel($name = '', $prefix = '', $config = array())
 	{
-		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $name);
+		BaseDatabaseModel::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $name);
 
-		return JModelLegacy::getInstance($name, 'TjreportsModel', $config);
+		return BaseDatabaseModel::getInstance($name, 'TjreportsModel', $config);
 	}
 }

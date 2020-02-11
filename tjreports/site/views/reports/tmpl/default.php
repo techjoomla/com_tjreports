@@ -21,8 +21,7 @@ HTMLHelper::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 $emailColmClass = 'td-sendemail';
 $emailColumCnt  = 0;
-$app             = JFactory::getApplication();
-
+$app             = Factory::getApplication();
 $headerLevel     = $this->headerLevel;
 $this->listOrder = $this->state->get('list.ordering');
 $this->listDirn  = $this->state->get('list.direction');

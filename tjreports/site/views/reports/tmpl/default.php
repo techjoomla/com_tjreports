@@ -515,6 +515,6 @@ if ($app->isClient('site'))
 // If plg_system_sendemail enable then load following js
 if ($emailColumCnt > 0 && JPluginHelper::isEnabled('system', 'tjsendemail'))
 {
-	JHtml::script('media/editors/tinymce/tinymce.min.js');
-	JHtml::script('plugins/system/tjsendemail/bulksendemail.min.js');
+	HTMLHelper::script('media/editors/tinymce/tinymce.min.js');
+	HTMLHelper::script('plugins/system/tjsendemail/bulksendemail.min.js');
 }

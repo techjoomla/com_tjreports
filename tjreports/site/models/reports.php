@@ -51,6 +51,9 @@ class TjreportsModelReports extends ListModel
 	// Columns array contain PII columns
 	private $piiColumns = array();
 
+	// Columns array contain Custom Param
+	public $customParam = array();
+
 	// Columns array contain email columns
 	private $emailColumn = '';
 
@@ -1294,6 +1297,11 @@ class TjreportsModelReports extends ListModel
 				$this->filterDefaultColToHide = array_diff($this->filterDefaultColToHide, $param['piiColumns']);
 				$this->filterParamColToshow   = array_diff($this->filterParamColToshow, $param['piiColumns']);
 				$this->filterShowhideCols     = array_diff($this->filterShowhideCols, $param['piiColumns']);
+			}
+
+			if (isset($param['customParam']))
+			{
+				$this->customParam = (array) $param['customParam'];
 			}
 
 			$parent = $queryData->parent;

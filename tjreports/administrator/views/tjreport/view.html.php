@@ -109,8 +109,8 @@ class TjreportsViewTjreport extends JViewLegacy
 		Text::script('COM_TJREPORTS_INVALID_JSON_VALUE');
 
 		$document = Factory::getDocument();
-		$document->addScript(Uri::root() . '/components/com_tjreports/assets/js/tjrContentService.js');
-		$document->addScript(Uri::root() . '/components/com_tjreports/assets/js/tjrContentUI.js');
+		$document->addScript(Uri::root() . '/components/com_tjreports/assets/js/tjrContentService.min.js');
+		$document->addScript(Uri::root() . '/components/com_tjreports/assets/js/tjrContentUI.min.js');
 		$document->addStylesheet(Uri::root() . '/components/com_tjreports/assets/css/tjreports.css');
 
 		$document->addScriptDeclaration('tjrContentUI.base_url = "' . Uri::base() . '"');

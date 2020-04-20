@@ -8,7 +8,15 @@
  */
 // No direct access to this file
 defined('_JEXEC') or die;
+
+Use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+
 require_once JPATH_COMPONENT . '/helpers/tjreports.php';
+
 /**
  * tjreport View
  *
@@ -44,7 +52,7 @@ class TjreportsViewTjreport extends JViewLegacy
 			return false;
 		}
 
-		$input = JFactory::getApplication()->input;
+		$input = Factory::getApplication()->input;
 		$extension = $input->get('extension', '', 'STRING');
 
 		$this->addToolBar();
@@ -63,7 +71,7 @@ class TjreportsViewTjreport extends JViewLegacy
 	 */
 	protected function addToolBar()
 	{
-		$input = JFactory::getApplication()->input;
+		$input = Factory::getApplication()->input;
 
 		// Hide Joomla Administrator Main menu
 		$input->set('hidemainmenu', true);
@@ -71,17 +79,17 @@ class TjreportsViewTjreport extends JViewLegacy
 
 		if ($isNew)
 		{
-			$title = JText::_('COM_TJREPORTS_NEW');
+			$title = Text::_('COM_TJREPORTS_NEW');
 		}
 		else
 		{
-			$title = JText::_('COM_TJREPORTS_EDIT');
+			$title = Text::_('COM_TJREPORTS_EDIT');
 		}
 
-		JToolBarHelper::title($title, 'tjreport');
-		JToolBarHelper::apply('tjreport.apply');
-		JToolBarHelper::save('tjreport.save');
-		JToolBarHelper::cancel(
+		ToolbarHelper::title($title, 'tjreport');
+		ToolbarHelper::apply('tjreport.apply');
+		ToolbarHelper::save('tjreport.save');
+		ToolbarHelper::cancel(
 			'tjreport.cancel',
 			$isNew ? 'JTOOLBAR_CANCEL' : 'JTOOLBAR_CLOSE'
 		);
@@ -96,14 +104,16 @@ class TjreportsViewTjreport extends JViewLegacy
 	 */
 	protected function addDocumentHeaderData()
 	{
-		JHtml::_('jquery.framework');
-		JText::script('COM_TJREPORTS_FORM_DEFAULT_OPTION');
-		JText::script('COM_TJREPORTS_INVALID_JSON_VALUE');
-		$document = JFactory::getDocument();
-		$document->addScript(JURI::root() . '/components/com_tjreports/assets/js/tjrContentService.js');
-		$document->addScript(JURI::root() . '/components/com_tjreports/assets/js/tjrContentUI.js');
-		$document->addStylesheet(JURI::root() . '/components/com_tjreports/assets/css/tjreports.css');
-		$document->addScriptDeclaration('tjrContentUI.base_url = "' . Juri::base() . '"');
-		$document->addScriptDeclaration('tjrContentUI.root_url = "' . Juri::root() . '"');
+		HTMLHelper::_('jquery.framework');
+		Text::script('COM_TJREPORTS_FORM_DEFAULT_OPTION');
+		Text::script('COM_TJREPORTS_INVALID_JSON_VALUE');
+
+		$document = Factory::getDocument();
+		$document->addScript(Uri::root() . '/components/com_tjreports/assets/js/tjrContentService.js');
+		$document->addScript(Uri::root() . '/components/com_tjreports/assets/js/tjrContentUI.js');
+		$document->addStylesheet(Uri::root() . '/components/com_tjreports/assets/css/tjreports.css');
+
+		$document->addScriptDeclaration('tjrContentUI.base_url = "' . Uri::base() . '"');
+		$document->addScriptDeclaration('tjrContentUI.root_url = "' . Uri::root() . '"');
 	}
 }

@@ -10,10 +10,9 @@
 // no direct access
 defined('_JEXEC') or die;
 
+Use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Factory;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Router\Route;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filter\OutputFilter;
 
@@ -27,7 +26,7 @@ $this->listOrder = $this->state->get('list.ordering');
 $this->listDirn  = $this->state->get('list.direction');
 $totalCount      = 0;
 
-foreach ($this->colToshow as $key=>$data)
+foreach ($this->colToshow as $key => $data)
 {
 	if (is_array($data))
 	{
@@ -65,6 +64,12 @@ if ($app->isClient('site'))
 	$document->addScriptDeclaration("var csv_export_inprogress='{$message['inprogress']}';");
 	$document->addScriptDeclaration("var tj_csv_site_root='{$siteUrl}';");
 }
+
+if ($this->showSummaryReport == 'Yes')
+{
+	HTMLHelper::_('script', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js');
+}
+
 ?>
 <div id="reports-container">
 	<div class="<?php echo COM_TJLMS_WRAPPER_DIV ?> tjBs3">
@@ -234,6 +239,22 @@ if ($app->isClient('site'))
 							<span id="sendEmail">
 							</span>
 					<!--/col-md-2-->
+
+					<!--/col-md-3-->
+					<?php if ($this->showSummaryReport == 'Yes')
+							{
+								$reportContainer = "hide";
+									?>
+								<div class="show-hide-cols col-md-5 col-sm-5 inputbox radio btn-group btn-group-yesno radio">
+									<input type="radio" id="detailsReport" name="displayReport" value="1" class="displayReport" checked="checked" onclick="javascript:tjrContentUI.report.submitTJRData('default');" required="" aria-required="true"><label for="detailsReport" class="btn btn-success"><?php echo Text::_('COM_TJREPORTS_REPORT_DETAILS'); ?></label>
+									<input type="radio" id="summaryReport" name="displayReport" value="0" class="displayReport" required="" aria-required="true" onclick="javascript:tjrContentUI.report.submitTJRData('summary');"><label for="summaryReport" class="btn"><?php echo Text::_('COM_TJREPORTS_REPORT_SUMMARY'); ?></label>
+										</fieldset>
+								</div>
+								<?php
+							}
+					?>
+					<!--/col-md-3-->
+
 					  <?php
 						if (!$app->isClient('administrator') && $userAuthorisedExport && $user)
 						{

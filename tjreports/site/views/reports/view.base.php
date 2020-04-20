@@ -13,7 +13,11 @@
 // No direct access
 defined('_JEXEC') or die;
 
+Use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
 jimport('joomla.application.component.view');
@@ -93,7 +97,7 @@ class ReportsViewBase extends JViewLegacy
 
 		if (!$canDo->get('core.view') || !$this->pluginName)
 		{
-			JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR'));
+			JError::raiseWarning(403, Text::_('JERROR_ALERTNOAUTHOR'));
 
 			return false;
 		}
@@ -111,14 +115,14 @@ class ReportsViewBase extends JViewLegacy
 
 			if (!$allow_permission)
 			{
-				JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR'));
+				JError::raiseWarning(403, Text::_('JERROR_ALERTNOAUTHOR'));
 
 				return false;
 			}
 		}
 		else
 		{
-			JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR'));
+			JError::raiseWarning(403, Text::_('JERROR_ALERTNOAUTHOR'));
 
 			return false;
 		}
@@ -154,11 +158,11 @@ class ReportsViewBase extends JViewLegacy
 		if (!empty($savedQueries))
 		{
 			$qOptions   = array();
-			$qOptions[] = JHTML::_('select.option', '', JText::_('COM_TJREPORTS_SELONE_QUERY'));
+			$qOptions[] = HTMLHelper::_('select.option', '', Text::_('COM_TJREPORTS_SELONE_QUERY'));
 
 			foreach ($savedQueries as $savedQuery)
 			{
-				$qOptions[] = JHTML::_('select.option', $savedQuery->id, $savedQuery->title);
+				$qOptions[] = HTMLHelper::_('select.option', $savedQuery->id, $savedQuery->title);
 			}
 
 			$this->savedQueries = $qOptions;
@@ -166,20 +170,21 @@ class ReportsViewBase extends JViewLegacy
 
 		// Get all report plugin
 		$dispatcher   = JEventDispatcher::getInstance();
-		$pluginExists = JPluginHelper::getPlugin('tjreports', $this->pluginName);
+		$pluginExists = PluginHelper::getPlugin('tjreports', $this->pluginName);
 
 		if (!$pluginExists || !$this->pluginName)
 		{
-			JError::raiseError(404, JText::_('COM_TJREPORTS_PLUGIN_DESABLED_OR_NOT_EXISTS'));
+			JError::raiseError(404, Text::_('COM_TJREPORTS_PLUGIN_DESABLED_OR_NOT_EXISTS'));
 
 			return false;
 		}
 
 		$this->model->loadLanguage($this->pluginName);
-		$this->state       = $this->get('State');
-		$this->items       = $this->model->getItems();
-		$this->pagination  = $this->get('pagination');
-		$this->headerLevel = $this->model->headerLevel;
+		$this->state      = $this->get('State');
+		$this->items      = $this->model->getItems();
+		$this->pagination = $this->get('pagination');
+
+		$this->headerLevel     = $this->model->headerLevel;
 
 		// Array_key - defaultColToHide column are present then get the key as value.
 		$defaultColToHide       = (array) $this->model->getState('defaultColToHide');
@@ -206,14 +211,14 @@ class ReportsViewBase extends JViewLegacy
 			$this->showHideColumns = array_intersect($this->model->showhideCols, array_merge($this->defaultColToshow, $this->defaultColToHide));
 		}
 
-		$this->sortable     = $this->model->sortableColumns;
-		$this->emailColumn  = $this->model->getState('emailColumn');
-		$this->srButton     = $this->model->showSearchResetButton;
-		$this->colToshow    = $this->model->getState('colToshow');
-		$this->filterValues = $this->model->getState('filters');
-		$this->userFilters  = $this->model->displayFilters();
-		$this->messages     = $this->model->getTJRMessages();
-
+		$this->sortable            = $this->model->sortableColumns;
+		$this->emailColumn         = $this->model->getState('emailColumn');
+		$this->srButton            = $this->model->showSearchResetButton;
+		$this->colToshow           = $this->model->getState('colToshow');
+		$this->filterValues        = $this->model->getState('filters');
+		$this->userFilters         = $this->model->displayFilters();
+		$this->messages            = $this->model->getTJRMessages();
+		$this->showSummaryReport   = $this->model->getState('showSummaryReport');
 		$this->enableReportPlugins = $this->model->getenableReportPlugins($this->client);
 		$this->isExport            = $user->authorise('core.export', 'com_tjreports.tjreport.' . $this->reportId);
 

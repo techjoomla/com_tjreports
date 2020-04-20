@@ -175,13 +175,17 @@ class TjreportsModelTjreport extends JModelAdmin
 
 			$defaultColToHide = $plgModel->getState('defaultColToHide');
 
-			$params = array();
-			$params['filter_order']     = $plgModel->getState('list.ordering');
-			$params['filter_order_Dir'] = $plgModel->getState('list.direction');
-			$params['limit']            = $plgModel->getState('list.limit');
-			$params['emailColumn']      = $plgModel->getState('emailColumn');
-			$params['colToshow']        = $plgModel->getState('colToshow');
-			$params['colToshow']        = array_combine($params['colToshow'], array_fill(0, count($params['colToshow']), true));
+			$params                      = array();
+			$params['filter_order']      = $plgModel->getState('list.ordering');
+			$params['filter_order_Dir']  = $plgModel->getState('list.direction');
+			$params['limit']             = $plgModel->getState('list.limit');
+
+			// Show summary report configuration in params
+			$params['showSummaryReport'] = $plgModel->getState('showSummaryReport');
+
+			$params['emailColumn']       = $plgModel->getState('emailColumn');
+			$params['colToshow']         = $plgModel->getState('colToshow');
+			$params['colToshow']         = array_combine($params['colToshow'], array_fill(0, count($params['colToshow']), true));
 
 			/* Here merge colToshow (array value is true) with defaultColToHide (array value is false) column -
 			 * so false value column not display on report by default.*/

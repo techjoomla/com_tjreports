@@ -13,6 +13,12 @@
 // No direct access
 defined('_JEXEC') or die;
 
+Use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Component\ComponentHelper;
+
 require_once __DIR__ . '/view.base.php';
 jimport('techjoomla.tjtoolbar.button.csvexport');
 
@@ -32,7 +38,7 @@ class TjreportsViewReports extends ReportsViewBase
 	 */
 	public function display($tpl = null)
 	{
-		$input  = JFactory::getApplication()->input;
+		$input  = Factory::getApplication()->input;
 		$result = $this->processData();
 
 		if (!$result)
@@ -55,16 +61,16 @@ class TjreportsViewReports extends ReportsViewBase
 	 */
 	protected function addToolbar()
 	{
-		$app                  = JFactory::getApplication();
+		$app                  = Factory::getApplication();
 		$reportId             = $app->getUserStateFromRequest('reportId', 'reportId', '');
-		$user                 = JFactory::getUser();
+		$user                 = Factory::getUser();
 		$userAuthorisedExport = $user->authorise('core.export', 'com_tjreports.tjreport.' . $reportId);
 		$bar                  = JToolBar::getInstance('toolbar');
 		$canDo                = TjreportsHelper::getActions();
 
 		if ($app->isAdmin())
 		{
-			$title = JText::_('COM_TJREPORTS_TITLE_REPORT');
+			$title = Text::_('COM_TJREPORTS_TITLE_REPORT');
 
 			if (isset($this->reportData->title))
 			{
@@ -100,11 +106,11 @@ class TjreportsViewReports extends ReportsViewBase
 
 		if ($canDo->get('core.export') && $userAuthorisedExport)
 		{
-			$message = array();
-			$message['success'] = JText::_("COM_TJREPORTS_EXPORT_FILE_SUCCESS");
-			$message['error'] = JText::_("COM_TJREPORTS_EXPORT_FILE_ERROR");
-			$message['inprogress'] = JText::_("COM_TJREPORTS_EXPORT_FILE_NOTICE");
-			$message['text'] = JText::_("COM_TJREPORTS_CSV_EXPORT");
+			$message               = array();
+			$message['success']    = Text::_("COM_TJREPORTS_EXPORT_FILE_SUCCESS");
+			$message['error']      = Text::_("COM_TJREPORTS_EXPORT_FILE_ERROR");
+			$message['inprogress'] = Text::_("COM_TJREPORTS_EXPORT_FILE_NOTICE");
+			$message['text']       = Text::_("COM_TJREPORTS_CSV_EXPORT");
 			$bar->appendButton('CsvExport', $message);
 		}
 
@@ -113,7 +119,7 @@ class TjreportsViewReports extends ReportsViewBase
 					</span>
 					<a class="btn btn-primary  saveData" type="button" id="saveQuery"
 						onclick="tjrContentUI.report.saveThisQuery();">'
-						. JText::_('COM_TJREPORTS_SAVE_THIS_QUERY') . '</a>
+						. Text::_('COM_TJREPORTS_SAVE_THIS_QUERY') . '</a>
 
 					<button class="btn btn btn-default  cancel-btn" type="button" onclick="tjrContentUI.report.cancel();">
 						Cancel
@@ -139,25 +145,26 @@ class TjreportsViewReports extends ReportsViewBase
 	 */
 	protected function addDocumentHeaderData()
 	{
-		$app = JFactory::getApplication();
-		JHtml::_('formbehavior.chosen', 'select');
-		$document = JFactory::getDocument();
+		$app = Factory::getApplication();
+		HTMLHelper::_('formbehavior.chosen', 'select');
+		$document = Factory::getDocument();
 
-		$com_params	= JComponentHelper::getParams('com_tjreports');
+		$com_params	= ComponentHelper::getParams('com_tjreports');
 		$bootstrapSetting = $com_params->get('bootstrap_setting', 1);
 
 		if (($bootstrapSetting == 3)
 			|| ( $app->isAdmin() && $bootstrapSetting == 1 )
 			|| ( !$app->isAdmin() && $bootstrapSetting == 2 ) )
 		{
-			$document->addStylesheet(JURI::root(true) . '/media/techjoomla_strapper/bs3/css/bootstrap.min.css');
+			$document->addStylesheet(Uri::root(true) . '/media/techjoomla_strapper/bs3/css/bootstrap.min.css');
 		}
 
-		$document->addScript(JURI::root() . '/components/com_tjreports/assets/js/tjrContentService.js');
-		$document->addScript(JURI::root() . '/components/com_tjreports/assets/js/tjrContentUI.js');
-		$document->addStylesheet(JURI::root() . '/components/com_tjreports/assets/css/tjreports.css');
-		$document->addScriptDeclaration('tjrContentUI.base_url = "' . Juri::base() . '"');
-		$document->addScriptDeclaration('tjrContentUI.root_url = "' . Juri::root() . '"');
+		$document->addScript(Uri::root() . '/components/com_tjreports/assets/js/tjrContentService.min.js');
+		$document->addScript(Uri::root() . '/components/com_tjreports/assets/js/tjrContentUI.min.js');
+		$document->addStylesheet(Uri::root() . '/components/com_tjreports/assets/css/tjreports.css');
+
+		$document->addScriptDeclaration('tjrContentUI.base_url = "' . Uri::base() . '"');
+		$document->addScriptDeclaration('tjrContentUI.root_url = "' . Uri::root() . '"');
 
 		if (method_exists($this->model, 'getScripts'))
 		{
@@ -183,7 +190,7 @@ class TjreportsViewReports extends ReportsViewBase
 	}
 
 	/**
-	 * Get all jtext for javascript
+	 * Get all Text for javascript
 	 *
 	 * @return   void
 	 *
@@ -191,15 +198,15 @@ class TjreportsViewReports extends ReportsViewBase
 	 */
 	public static function getLanguageConstant()
 	{
-		JText::script('JERROR_ALERTNOAUTHOR');
-		JText::script('COM_TJREPORTS_DELETE_MESSAGE');
-		JText::script('COM_TJREPORTS_SAVE_QUERY');
-		JText::script('COM_TJREPORTS_ENTER_TITLE');
-		JText::script('COM_TJREPORTS_QUERY_DELETE_SUCCESS');
+		Text::script('JERROR_ALERTNOAUTHOR');
+		Text::script('COM_TJREPORTS_DELETE_MESSAGE');
+		Text::script('COM_TJREPORTS_SAVE_QUERY');
+		Text::script('COM_TJREPORTS_ENTER_TITLE');
+		Text::script('COM_TJREPORTS_QUERY_DELETE_SUCCESS');
 
-		JFactory::getLanguage()->load('lib_techjoomla', JPATH_SITE, null, false, true);
-		JText::script('LIB_TECHJOOMLA_CSV_EXPORT_ABORT');
-		JText::script('LIB_TECHJOOMLA_CSV_EXPORT_UESR_ABORTED');
-		JText::script('LIB_TECHJOOMLA_CSV_EXPORT_CONFIRM_ABORT');
+		Factory::getLanguage()->load('lib_techjoomla', JPATH_SITE, null, false, true);
+		Text::script('LIB_TECHJOOMLA_CSV_EXPORT_ABORT');
+		Text::script('LIB_TECHJOOMLA_CSV_EXPORT_UESR_ABORTED');
+		Text::script('LIB_TECHJOOMLA_CSV_EXPORT_CONFIRM_ABORT');
 	}
 }

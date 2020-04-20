@@ -19,6 +19,26 @@ jQuery.extend(tjrContentUI.report, {
 	url: 'index.php?option=com_tjreports&view=reports&format=json',
 	querySaveUrl: 'index.php?option=com_tjreports&format=json',
 	submitTJRData: function(task) {
+
+		// Set the view layout on the basis of task
+		task = (typeof task == 'undefined' ) ? 'default' : task;
+
+		// Default layout
+
+		var layout = 'default';
+
+		if (task == "summary")
+		{
+			layout = 'summary';
+			jQuery('#reportPagination').hide();
+			jQuery('#pagination').hide();
+		}
+		else
+		{
+			jQuery('#reportPagination').show();
+			jQuery('#pagination').show();
+		}
+
 		jQuery('#reports-container .hasTooltip').tooltip('destroy');
 		this.searchToggle = jQuery('div#topFilters').is(':visible');
 		tjrContentUI.utility.loadingLayer('show');
@@ -28,7 +48,7 @@ jQuery.extend(tjrContentUI.report, {
 			return false;
 		}
 		jQuery(".hasPopover").popover('destroy')
-		var promise = tjrContentService.postData(this.url, this.$form.serialize());//, {'datatype':'html'}
+		var promise = tjrContentService.postData(this.url+'&tpl='+layout, this.$form.serialize());//, {'datatype':'html'}
 
 		promise.fail(
 			function(response) {
@@ -42,47 +62,56 @@ jQuery.extend(tjrContentUI.report, {
 			}
 		).done(
 			function(response) {
-				var containerSel = '#j-main-container';
+
 				tjrContentUI.utility.loadingLayer('hide');
-				var responseHTML = jQuery(response['html']).find(containerSel).html();
-				jQuery(containerSel).html(responseHTML);
 
-				// If sendEmail plug is enabled then try to add a column of checkboxes
-				if (
-				  typeof tjutilitysendemail != 'undefined' &&
-				  jQuery('body').find('.td-sendemail').length > 0
-				)
+				if (layout == 'summary')
 				{
-					tjutilitysendemail.addColumn('report-table');
-					tjutilitysendemail.btnSendEmail();
+					jQuery("#report-containing-div").html(response['html']);
 				}
-
-				// Reinitialze some js like for calandar, tooltip, chosen
-				jQuery(".hasPopover").popover({"html": true,"trigger": "hover focus","container": "body"});
-
-				if (task == "showHide")
+				else
 				{
-					tjrContentUI.report.getColNames();
-				}
+					var containerSel = '#j-main-container';
+					var responseHTML = jQuery(response['html']).find(containerSel).html();
+					jQuery(containerSel).html(responseHTML);
 
-				var elements = jQuery(containerSel + " .field-calendar");
-				for (i = 0; i < elements.length; i++) {
-					JoomlaCalendar.init(elements[i]);
-				}
+					// If sendEmail plug is enabled then try to add a column of checkboxes
+					if (
+					  typeof tjutilitysendemail != 'undefined' &&
+					  jQuery('body').find('.td-sendemail').length > 0
+					)
+					{
+						tjutilitysendemail.addColumn('report-table');
+					}
 
-				if(jQuery.prototype.chosen){
-					jQuery(containerSel + ' select').chosen();
-				}
+					// Reinitialze some js like for calandar, tooltip, chosen
+					jQuery(".hasPopover").popover({"html": true,"trigger": "hover focus","container": "body"});
 
-				if (task == 'reset')
-				{
-					tjrContentUI.report.searchToggle = false;
-				}
+					if (task == "showHide")
+					{
+						tjrContentUI.report.getColNames();
+					}
 
-				if (tjrContentUI.report.searchToggle)
-				{
-					jQuery('#show-filter').addClass('btn-primary').find('i').removeClass('fa-caret-down').addClass('fa-caret-up');
-					jQuery('#topFilters').show();
+					var elements = jQuery(containerSel + " .field-calendar");
+					for (i = 0; i < elements.length; i++) {
+						JoomlaCalendar.init(elements[i]);
+					}
+
+					if(jQuery.prototype.chosen){
+						jQuery(containerSel + ' select').chosen();
+					}
+
+					if (task == 'reset')
+					{
+						tjrContentUI.report.searchToggle = false;
+					}
+
+					if (tjrContentUI.report.searchToggle)
+					{
+						jQuery('#show-filter').addClass('btn-primary').find('i').removeClass('fa-caret-down').addClass('fa-caret-up');
+						jQuery('#topFilters').show();
+                    			}
+                    			jQuery('.btn-displayReport').toggleClass('active btn-success');
 				}
 			}
 		).always(

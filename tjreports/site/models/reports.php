@@ -582,10 +582,10 @@ class TjreportsModelReports extends ListModel
 		$this->setState('filters', $filters);
 
 		// List state information
-		$value = $input->get('limit', $app->get('list_limit', 0), 'uint');
+		$value = $input->get('limit', $app->get('list_limit', 0), 'int');
 		$this->setState('list.limit', $value);
 
-		$value = $input->get('limitstart', 0, 'uint');
+		$value = $input->get('limitstart', 0, 'int');
 		$this->setState('list.start', $value);
 
 		if (!empty($this->piiColumns))
@@ -626,6 +626,8 @@ class TjreportsModelReports extends ListModel
 		}
 
 		$this->setState('list.direction', $this->default_order_dir);
+
+		parent::populateState($this->default_order, $this->default_order_dir);
 	}
 
 	/**
@@ -724,7 +726,7 @@ class TjreportsModelReports extends ListModel
 		$sortKey  = $this->getState('list.ordering', $this->default_order);
 		$orderDir = $this->getState('list.direction', $this->default_order_dir);
 
-		if (!empty($sortKey) && !in_array($sortKey, $this->sortableWoQuery))
+		if (!empty($sortKey) && in_array($sortKey, $this->sortableColumns))
 		{
 			$query->order($db->quoteName($sortKey) . ' ' . $orderDir);
 			$this->canLimitQuery = true;
@@ -779,11 +781,10 @@ class TjreportsModelReports extends ListModel
 
 		// Apply sorting and Limit if sorted column is not table
 		if (!empty($items) && !empty($sortKey)
-			&& in_array($sortKey, $this->sortableWoQuery) && $limit)
+			&& in_array($sortKey, $this->sortableColumns) && $limit)
 		{
 			$orderDir = $this->getState('list.direction', $this->default_order_dir);
 			$this->multi_d_sort($items, $sortKey, $orderDir);
-			$items    = array_splice($items, $limitstart, $limit);
 		}
 
 		return $items;

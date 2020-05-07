@@ -122,14 +122,37 @@ if ($app->isClient('site'))
 					<div class="col-xs-2 col-sm-1 pull-right">
 						<div id="reportPagination" class="pull-right ">
 							<?php
-							if (!$app->isClient('administrator'))
+							/*if (!$app->isClient('administrator'))
 							{
 								echo $this->pagination->getPaginationLinks('joomla.pagination.links', array('showPagesLinks' => false,'showLimitStart' => false));
 							}
 							else
 							{
 								echo $this->pagination->getLimitBox();
+							}*/
+
+							$defaultLimits = array(5, 10, 15, 20, 25, 30, 50, 100, 200, 500);
+							$limits        = array();
+
+							// Make the option list.
+							foreach ($defaultLimits as $lm)
+							{
+								$limits[] = (object) array(
+									'value' => $lm,
+									'text' => Text::_('J' . $lm),
+								);
 							}
+
+							// Build the select list.
+							echo HTMLHelper::_(
+								'select.genericlist',
+								$limits,
+								'limit',
+								'class="inputbox input-mini" size="1" onchange="Joomla.submitform();"',
+								'value',
+								'text',
+								$this->pagination->limit
+							);
 							?>
 						</div>
 					</div>

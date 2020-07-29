@@ -48,6 +48,12 @@ class PlgUserTjreportsindexer extends JPlugin
 	 */
 	public function onUserAfterSave($user, $isNew, $success, $msg)
 	{
+		// If com_fields data is not in user data it should return.
+		if (!array_key_exists('com_fields', $user))
+		{
+			return false;
+		}
+
 		// Delete existing user-data entry
 		// Here record_id = user_id
 		$this->deleteIndexerEntry($user['id']);

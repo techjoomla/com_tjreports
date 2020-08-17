@@ -135,21 +135,14 @@ class PlgUserTjreportsindexer extends JPlugin
 				continue;
 			}
 
-			if ($fieldsDetails[$key]->type !== 'url')
-			{
-				$value = $fieldsDetails[$key]->value;
-			}
-			else
-			{
-				$value = $fieldsDetails[$key]->rawvalue;
-			}
+			$value = $fieldsDetails[$key]->rawvalue;
 
 			$columns[] = $db->quoteName($key);
 			$values[]  = $db->quote($value);
 		}
 
 		// Add username & email hash values
-		array_push($columns, 'username_hash', 'email_hash');
+		array_push($columns, $db->quoteName('username_hash'), $db->quoteName('email_hash'));
 		array_push($values, "'" . md5($user['username']) . "'", "'" . md5($user['email']) . "'");
 
 		// Prepare the insert query

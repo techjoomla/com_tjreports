@@ -539,5 +539,5 @@ if ($app->isClient('site'))
 if ($emailColumCnt > 0 && JPluginHelper::isEnabled('system', 'tjsendemail'))
 {
 	HTMLHelper::script('media/editors/tinymce/tinymce.min.js');
-	HTMLHelper::script('plugins/system/tjsendemail/bulksendemail.min.js');
+	HTMLHelper::script('plugins/system/tjsendemail/assets/bulksendemail.min.js');
 }

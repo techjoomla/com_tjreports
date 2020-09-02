@@ -135,7 +135,14 @@ class PlgUserTjreportsindexer extends JPlugin
 				continue;
 			}
 
-			$value = $fieldsDetails[$key]->rawvalue;
+			if ($fieldsDetails[$key]->type == 'list')
+			{
+				$value = $fieldsDetails[$key]->rawvalue[0];
+			}
+			else
+			{
+				$value = $fieldsDetails[$key]->rawvalue;
+			}
 
 			$columns[] = $db->quoteName($key);
 			$values[]  = $db->quote($value);

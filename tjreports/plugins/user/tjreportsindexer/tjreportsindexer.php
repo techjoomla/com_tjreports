@@ -135,7 +135,15 @@ class PlgUserTjreportsindexer extends JPlugin
 				continue;
 			}
 
-			$value = $fieldsDetails[$key]->rawvalue;
+			// If select multiple values save as comma-separated.
+			if (is_array($fieldsDetails[$key]->rawvalue))
+			{
+				$value = implode(', ', $fieldsDetails[$key]->rawvalue);
+			}
+			else
+			{
+				$value = $fieldsDetails[$key]->rawvalue;
+			}
 
 			$columns[] = $db->quoteName($key);
 			$values[]  = $db->quote($value);

@@ -204,10 +204,10 @@ class TjreportsViewReports extends TjExportCsv
 		$finalValue = strip_tags($data);
 
 		// Remove double Quotes from the data
-		$finalValue = str_replace('"', '', $finalValue);
+		// $finalValue = str_replace('"', '', $finalValue);
 
 		// Remove single Quotes from the data
-		$finalValue = str_replace("'", '', $finalValue);
+		// $finalValue = str_replace("'", '', $finalValue);
 
 		// Remove tabs and newlines from the data
 		$finalValue = preg_replace('/(\r\n|\r|\n)+/', " ", $finalValue);

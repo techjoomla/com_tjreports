@@ -48,6 +48,12 @@ class PlgUserTjreportsindexer extends JPlugin
 	 */
 	public function onUserAfterSave($user, $isNew, $success, $msg)
 	{
+		// If com_fields data is not in user data it should return.
+		if (!array_key_exists('com_fields', $user))
+		{
+			return false;
+		}
+
 		// Delete existing user-data entry
 		// Here record_id = user_id
 		$this->deleteIndexerEntry($user['id']);
@@ -129,9 +135,10 @@ class PlgUserTjreportsindexer extends JPlugin
 				continue;
 			}
 
-			if ($fieldsDetails[$key]->type !== 'url')
+			// If select multiple values save as comma-separated.
+			if (is_array($fieldsDetails[$key]->rawvalue))
 			{
-				$value = $fieldsDetails[$key]->value;
+				$value = implode(', ', $fieldsDetails[$key]->rawvalue);
 			}
 			else
 			{
@@ -143,7 +150,7 @@ class PlgUserTjreportsindexer extends JPlugin
 		}
 
 		// Add username & email hash values
-		array_push($columns, 'username_hash', 'email_hash');
+		array_push($columns, $db->quoteName('username_hash'), $db->quoteName('email_hash'));
 		array_push($values, "'" . md5($user['username']) . "'", "'" . md5($user['email']) . "'");
 
 		// Prepare the insert query

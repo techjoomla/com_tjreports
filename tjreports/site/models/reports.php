@@ -101,10 +101,20 @@ class TjreportsModelReports extends ListModel
 	// Used to get the columns which are hide by default in load params
 	public $filterDefaultColToHide = array();
 
-	// Show button to display option as Summary Report & Details Report
+	/**
+	 * Show button to display option as Summary Report & Details Report
+	 *
+	 * @var    string
+	 * @since  __DEPLOY_VERSION__
+	 */
 	public $showSummaryReport = 'No';
 
-	// Array about field type which suppport for summary report
+	/**
+	 * Array about field type which suppport for summary report
+	 *
+	 * @var    string
+	 * @since  __DEPLOY_VERSION__
+	 */
 	public $supportedFieldTypesForSummaryReport = array ('radio', 'checkbox', 'rating');
 
 	/**

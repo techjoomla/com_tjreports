@@ -14,6 +14,7 @@ Use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Filter\OutputFilter;
 
 HTMLHelper::addIncludePath(JPATH_COMPONENT . '/helpers/html');
@@ -67,7 +68,7 @@ if ($app->isClient('site'))
 
 if ($this->showSummaryReport == 'Yes')
 {
-	HTMLHelper::_('script', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js');
+	HTMLHelper::script(Uri::root() . 'components/com_tjreports/assets/js/chartBundle.min.js');
 }
 
 ?>

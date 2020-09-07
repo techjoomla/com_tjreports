@@ -13,6 +13,7 @@ Use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 
 require_once JPATH_COMPONENT . '/helpers/tjreports.php';
@@ -22,7 +23,7 @@ require_once JPATH_COMPONENT . '/helpers/tjreports.php';
  *
  * @since  0.0.1
  */
-class TjreportsViewTjreport extends JViewLegacy
+class TjreportsViewTjreport extends HtmlView
 {
 	/**
 	 * View form
@@ -109,9 +110,9 @@ class TjreportsViewTjreport extends JViewLegacy
 		Text::script('COM_TJREPORTS_INVALID_JSON_VALUE');
 
 		$document = Factory::getDocument();
-		$document->addScript(Uri::root() . '/components/com_tjreports/assets/js/tjrContentService.min.js');
-		$document->addScript(Uri::root() . '/components/com_tjreports/assets/js/tjrContentUI.min.js');
-		$document->addStylesheet(Uri::root() . '/components/com_tjreports/assets/css/tjreports.css');
+		HTMLHelper::script(Uri::root() . '/components/com_tjreports/assets/js/tjrContentService.min.js');
+		HTMLHelper::script(Uri::root() . '/components/com_tjreports/assets/js/tjrContentUI.min.js');
+		HTMLHelper::stylesheet(Uri::root() . '/components/com_tjreports/assets/css/tjreports.css');
 
 		$document->addScriptDeclaration('tjrContentUI.base_url = "' . Uri::base() . '"');
 		$document->addScriptDeclaration('tjrContentUI.root_url = "' . Uri::root() . '"');

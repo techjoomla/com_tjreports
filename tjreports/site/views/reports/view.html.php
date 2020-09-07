@@ -156,7 +156,7 @@ class TjreportsViewReports extends ReportsViewBase
 			|| ( $app->isAdmin() && $bootstrapSetting == 1 )
 			|| ( !$app->isAdmin() && $bootstrapSetting == 2 ) )
 		{
-			$document->addStylesheet(Uri::root(true) . '/media/techjoomla_strapper/bs3/css/bootstrap.min.css');
+			HTMLHelper::stylesheet(Uri::root() . '/media/techjoomla_strapper/bs3/css/bootstrap.min.css');
 		}
 
 		$document->addScript(Uri::root() . '/components/com_tjreports/assets/js/tjrContentService.min.js');

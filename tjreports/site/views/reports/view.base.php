@@ -67,6 +67,8 @@ class ReportsViewBase extends JViewLegacy
 
 	protected $showSearchResetButton;
 
+	protected $showSummaryReport;
+
 	/**
 	 * Execute and display a template script.
 	 *

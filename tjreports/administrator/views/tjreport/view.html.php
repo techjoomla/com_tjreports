@@ -110,9 +110,10 @@ class TjreportsViewTjreport extends HtmlView
 		Text::script('COM_TJREPORTS_INVALID_JSON_VALUE');
 
 		$document = Factory::getDocument();
-		HTMLHelper::script(Uri::root() . '/components/com_tjreports/assets/js/tjrContentService.min.js');
-		HTMLHelper::script(Uri::root() . '/components/com_tjreports/assets/js/tjrContentUI.min.js');
-		HTMLHelper::stylesheet(Uri::root() . '/components/com_tjreports/assets/css/tjreports.css');
+
+		HTMLHelper::_('script', 'components/com_tjreports/assets/js/tjrContentService.min.js');
+		HTMLHelper::_('script', 'components/com_tjreports/assets/js/tjrContentUI.min.js');
+		HTMLHelper::_('stylesheet', 'components/com_tjreports/assets/css/tjreports.min.css');
 
 		$document->addScriptDeclaration('tjrContentUI.base_url = "' . Uri::base() . '"');
 		$document->addScriptDeclaration('tjrContentUI.root_url = "' . Uri::root() . '"');

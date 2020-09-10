@@ -68,7 +68,7 @@ if ($app->isClient('site'))
 
 if ($this->showSummaryReport == 'Yes')
 {
-	HTMLHelper::script(Uri::root() . 'components/com_tjreports/assets/js/chartBundle.min.js');
+	HTMLHelper::_('script', 'com_tjreports/chartBundle.min.js', array('version' => 'auto', 'relative' => true));
 }
 
 ?>

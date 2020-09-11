@@ -10,21 +10,22 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-Use Joomla\CMS\MVC\Model\ListModel;
-use Joomla\CMS\Table\Table;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Date\Date;
+use Joomla\CMS\Table\Table;
 Use Joomla\Registry\Registry;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Plugin\PluginHelper;
+Use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+
 
 jimport('joomla.application.component.modellist');
 
 // Load TJReports db helper
 JLoader::import('database', JPATH_SITE . '/components/com_tjreports/helpers');
 JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_ADMINISTRATOR);
-
-use Joomla\CMS\Date\Date;
 
 /**
  * Methods supporting a list of Tjreports records.
@@ -101,11 +102,27 @@ class TjreportsModelReports extends ListModel
 	public $filterDefaultColToHide = array();
 
 	/**
+	 * Show button to display option as Summary Report & Details Report
+	 *
+	 * @var    string
+	 * @since  __DEPLOY_VERSION__
+	 */
+	public $showSummaryReport = 'No';
+
+	/**
+	 * Array about field type which suppport for summary report
+	 *
+	 * @var    string
+	 * @since  __DEPLOY_VERSION__
+	 */
+	public $supportedFieldTypesForSummaryReport = array ('radio', 'checkbox', 'rating');
+
+	/**
 	 * Constructor.
 	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
 	 *
-	 * @see     JModelLegacy
+	 * @see     BaseDatabaseModel
 	 * @since   1.6
 	 */
 	public function __construct($config = array())
@@ -588,6 +605,12 @@ class TjreportsModelReports extends ListModel
 		$value = $input->get('limitstart', 0, 'int');
 		$this->setState('list.start', $value);
 
+		// Set show summary report configuration in params
+		if (!empty($this->showSummaryReport))
+		{
+			$this->setState('showSummaryReport', $this->showSummaryReport);
+		}
+
 		if (!empty($this->piiColumns))
 		{
 			$this->setState('piiColumns', $this->piiColumns);
@@ -639,6 +662,7 @@ class TjreportsModelReports extends ListModel
 	 */
 	protected function getListQuery()
 	{
+		$input 			= Factory::getApplication()->input;
 		$db  			= Factory::getDBO();
 		$query 			= $db->getQuery(true);
 		$filters 		= (array) $this->getState('filters');
@@ -730,6 +754,15 @@ class TjreportsModelReports extends ListModel
 		{
 			$query->order($db->quoteName($sortKey) . ' ' . $orderDir);
 			$this->canLimitQuery = true;
+		}
+
+		// Remove limit while showing summary report
+		$tpl = $input->get('tpl', 'default', 'string');
+		$tpl = ($tpl == 'default' || $tpl == 'submit') ? null : $tpl;
+
+		if ($tpl != null)
+		{
+			$this->canLimitQuery = false;
 		}
 
 		// Joomla fields integration - Get custom fields data
@@ -1252,6 +1285,12 @@ class TjreportsModelReports extends ListModel
 				}
 			}
 
+			// Set the value of show summary report from param to variable
+			if (isset($param['showSummaryReport']))
+			{
+				$this->showSummaryReport = $param['showSummaryReport'];
+			}
+
 			if (isset($param['piiColumns']))
 			{
 				if (empty($this->filterPiiColumns))
@@ -1438,16 +1477,16 @@ class TjreportsModelReports extends ListModel
 	 * @param   string  $prefix  The class prefix. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
-	 * @return  JModelLegacy|boolean  Model object on success; otherwise false on failure.
+	 * @return  BaseDatabaseModel|boolean  Model object on success; otherwise false on failure.
 	 *
 	 * @since   3.0
 	 */
 	public function getPluginModel($name = '', $prefix = '', $config = array())
 	{
-		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $name);
+		BaseDatabaseModel::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $name);
 		$this->loadLanguage($name, 'tjreports');
 
-		return JModelLegacy::getInstance($name, 'TjreportsModel', $config);
+		return BaseDatabaseModel::getInstance($name, 'TjreportsModel', $config);
 	}
 
 	/**

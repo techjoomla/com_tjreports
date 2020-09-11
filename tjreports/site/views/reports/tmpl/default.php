@@ -68,7 +68,7 @@ if ($app->isClient('site'))
 
 if ($this->showSummaryReport == 'Yes')
 {
-	HTMLHelper::_('script', 'com_tjreports/chartBundle.min.js', array('version' => 'auto', 'relative' => true));
+	HTMLHelper::_('script', 'media/com_tjreports/js/chartBundle.min.js');
 }
 
 ?>
@@ -494,7 +494,7 @@ if ($this->showSummaryReport == 'Yes')
 															$isSendEmailClass = $emailColmClass;
 															$emailColumCnt++;
 														}
-                            
+
                             $value = isset($item[$key]) ? $item[$key] : '';
 														echo "<td class=\"{$key} {$isSendEmailClass} \">{$value}</td>";
 													}

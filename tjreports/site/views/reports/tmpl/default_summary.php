@@ -27,7 +27,7 @@ if (count($chartdata) > 0)
 		</div>
 		<script>
 		var ctx = document.getElementById("chart_<?php echo $chart['fieldId']; ?>");
-		var fieldOptions = "[<?php echo implode(",",$chart['chartData']['labels']); ?>]";
+		var fieldOptions = `"[<?php echo implode(",",$chart['chartData']['labels']); ?>]"`;
 		var color = [];
 
 		for (var i = 0; i < fieldOptions.length; i++)
@@ -46,7 +46,7 @@ if (count($chartdata) > 0)
 			data: {
 				labels: [<?php echo $chart['labels']; ?>],
 				datasets: [{
-					label: "<?php echo $chart['fieldLable']; ?>",
+					label: `"<?php echo $chart['fieldLable']; ?>"`,
 					data: [<?php echo $chart['data']; ?>],
 					backgroundColor: color,
 					borderWidth: 1

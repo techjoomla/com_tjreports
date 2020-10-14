@@ -136,7 +136,7 @@ table.tjrport-table {
 }
 
 .report-tbl {
-    min-height: 450px;
+    min-height: 450px !important;
     overflow-x: auto;
 }
 

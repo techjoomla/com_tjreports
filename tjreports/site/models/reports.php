@@ -542,7 +542,11 @@ class TjreportsModelReports extends JModelList
 			$reportParams = $this->getReportParams($reportId);
 
 			$colToshow = $reportParams->get("colToshow");
-			$piiColumns = array_flip($reportParams->get("piiColumns"));
+
+			if ($reportParams->get("piiColumns"))
+			{
+				$piiColumns = array_flip($reportParams->get("piiColumns"));
+			}
 
 			if (!empty($piiColumns))
 			{

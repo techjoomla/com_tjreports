@@ -181,7 +181,7 @@ if ($app->isSite())
 						if ($totalHeadRows > 1)
 						{
 						?>
-							<div class="col-md-2 col-sm-4 col-xs-6">
+							<div class="col-md-2 col-sm-4 col-xs-12">
 								<button type="button" class="btn btn-primary btn-custom btn-block" id="show-filter" onclick="tjrContentUI.report.showFilter();">
 									<?php echo JText::_("COM_TJREPORTS_SEARCH_TOOLS"); ?>
 									<i class="fa fa-caret-down"></i>
@@ -191,7 +191,7 @@ if ($app->isSite())
 						}
 						?>
 					<!--/col-md-2-->
-							<div class="show-hide-cols col-md-2 col-sm-3">
+							<div class="show-hide-cols col-md-2 col-sm-3 col-xs-12">
 								<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="tjrContentUI.report.getColNames(); return false;" value="<?php echo JText::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>" />
 								<ul id="ul-columns-name" class="ColVis_collection">
 									<?php

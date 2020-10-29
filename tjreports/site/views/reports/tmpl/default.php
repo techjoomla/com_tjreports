@@ -496,6 +496,8 @@ if ($this->showSummaryReport == 'Yes')
 														}
 
                             $value = isset($item[$key]) ? $item[$key] : '';
+                            
+                            // Wrap thw word of report values
                             $value = wordwrap($value, 20, '<br />', true);
 														echo "<td class=\"{$key} {$isSendEmailClass} \">{$value}</td>";
 													}

@@ -579,7 +579,7 @@ class TjreportsModelReports extends ListModel
 			$colToshow    = (array) $reportParams->get("colToshow");
 			$piiColumns   = (array) $reportParams->get("piiColumns");
 
-			if ($reportParams->get("piiColumns"))
+			if (!empty($reportParams->get("piiColumns")))
 			{
 				$piiColumns = array_flip($piiColumns);
 			}

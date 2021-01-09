@@ -8,12 +8,14 @@
  */
 // No direct access to this file
 defined('_JEXEC') or die;
+use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\Factory;
 /**
  * Tjreportslist Model
  *
  * @since  0.0.1
  */
-class TjreportsModelTjreports extends JModelList
+class TjreportsModelTjreports extends ListModel
 {
 	/**
 	 * Constructor.
@@ -48,7 +50,7 @@ class TjreportsModelTjreports extends JModelList
 	protected function getListQuery()
 	{
 		// Initialize variables.
-		$db    = JFactory::getDbo();
+		$db    = Factory::getDbo();
 		$query = $db->getQuery(true);
 
 		// Create the base select statement.
@@ -107,7 +109,7 @@ class TjreportsModelTjreports extends JModelList
 	public function getItems()
 	{
 		$db = $this->getDbo();
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 		$input = $app->input;
 		$items = parent::getItems();
 
@@ -129,7 +131,7 @@ class TjreportsModelTjreports extends JModelList
 	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		// Set ordering.
 		$orderCol = $app->getUserStateFromRequest($this->context . '.filter_order', 'filter_order');
@@ -162,7 +164,7 @@ class TjreportsModelTjreports extends JModelList
 		$this->setState('filter.client', $client);
 
 		// Bug fix For a list layout
-		$jinput = JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 		$layout = $jinput->get('layout', '', 'STRING');
 	}
 }

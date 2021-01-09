@@ -9,6 +9,7 @@
  */
 // No direct access
 defined('_JEXEC') or die;
+use Joomla\CMS\MVC\Controller\BaseController;
 
 jimport('joomla.application.component.controller');
 
@@ -17,7 +18,7 @@ jimport('joomla.application.component.controller');
  *
  * @since  1.6
  */
-class TjreportsController extends JControllerLegacy
+class TjreportsController extends BaseController
 {
 	/**
 	 * Method to display a view.

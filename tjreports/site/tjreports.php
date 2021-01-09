@@ -9,6 +9,8 @@
 
 // No direct access
 defined('_JEXEC') or die;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Factory;
 
 if (!defined('DS'))
 {
@@ -32,6 +34,6 @@ jimport('joomla.application.component.controller');
 
 JLoader::registerPrefix('tjreports', JPATH_COMPONENT);
 
-$controller = JControllerLegacy::getInstance('tjreports');
-$controller->execute(JFactory::getApplication()->input->get('task'));
+$controller = BaseController::getInstance('tjreports');
+$controller->execute(Factory::getApplication()->input->get('task'));
 $controller->redirect();

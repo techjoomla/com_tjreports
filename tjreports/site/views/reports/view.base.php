@@ -12,6 +12,7 @@
 
 // No direct access
 defined('_JEXEC') or die;
+use Joomla\CMS\MVC\View\HtmlView;
 
 Use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Factory;
@@ -31,7 +32,7 @@ JLoader::register('JToolBarHelper', JPATH_ADMINISTRATOR . '/includes/toolbar.php
  *
  * @since  1.0.0
  */
-class ReportsViewBase extends JViewLegacy
+class ReportsViewBase extends HtmlView
 {
 	protected $items;
 

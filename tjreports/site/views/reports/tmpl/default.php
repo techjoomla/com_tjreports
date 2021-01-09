@@ -9,6 +9,7 @@
 
 // no direct access
 defined('_JEXEC') or die;
+use Joomla\CMS\Plugin\PluginHelper;
 
 Use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Factory;
@@ -561,7 +562,7 @@ if ($this->showSummaryReport == 'Yes')
 <!-- reports-container -->
 <?php
 // If plg_system_sendemail enable then load following js
-if ($emailColumCnt > 0 && JPluginHelper::isEnabled('system', 'tjsendemail'))
+if ($emailColumCnt > 0 && PluginHelper::isEnabled('system', 'tjsendemail'))
 {
 	HTMLHelper::script('media/editors/tinymce/tinymce.min.js');
 	HTMLHelper::script('plugins/system/tjsendemail/assets/bulksendemail.min.js');

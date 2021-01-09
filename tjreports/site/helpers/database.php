@@ -9,6 +9,7 @@
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+use Joomla\CMS\Factory;
 
 /**
  * Databse helper class for com_tjreports
@@ -31,7 +32,7 @@ class TjreportsfieldsHelperDatabase
 	 */
 	public function tableExists($tableName)
 	{
-		$db        = JFactory::getDbo();
+		$db        = Factory::getDbo();
 		$dbPrefix  = $db->getPrefix();
 		$allTables = $db->getTableList();
 

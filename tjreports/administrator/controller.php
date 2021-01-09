@@ -9,13 +9,15 @@
  */
 // No direct access
 defined('_JEXEC') or die;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Factory;
 
 /**
  * Class TjreportsController
  *
  * @since  1.6
  */
-class TjreportsController extends JControllerLegacy
+class TjreportsController extends BaseController
 {
 	/**
 	 * Method to display a view.
@@ -29,8 +31,8 @@ class TjreportsController extends JControllerLegacy
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{
-		$view = JFactory::getApplication()->input->getCmd('view', 'tjreports');
-		JFactory::getApplication()->input->set('view', $view);
+		$view = Factory::getApplication()->input->getCmd('view', 'tjreports');
+		Factory::getApplication()->input->set('view', $view);
 
 		parent::display($cachable, $urlparams);
 

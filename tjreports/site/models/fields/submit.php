@@ -10,6 +10,8 @@
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
+use Joomla\CMS\Form\FormField;
+use Joomla\CMS\Language\Text;
 
 jimport('joomla.form.formfield');
 
@@ -18,7 +20,7 @@ jimport('joomla.form.formfield');
  *
  * @since  1.6
  */
-class JFormFieldSubmit extends JFormField
+class FormFieldSubmit extends FormField
 {
 	protected $type = 'submit';
 
@@ -38,9 +40,9 @@ class JFormFieldSubmit extends JFormField
 		return '<button id="' . $this->id . '"'
 		. ' name="submit_' . $this->for . '"'
 		. ' value="' . $this->value . '"'
-		. ' title="' . JText::_('JSEARCH_FILTER_SUBMIT') . '"'
+		. ' title="' . Text::_('JSEARCH_FILTER_SUBMIT') . '"'
 		. ' class="btn" style="margin-top: -10px;">'
-		. JText::_('JSEARCH_FILTER_SUBMIT')
+		. Text::_('JSEARCH_FILTER_SUBMIT')
 		. ' </button>';
 	}
 }

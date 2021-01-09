@@ -8,6 +8,9 @@
  */
 
 defined('_JEXEC') or die('Restricted access');
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Factory;
 
 // Load TJReports db helper
 JLoader::import('database', JPATH_SITE . '/components/com_tjreports/helpers');
@@ -17,7 +20,7 @@ JLoader::import('database', JPATH_SITE . '/components/com_tjreports/helpers');
  *
  * @since  1.1.0
  */
-class PlgContentTjreportsfields extends JPlugin
+class PlgContentTjreportsfields extends CMSPlugin
 {
 	/**
 	 * Load the language file on instantiation.
@@ -89,8 +92,8 @@ class PlgContentTjreportsfields extends JPlugin
 
 		// $context = com_fields.field
 
-		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fields/tables');
-		$fieldsTable = JTable::getInstance('Field', 'FieldsTable');
+		Table::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fields/tables');
+		$fieldsTable = Table::getInstance('Field', 'FieldsTable');
 		$fieldsTable->load(array('id' => $row->id));
 
 		// Set an array with field id, field name, so it can be used in onContentAfterSave trigger
@@ -149,7 +152,7 @@ class PlgContentTjreportsfields extends JPlugin
 		}
 
 		// Get column name, type for custom fields index table
-		$db             = JFactory::getDbo();
+		$db             = Factory::getDbo();
 		$columnsDetails = $db->getTableColumns($this->customFieldsTable);
 
 		// Extract column names from $columnDetails
@@ -235,7 +238,7 @@ class PlgContentTjreportsfields extends JPlugin
 	 */
 	protected function addColumn($newColumn)
 	{
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		// ALTER TABLE tableName ADD newColumn dataType
 		// eg. ALTER TABLE `#__tjreports_com_users_user` ADD `dob` datetime
@@ -258,7 +261,7 @@ class PlgContentTjreportsfields extends JPlugin
 	 */
 	protected function updateColumn($oldColumn, $newColumn)
 	{
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		// ALTER TABLE tableName CHANGE oldColumn newColumn dataType
 		$query = 'ALTER TABLE ' . $db->quoteName($this->customFieldsTable) . '
@@ -280,7 +283,7 @@ class PlgContentTjreportsfields extends JPlugin
 	 */
 	protected function deleteColumn($column)
 	{
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		// ALTER TABLE tableName CHANGE oldColumn newColumn dataType
 		$query = 'ALTER TABLE ' . $db->quoteName($this->customFieldsTable) . '

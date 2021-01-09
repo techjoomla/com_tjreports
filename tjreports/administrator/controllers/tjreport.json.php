@@ -8,6 +8,9 @@
  */
 // No direct access to this file
 defined('_JEXEC') or die;
+use Joomla\CMS\MVC\Controller\FormController;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Response\JsonResponse;
 
 jimport('joomla.application.component.controllerform');
 /**
@@ -17,7 +20,7 @@ jimport('joomla.application.component.controllerform');
  * @subpackage  com_tjreports
  * @since       0.0.1
  */
-class TjreportsControllerTjreport extends JControllerForm
+class TjreportsControllerTjreport extends FormController
 {
 	/**
 	 * Contructor
@@ -38,7 +41,7 @@ class TjreportsControllerTjreport extends JControllerForm
 	{
 		try
 		{
-			$app     = JFactory::getApplication();
+			$app     = Factory::getApplication();
 			$jinput  = $app->input;
 			$jform   = $jinput->post->get('jform', array(), 'ARRAY');
 			$client = $jform['client'];
@@ -48,11 +51,11 @@ class TjreportsControllerTjreport extends JControllerForm
 			$model = $this->getModel('tjreport');
 			$reports = $model->getClientPlugins($client, $id, $userid);
 
-			echo new JResponseJson($reports);
+			echo new JsonResponse($reports);
 		}
 		catch (Exception $e)
 		{
-			echo new JResponseJson($e);
+			echo new JsonResponse($e);
 		}
 	}
 
@@ -66,7 +69,7 @@ class TjreportsControllerTjreport extends JControllerForm
 	{
 		try
 		{
-			$app     = JFactory::getApplication();
+			$app     = Factory::getApplication();
 			$jinput  = $app->input;
 			$jform   = $jinput->post->get('jform', array(), 'ARRAY');
 			$plugin = $parent = null;
@@ -84,11 +87,11 @@ class TjreportsControllerTjreport extends JControllerForm
 			$model   = $this->getModel('tjreport');
 			$report  = $model->getReportPluginData($parent, $plugin);
 
-			echo new JResponseJson($report);
+			echo new JsonResponse($report);
 		}
 		catch (Exception $e)
 		{
-			echo new JResponseJson($e);
+			echo new JsonResponse($e);
 		}
 	}
 }

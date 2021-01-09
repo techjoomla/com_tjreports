@@ -9,6 +9,7 @@
  */
 // No direct access
 defined('_JEXEC') or die;
+use Joomla\CMS\Component\Router\RouterBase;
 
 JLoader::registerPrefix('Tjreports', JPATH_SITE . '/components/com_tjreports/');
 
@@ -17,7 +18,7 @@ JLoader::registerPrefix('Tjreports', JPATH_SITE . '/components/com_tjreports/');
  *
  * @since  3.3
  */
-class TjreportsRouter extends JComponentRouterBase
+class TjreportsRouter extends RouterBase
 {
 	/**
 	 * Build method for URLs

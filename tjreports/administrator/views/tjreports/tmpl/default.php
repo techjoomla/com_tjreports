@@ -8,8 +8,13 @@
  */
 // No direct access to this file
 defined('_JEXEC') or die;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
 JHtml::_('formbehavior.chosen', 'select');
-$user	= JFactory::getUser();
+$user	= Factory::getUser();
 $listOrder     = $this->escape($this->state->get('list.ordering'));
 $listDirn      = $this->escape($this->state->get('list.direction'));
 
@@ -18,10 +23,10 @@ $saveOrder	= $listOrder == 'ordering';
 if ($saveOrder)
 {
 	$saveOrderingUrl = 'index.php?option=com_tjreports&task=tjreports.saveOrderAjax&tmpl=component';
-	JHtml::_('sortablelist.sortable', 'reportList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
+	HTMLHelper::_('sortablelist.sortable', 'reportList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
 }
 
-$input = JFactory::getApplication()->input;
+$input = Factory::getApplication()->input;
 ?>
 <form action="index.php?option=com_tjreports&view=tjreports" method="post" id="adminForm" name="adminForm">
 	<?php if (!empty($this->sidebar)):?>
@@ -36,7 +41,7 @@ $input = JFactory::getApplication()->input;
 	<div class="row-fluid">
 		<div class="span12">
 			<?php
-				echo JLayoutHelper::render(
+				echo LayoutHelper::render(
 					'joomla.searchtools.default',
 					array('view' => $this)
 				);
@@ -48,7 +53,7 @@ $input = JFactory::getApplication()->input;
 		<thead>
 			<tr>
 				<th width="2%" class="nowrap hidden-phone center">
-					<?php echo JHtml::_('grid.sort', '<i class="icon-menu-2"></i>', 'ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'); ?>
+					<?php echo HTMLHelper::_('grid.sort', '<i class="icon-menu-2"></i>', 'ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'); ?>
 				</th>
 
 				<th width="2%">
@@ -56,26 +61,26 @@ $input = JFactory::getApplication()->input;
 				</th>
 
 				<th width="30%">
-					<?php echo JHtml::_('grid.sort', 'COM_TJREPORTS_FORM_LBL_REPORT_TITLE', 'title', $listDirn, $listOrder); ?>
+					<?php echo HTMLHelper::_('grid.sort', 'COM_TJREPORTS_FORM_LBL_REPORT_TITLE', 'title', $listDirn, $listOrder); ?>
 				</th>
 
 				<th width="20%">
-					<?php echo JHtml::_('grid.sort', 'COM_TJREPORTS_FORM_LBL_REPORT_PLUGIN', 'plugin', $listDirn, $listOrder); ?>
+					<?php echo HTMLHelper::_('grid.sort', 'COM_TJREPORTS_FORM_LBL_REPORT_PLUGIN', 'plugin', $listDirn, $listOrder); ?>
 				</th>
 
 				<th width="20%" class="center">
-					<?php echo JHtml::_('grid.sort', 'COM_TJREPORTS_FORM_LBL_REPORT_CLIENT', 'client', $listDirn, $listOrder); ?>
+					<?php echo HTMLHelper::_('grid.sort', 'COM_TJREPORTS_FORM_LBL_REPORT_CLIENT', 'client', $listDirn, $listOrder); ?>
 				</th>
 
 				<th width="10%" class="center">
-					<?php echo JHtml::_('grid.sort', 'COM_TJREPORTS_LIST_SAVED_QUERY', 'savedquery', $listDirn, $listOrder); ?>
+					<?php echo HTMLHelper::_('grid.sort', 'COM_TJREPORTS_LIST_SAVED_QUERY', 'savedquery', $listDirn, $listOrder); ?>
 				</th>
 
 				<th width="17%" class="center">
-					<?php echo JText::_('COM_TJREPORTS_REPORTS_VIEW_REPORT');?>
+					<?php echo Text::_('COM_TJREPORTS_REPORTS_VIEW_REPORT');?>
 				</th>
 				<th width="17%" class="center">
-					<?php echo JHtml::_('grid.sort', 'COM_TJREPORTS_LIST_ID', 'id', $listDirn, $listOrder); ?>
+					<?php echo HTMLHelper::_('grid.sort', 'COM_TJREPORTS_LIST_ID', 'id', $listDirn, $listOrder); ?>
 				</th>
 			</tr>
 		</thead>
@@ -99,8 +104,8 @@ $input = JFactory::getApplication()->input;
 				{
 					$reportId = $row->id;
 				}
-				$link = JRoute::_('index.php?option=com_tjreports&task=tjreport.edit&id=' . $row->id.'&client='.$input->get('client','','STRING'));
-				$report_link = JRoute::_('index.php?option=com_tjreports&view=reports&client=' . $row->client . '&reportToBuild='. $row->plugin . '&reportId=' . $reportId);
+				$link = Route::_('index.php?option=com_tjreports&task=tjreport.edit&id=' . $row->id.'&client='.$input->get('client','','STRING'));
+				$report_link = Route::_('index.php?option=com_tjreports&view=reports&client=' . $row->client . '&reportToBuild='. $row->plugin . '&reportId=' . $reportId);
 				?>
 				<tr>
 					<td>
@@ -109,7 +114,7 @@ $input = JFactory::getApplication()->input;
 						<?php if (!$canChange) : ?>
 							<?php $iconClass = ' inactive'; ?>
 						<?php elseif (!$saveOrder) : ?>
-						<?php $iconClass = ' inactive tip-top hasTooltip" title="' . JHtml::tooltipText('JORDERINGDISABLED'); ?>
+						<?php $iconClass = ' inactive tip-top hasTooltip" title="' . HTMLHelper::tooltipText('JORDERINGDISABLED'); ?>
 						<?php endif; ?>
 						<span class="sortable-handler<?php echo $iconClass; ?>">
 							<span class="icon-menu" aria-hidden="true"></span>
@@ -119,14 +124,14 @@ $input = JFactory::getApplication()->input;
 						<?php endif; ?>
 					</td>
 					<td>
-						<?php echo JHtml::_('grid.id', $i, $row->id); ?>
+						<?php echo HTMLHelper::_('grid.id', $i, $row->id); ?>
 					</td>
 					<td>
 						<?php
 						if ($canEdit)
 						{
 						?>
-						<a href="<?php echo $link; ?>" title="<?php echo JText::_('COM_TJREPORTS_EDIT'); ?>">
+						<a href="<?php echo $link; ?>" title="<?php echo Text::_('COM_TJREPORTS_EDIT'); ?>">
 							<?php echo htmlspecialchars($row->title, ENT_COMPAT, 'UTF-8'); ?>
 						</a>
 						<?php
@@ -147,7 +152,7 @@ $input = JFactory::getApplication()->input;
 						<?php echo $row->savedquery; ?>
 					</td>
 					<td class="center">
-						<a href="<?php echo $report_link; ?>"><?php echo JText::_('COM_TJREPORTS_REPORTS_VIEW');?></a>
+						<a href="<?php echo $report_link; ?>"><?php echo Text::_('COM_TJREPORTS_REPORTS_VIEW');?></a>
 					</td>
 					<td class="center">
 						<?php echo $reportId; ?>
@@ -158,7 +163,7 @@ $input = JFactory::getApplication()->input;
 	</table>
 	<?php }else{?>
 		<div class="alert alert-no-items">
-			<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
+			<?php echo Text::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 		</div>
 	<?php } ?>
 	<input type="hidden" name="task" value=""/>
@@ -166,5 +171,5 @@ $input = JFactory::getApplication()->input;
 	<input type="hidden" name="extension" value="<?php echo $input->get('extension','','word'); ?>">
 	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
 	<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
-	<?php echo JHtml::_('form.token'); ?>
+	<?php echo HTMLHelper::_('form.token'); ?>
 </form>

@@ -9,11 +9,15 @@
 
 // No direct access
 defined('_JEXEC') or die;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\MVC\Controller\BaseController;
 
 // Access check.
-if (!JFactory::getUser()->authorise('core.manage', 'com_tjreports'))
+if (!Factory::getUser()->authorise('core.manage', 'com_tjreports'))
 {
-	throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
+	throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
 }
 
 if (!defined('DS'))
@@ -33,14 +37,14 @@ else
 	define('COM_TJLMS_WRAPPER_DIV', 'tjlms-wrapper row-fluid');
 }
 
-$document = JFactory::getDocument();
-$document->addStyleSheet(JUri::root(true) . '/media/com_tjreports/css/font-awesome/css/font-awesome.min.css');
+$document = Factory::getDocument();
+$document->addStyleSheet(Uri::root(true) . '/media/com_tjreports/css/font-awesome/css/font-awesome.min.css');
 
 // Include dependancies
 jimport('joomla.application.component.controller');
 
 JLoader::registerPrefix('Tjreports', JPATH_COMPONENT_ADMINISTRATOR);
 
-$controller = JControllerLegacy::getInstance('Tjreports');
-$controller->execute(JFactory::getApplication()->input->get('task'));
+$controller = BaseController::getInstance('Tjreports');
+$controller->execute(Factory::getApplication()->input->get('task'));
 $controller->redirect();

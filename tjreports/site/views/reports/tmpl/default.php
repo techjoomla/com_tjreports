@@ -217,7 +217,7 @@ if ($this->showSummaryReport == 'Yes')
 						if ($totalHeadRows > 1)
 						{
 						?>
-							<div class="col-md-2 col-sm-4 col-xs-12">
+							<div class="col-md-2 col-sm-4">
 								<button type="button" class="btn btn-primary btn-custom btn-block" id="show-filter" onclick="tjrContentUI.report.showFilter();">
 									<?php echo Text::_("COM_TJREPORTS_SEARCH_TOOLS"); ?>
 									<i class="fa fa-caret-down"></i>

@@ -158,6 +158,9 @@ class TjreportsViewReports extends TjExportCsv
 
 		$this->headers = $colTitleArray;
 		$pluginTitle = str_replace(" ", "_", $reportData->title);
+
+		// Remove special character from plugin name
+		$pluginTitle = preg_replace('/[^A-Za-z0-9\-]/', '', $pluginTitle);
 		$this->fileName = rtrim(strtolower($pluginTitle)) . "_report_" . date("Y-m-d_H-i", time());
 
 		// Loop through items

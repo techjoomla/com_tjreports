@@ -10,6 +10,17 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Date\Date;
+use Joomla\CMS\Table\Table;
+Use Joomla\Registry\Registry;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Plugin\PluginHelper;
+Use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+
+
 jimport('joomla.application.component.modellist');
 
 // Load TJReports db helper
@@ -21,7 +32,7 @@ JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_ADMINISTRATO
  *
  * @since  1.0.0
  */
-class TjreportsModelReports extends JModelList
+class TjreportsModelReports extends ListModel
 {
 	// Default ordering of Data
 	protected $default_order = '';
@@ -48,7 +59,7 @@ class TjreportsModelReports extends JModelList
 	public $showhideCols = array();
 
 	// Columns which will be displayed by default
-	private $defaultColToShow = array();
+	public $defaultColToShow = array();
 
 	// Columns which will be hide by default
 	private $defaultColToHide = array();
@@ -85,14 +96,33 @@ class TjreportsModelReports extends JModelList
 
 	private $filterPiiColumns = array();
 
-	private $filterParamColToshow = array();
+	public $filterParamColToshow = array();
+
+	// Used to get the columns which are hide by default in load params
+	public $filterDefaultColToHide = array();
+
+	/**
+	 * Show button to display option as Summary Report & Details Report
+	 *
+	 * @var    string
+	 * @since  __DEPLOY_VERSION__
+	 */
+	public $showSummaryReport = 'No';
+
+	/**
+	 * Array about field type which suppport for summary report
+	 *
+	 * @var    string
+	 * @since  __DEPLOY_VERSION__
+	 */
+	public $supportedFieldTypesForSummaryReport = array ('radio', 'checkbox', 'rating');
 
 	/**
 	 * Constructor.
 	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
 	 *
-	 * @see     JModelLegacy
+	 * @see     BaseDatabaseModel
 	 * @since   1.6
 	 */
 	public function __construct($config = array())
@@ -111,14 +141,17 @@ class TjreportsModelReports extends JModelList
 
 		// Get email column
 		$this->emailColumn = array_search(
-		1, array_map(
-		function ($ar) {
-			if (!empty($ar['emailColumn']))
-			{
-				return $ar['emailColumn'];
-			}
-		}, $this->columns
-		)
+			1,
+			array_map(
+				function ($ar)
+				{
+					if (!empty($ar['emailColumn']))
+					{
+						return $ar['emailColumn'];
+					}
+				},
+				$this->columns
+			)
 		);
 
 		// Check PII data permission
@@ -151,7 +184,7 @@ class TjreportsModelReports extends JModelList
 		}
 
 		// Get column name, type for custom fields index table
-		$db             = JFactory::getDbo();
+		$db             = Factory::getDbo();
 		$columnsDetails = $db->getTableColumns($this->customFieldsTable);
 
 		// If no columns, return
@@ -176,10 +209,9 @@ class TjreportsModelReports extends JModelList
 		foreach ($columnNames as $columnName)
 		{
 			$customField = array (
-				'title'              => ($columnLabels[$columnName]) ? $columnLabels[$columnName] : $columnName,
-				'table_column'       => $this->customFieldsTableAlias . '.' . $columnName
-
-				// , 'disable_sorting' => true
+				'title'         => isset($columnLabels[$columnName]) ? $columnLabels[$columnName] : $columnName,
+				'table_column'  => $this->customFieldsTableAlias . '.' . $columnName,
+				'not_show_hide' => false
 			);
 
 			// Eg. tuf.dob
@@ -212,7 +244,7 @@ class TjreportsModelReports extends JModelList
 		}
 
 		// Get column name, type for custom fields index table
-		$db             = JFactory::getDbo();
+		$db             = Factory::getDbo();
 		$columnsDetails = $db->getTableColumns($this->customFieldsTable);
 
 		// If no columns, return
@@ -273,13 +305,13 @@ class TjreportsModelReports extends JModelList
 						$this->customFieldsTableAlias . '.' . $key . '_from' => array (
 							'attrib' => array (
 								'placeholder' => 'YYYY-MM-DD',
-								'onChange' => 'tjrContentUI.report.attachCalSubmit(this);'
+								'onChange'    => 'tjrContentUI.report.attachCalSubmit(this);'
 							)
 						),
 						$this->customFieldsTableAlias . '.' . $key . '_to' => array (
 							'attrib' => array (
 								'placeholder' => 'YYYY-MM-DD',
-								'onChange' => 'tjrContentUI.report.attachCalSubmit(this);'
+								'onChange'    => 'tjrContentUI.report.attachCalSubmit(this);'
 							)
 						)
 					);
@@ -326,14 +358,14 @@ class TjreportsModelReports extends JModelList
 	 */
 	protected function getCustomFieldsDisplayFilterOptions($column)
 	{
-		$objArray     = array();
-		$obj          = new stdClass;
-		$obj->text    = JText::_('- Select ' . $column . ' -');
-		$obj->value   = '';
-		$objArray[]   = $obj;
+		$objArray   = array();
+		$obj        = new stdClass;
+		$obj->text  = Text::_('- Select ' . $column . ' -');
+		$obj->value = '';
+		$objArray[] = $obj;
 
 		// Get column name, type for custom fields index table
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		// Get column labels from #__fields table for all indexed custom fields from this table
 		$query = $db->getQuery(true);
@@ -357,10 +389,11 @@ class TjreportsModelReports extends JModelList
 	 * */
 	private function initData()
 	{
-		$columns      = $this->columns;
-		$columnsKeys  = array_keys($columns);
+		$columns                = $this->columns;
+		$columnsKeys            = array_keys($columns);
+		$this->sortableWoQuery  = array();
+
 		$this->defaultColToShow = $this->sortableColumns = $this->showhideCols = array_combine($columnsKeys, $columnsKeys);
-		$this->sortableWoQuery = array();
 
 		foreach ($columns as $key => $column)
 		{
@@ -428,9 +461,12 @@ class TjreportsModelReports extends JModelList
 	public function getValidRequestVars()
 	{
 		$validVars = array(
-			'colToshow' => 'ARRAY', 'filters' => 'ARRAY',
-			'limit' => 'INT', 'limitstart' => 'INT',
-			'filter_order' => 'STRING', 'filter_order_Dir' => 'STRING'
+			'colToshow'        => 'ARRAY',
+			'filters'          => 'ARRAY',
+			'limit'            => 'INT',
+			'limitstart'       => 'INT',
+			'filter_order'     => 'STRING',
+			'filter_order_Dir' => 'STRING'
 		);
 
 		return $validVars;
@@ -522,8 +558,8 @@ class TjreportsModelReports extends JModelList
 	protected function populateState($ordering = '', $direction = 'ASC')
 	{
 		// List state information
-		$app = JFactory::getApplication();
-		$input = JFactory::getApplication()->input;
+		$app   = Factory::getApplication();
+		$input = $app->input;
 
 		if (!($reportId = $input->get('reportId', 0, 'uint')))
 		{
@@ -540,13 +576,13 @@ class TjreportsModelReports extends JModelList
 		if (empty($colToshow))
 		{
 			$reportParams = $this->getReportParams($reportId);
-
-			$colToshow = $reportParams->get("colToshow");
-			$piiColumns = array_flip($reportParams->get("piiColumns"));
+			$colToshow    = (array) $reportParams->get("colToshow");
+			$piiColumns   = (array) $reportParams->get("piiColumns");
+			$piiColumns   = array_flip($piiColumns);
 
 			if (!empty($piiColumns))
 			{
-				$colToshow = (object) array_diff_key((array) $colToshow, $piiColumns);
+				$colToshow = (object) array_diff_key($colToshow, $piiColumns);
 			}
 		}
 
@@ -559,15 +595,21 @@ class TjreportsModelReports extends JModelList
 
 		$this->setState('colToshow', $colToshow);
 
-		$filters    = $input->get('filters', array(), 'ARRAY');
+		$filters = $input->get('filters', array(), 'ARRAY');
 		$this->setState('filters', $filters);
 
 		// List state information
-		$value = $input->get('limit', $app->get('list_limit', 0), 'uint');
+		$value = $input->get('limit', $app->get('list_limit', 0), 'int');
 		$this->setState('list.limit', $value);
 
-		$value = $input->get('limitstart', 0, 'uint');
+		$value = $input->get('limitstart', 0, 'int');
 		$this->setState('list.start', $value);
+
+		// Set show summary report configuration in params
+		if (!empty($this->showSummaryReport))
+		{
+			$this->setState('showSummaryReport', $this->showSummaryReport);
+		}
 
 		if (!empty($this->piiColumns))
 		{
@@ -607,6 +649,8 @@ class TjreportsModelReports extends JModelList
 		}
 
 		$this->setState('list.direction', $this->default_order_dir);
+
+		parent::populateState($this->default_order, $this->default_order_dir);
 	}
 
 	/**
@@ -618,7 +662,8 @@ class TjreportsModelReports extends JModelList
 	 */
 	protected function getListQuery()
 	{
-		$db  			= JFactory::getDBO();
+		$input 			= Factory::getApplication()->input;
+		$db  			= Factory::getDBO();
 		$query 			= $db->getQuery(true);
 		$filters 		= (array) $this->getState('filters');
 		$displayFilters = (array) $this->displayFilters();
@@ -670,12 +715,14 @@ class TjreportsModelReports extends JModelList
 						if (!empty($filters[$fromCol]))
 						{
 							$fromTime = $filters[$fromCol] . ' 00:00:00';
+							$fromTime = new Date($fromTime, 'UTC');
 							$query->where($dispFilter['searchin'] . ' >= ' . $db->quote($fromTime));
 						}
 
 						if (!empty($filters[$toCol]))
 						{
 							$toTime = $filters[$toCol] . ' 23:59:59';
+							$toTime = new Date($toTime, 'UTC');
 							$query->where($dispFilter['searchin'] . ' <= ' . $db->quote($toTime));
 						}
 					}
@@ -703,10 +750,19 @@ class TjreportsModelReports extends JModelList
 		$sortKey  = $this->getState('list.ordering', $this->default_order);
 		$orderDir = $this->getState('list.direction', $this->default_order_dir);
 
-		if (!empty($sortKey) && !in_array($sortKey, $this->sortableWoQuery))
+		if (!empty($sortKey) && in_array($sortKey, $this->sortableColumns))
 		{
 			$query->order($db->quoteName($sortKey) . ' ' . $orderDir);
 			$this->canLimitQuery = true;
+		}
+
+		// Remove limit while showing summary report
+		$tpl = $input->get('tpl', 'default', 'string');
+		$tpl = ($tpl == 'default' || $tpl == 'submit') ? null : $tpl;
+
+		if ($tpl != null)
+		{
+			$this->canLimitQuery = false;
 		}
 
 		// Joomla fields integration - Get custom fields data
@@ -758,11 +814,10 @@ class TjreportsModelReports extends JModelList
 
 		// Apply sorting and Limit if sorted column is not table
 		if (!empty($items) && !empty($sortKey)
-			&& in_array($sortKey, $this->sortableWoQuery) && $limit)
+			&& in_array($sortKey, $this->sortableColumns) && $limit)
 		{
-			$orderDir   = $this->getState('list.direction', $this->default_order_dir);
+			$orderDir = $this->getState('list.direction', $this->default_order_dir);
 			$this->multi_d_sort($items, $sortKey, $orderDir);
-			$items = array_splice($items, $limitstart, $limit);
 		}
 
 		return $items;
@@ -807,7 +862,7 @@ class TjreportsModelReports extends JModelList
 	 *
 	 * @param   INT  $reportToBuild  report to build
 	 *
-	 * @return    object
+	 * @return    Mixed
 	 *
 	 * @since    1.0
 	 */
@@ -815,7 +870,7 @@ class TjreportsModelReports extends JModelList
 	{
 		if (!empty($reportToBuild) &&  !empty($user_id))
 		{
-			$db        = JFactory::getDBO();
+			$db    = Factory::getDBO();
 			$query = $db->getQuery(true);
 			$query->select('*');
 			$query->from('#__tj_reports');
@@ -841,7 +896,7 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function getQueryData($queryId)
 	{
-		$ol_user = JFactory::getUser()->id;
+		$ol_user = Factory::getUser()->id;
 		$query   = $this->_db->getQuery(true);
 		$query->select('*');
 		$query->from('#__tj_reports');
@@ -857,23 +912,23 @@ class TjreportsModelReports extends JModelList
 	/**
 	 * Get all plugins names
 	 *
-	 * @return    object
+	 * @return    Array
 	 *
 	 * @since    1.0
 	 */
 	public function getenableReportPlugins()
 	{
-		$user       = JFactory::getUser();
-		$input = JFactory::getApplication()->input;
+		$user   = Factory::getUser();
+		$input  = Factory::getApplication()->input;
 		$client = $input->get('client', '', 'STRING');
 
 		// Get all report plugin
 		$dispatcher   = JEventDispatcher::getInstance();
-		$plugins = JPluginHelper::getPlugin('tjreports');
+		$plugins      = PluginHelper::getPlugin('tjreports');
 		$pluginExists = json_decode(json_encode($plugins), true);
-		$pluginNames = array_column($pluginExists, 'name');
+		$pluginNames  = array_column($pluginExists, 'name');
 
-		$db = JFactory::getDBO();
+		$db    = Factory::getDBO();
 		$query = $db->getQuery(true);
 
 		$query->select(array('id as reportId, title, plugin, ordering'));
@@ -903,7 +958,10 @@ class TjreportsModelReports extends JModelList
 
 		// In view layouts - reports[0] is used, and since array indexes are unset above,
 		// Let's re-arrange index accordingly
-		$reports = array_values($reports);
+		if (is_array($reports))
+		{
+			$reports = array_values($reports);
+		}
 
 		return $reports;
 	}
@@ -917,7 +975,7 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function getUserFilter()
 	{
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		$query = $db->getQuery(true);
 		$query->select('u.id,u.username');
@@ -927,13 +985,13 @@ class TjreportsModelReports extends JModelList
 		$db->setQuery($query);
 		$users = $db->loadObjectList();
 
-		$userFilter[] = JHTML::_('select.option', '', JText::_('COM_TJREPORTS_FILTER_SELECT_USER'));
+		$userFilter[] = HTMLHelper::_('select.option', '', Text::_('COM_TJREPORTS_FILTER_SELECT_USER'));
 
 		if (!empty($users))
 		{
 			foreach ($users as $eachUser)
 			{
-				$userFilter[] = JHTML::_('select.option', $eachUser->id, $eachUser->username);
+				$userFilter[] = HTMLHelper::_('select.option', $eachUser->id, $eachUser->username);
 			}
 		}
 
@@ -950,9 +1008,9 @@ class TjreportsModelReports extends JModelList
 	public function getreportoptions()
 	{
 		// Initialize variables.
-		$db    = JFactory::getDbo();
-		$query = $db->getQuery(true);
-		$user_id = JFactory::getUser()->id;
+		$db      = Factory::getDbo();
+		$query   = $db->getQuery(true);
+		$user_id = Factory::getUser()->id;
 
 		$clients = $this->getState('client');
 
@@ -982,11 +1040,11 @@ class TjreportsModelReports extends JModelList
 		$db->setQuery($query);
 		$reports = $db->loadObjectList();
 
-		$options[] = JHTML::_('select.option', 0, JText::_('COM_TJREPORTS_SELONE_REPORTS'));
+		$options[] = HTMLHelper::_('select.option', 0, Text::_('COM_TJREPORTS_SELONE_REPORTS'));
 
 		foreach ($reports as $repo)
 		{
-			$options[] = JHtml::_('select.option', $repo->value, $repo->text);
+			$options[] = HTMLHelper::_('select.option', $repo->value, $repo->text);
 		}
 
 		return $options;
@@ -1012,14 +1070,14 @@ class TjreportsModelReports extends JModelList
 	 *
 	 * @param   INT  $reportId  report id
 	 *
-	 * @return    object
+	 * @return  Mixed
 	 *
-	 * @since    1.0
+	 * @since   1.0
 	 */
 
 	public function checkpermissions($reportId)
 	{
-		$user       = JFactory::getUser();
+		$user = Factory::getUser();
 
 		if ($reportId)
 		{
@@ -1040,8 +1098,8 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function getUserGroupFilter($includeSuperAdmin = true)
 	{
-		$groups  = JHtml::_('user.groups', $includeSuperAdmin);
-		array_unshift($groups, JHtml::_('select.option', '', JText::_('JGLOBAL_FILTER_GROUPS_LABEL')));
+		$groups = HTMLHelper::_('user.groups', $includeSuperAdmin);
+		array_unshift($groups, HTMLHelper::_('select.option', '', Text::_('JGLOBAL_FILTER_GROUPS_LABEL')));
 
 		return $groups;
 	}
@@ -1055,25 +1113,25 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function datadenyset()
 	{
-		$input = JFactory::getApplication()->input;
+		$input    = Factory::getApplication()->input;
 		$reportId = $input->get('reportId', '0', 'int');
 
 		if ($reportId)
 		{
 			$this->model = $this->getModel('reports');
-			$reportData = $this->model->getReportNameById($reportId);
-			$reportName = $reportData->title;
+			$reportData  = $this->model->getReportNameById($reportId);
+			$reportName  = $reportData->title;
 		}
 		else
 		{
 			return false;
 		}
 
-		$user_id = JFactory::getUser()->id;
+		$user_id = Factory::getUser()->id;
 
 		if ($reportName && $user_id && $reportId)
 		{
-			$db        = JFactory::getDBO();
+			$db    = Factory::getDBO();
 			$query = $db->getQuery(true);
 			$query->select(array('param'));
 			$query->from($db->quoteName('#__tj_reports'));
@@ -1111,7 +1169,7 @@ class TjreportsModelReports extends JModelList
 		}
 
 		$extension = strtolower($extension);
-		$lang      = JFactory::getLanguage();
+		$lang      = Factory::getLanguage();
 
 		// If language already loaded, don't load it again.
 		if ($lang->getPaths($extension))
@@ -1141,7 +1199,7 @@ class TjreportsModelReports extends JModelList
 		}
 
 		$query = $this->_db->getQuery(true);
-		$this->filterShowhideCols = $this->filterPiiColumns = $this->filterParamColToshow = array();
+		$this->filterDefaultColToHide = $this->filterShowhideCols = $this->filterPiiColumns = $this->filterParamColToshow = array();
 
 		// $this->filterSelColToshow = $selColToshow;
 
@@ -1167,6 +1225,12 @@ class TjreportsModelReports extends JModelList
 			{
 				$selColToshow = $this->filterParamColToshow;
 			}
+		}
+
+		// Used to get the columns which are hide by default in load params
+		if (!empty($this->filterDefaultColToHide))
+		{
+			$this->defaultColToHide = $this->filterDefaultColToHide;
 		}
 
 		if (!empty($this->filterShowhideCols))
@@ -1202,12 +1266,12 @@ class TjreportsModelReports extends JModelList
 				->from('#__tj_reports')
 				->where('id=' . (int) $queryId);
 		$this->_db->setQuery($query);
-		$queryData    = $this->_db->loadObject();
-		$i = $parent = 0;
+		$queryData = $this->_db->loadObject();
+		$i         = $parent = 0;
 
 		if (!empty($queryData->param))
 		{
-			$param    = json_decode($queryData->param, true);
+			$param = json_decode($queryData->param, true);
 
 			if (isset($param['showHideColumns']))
 			{
@@ -1219,6 +1283,12 @@ class TjreportsModelReports extends JModelList
 				{
 					$this->filterShowhideCols = array_intersect($this->filterShowhideCols, (array) $param['showHideColumns']);
 				}
+			}
+
+			// Set the value of show summary report from param to variable
+			if (isset($param['showSummaryReport']))
+			{
+				$this->showSummaryReport = $param['showSummaryReport'];
 			}
 
 			if (isset($param['piiColumns']))
@@ -1241,6 +1311,11 @@ class TjreportsModelReports extends JModelList
 					{
 						$this->filterParamColToshow[$cols] = $cols;
 					}
+					else
+					{
+						// Used to get the columns which are hide (false) by default in load params
+						$this->filterDefaultColToHide[$cols] = $cols;
+					}
 
 					if (!empty($param['showHideColumns']) && !in_array($cols, $param['showHideColumns']) && !empty($selColToshow))
 					{
@@ -1254,8 +1329,11 @@ class TjreportsModelReports extends JModelList
 			// Check PII permission
 			if (!empty($param['piiColumns']) && !$this->piiPermission)
 			{
-				$this->filterParamColToshow = array_diff($this->filterParamColToshow, $param['piiColumns']);
-				$this->filterShowhideCols = array_diff($this->filterShowhideCols, $param['piiColumns']);
+				/* Checked the columns which are hide(false) in load params & if set them as piiColumns
+				* then it only returns the columns which are not available in piiColumns. */
+				$this->filterDefaultColToHide = array_diff($this->filterDefaultColToHide, $param['piiColumns']);
+				$this->filterParamColToshow   = array_diff($this->filterParamColToshow, $param['piiColumns']);
+				$this->filterShowhideCols     = array_diff($this->filterShowhideCols, $param['piiColumns']);
 			}
 
 			$parent = $queryData->parent;
@@ -1266,7 +1344,7 @@ class TjreportsModelReports extends JModelList
 			if (!empty($this->piiColumns) && !$this->piiPermission)
 			{
 				$this->defaultColToShow = array_diff($this->defaultColToShow, $this->piiColumns);
-				$this->showhideCols = array_diff($this->showhideCols, $this->piiColumns);
+				$this->showhideCols     = array_diff($this->showhideCols, $this->piiColumns);
 			}
 		}
 
@@ -1278,15 +1356,15 @@ class TjreportsModelReports extends JModelList
 	 *
 	 * @param   INT  $reportId  Report Id
 	 *
-	 * @return  Object
+	 * @return  Mixed
 	 *
 	 * @since   3.0
 	 */
 	public function getReportNameById($reportId)
 	{
-		$db        = JFactory::getDBO();
-		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
-		$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
+		$db          = Factory::getDBO();
+		Table::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
+		$reportTable = Table::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
 		$reportTable->load(array('id' => $reportId));
 
 		return $reportTable;
@@ -1304,9 +1382,8 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function getReportLink($reportToLink, $filters)
 	{
-		$user       = JFactory::getUser();
-
-		$reports = $this->getPluginReport($reportToLink);
+		$user       = Factory::getUser();
+		$reports    = $this->getPluginReport($reportToLink);
 		$filterLink = '';
 
 		foreach ($filters as $key => $value)
@@ -1330,20 +1407,20 @@ class TjreportsModelReports extends JModelList
 	/**
 	 * Method to get id of the report having default set as 1
 	 *
-	 * @param   STRING  $reportId  Report id
+	 * @param   STRING  $reportId  Report Id
 	 *
-	 * @return  Integer
+	 * @return  Object
 	 *
 	 * @since   1.1.0
 	 */
 	public function getReportParams($reportId)
 	{
-		$db        = JFactory::getDBO();
-		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
-		$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
+		$db          = Factory::getDBO();
+		Table::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
+		$reportTable = Table::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
 		$reportTable->load($reportId);
 
-		return new JRegistry($reportTable->param);
+		return new Registry($reportTable->param);
 	}
 
 	/**
@@ -1357,9 +1434,9 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function getDefaultReport($pluginName)
 	{
-		$db        = JFactory::getDBO();
-		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
-		$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
+		$db          = Factory::getDBO();
+		Table::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
+		$reportTable = Table::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
 		$reportTable->load(array('plugin' => $pluginName, 'default' => 1));
 
 		return $reportTable->id;
@@ -1380,7 +1457,7 @@ class TjreportsModelReports extends JModelList
 
 		if (!isset($reports[$pluginName]))
 		{
-			$db = JFactory::getDBO();
+			$db    = Factory::getDBO();
 			$query = $db->getQuery(true);
 			$query->select(array('id as reportId', 'client'));
 			$query->from($db->quoteName('#__tj_reports'));
@@ -1400,16 +1477,16 @@ class TjreportsModelReports extends JModelList
 	 * @param   string  $prefix  The class prefix. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
-	 * @return  JModelLegacy|boolean  Model object on success; otherwise false on failure.
+	 * @return  BaseDatabaseModel|boolean  Model object on success; otherwise false on failure.
 	 *
 	 * @since   3.0
 	 */
 	public function getPluginModel($name = '', $prefix = '', $config = array())
 	{
-		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $name);
+		BaseDatabaseModel::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $name);
 		$this->loadLanguage($name, 'tjreports');
 
-		return JModelLegacy::getInstance($name, 'TjreportsModel', $config);
+		return BaseDatabaseModel::getInstance($name, 'TjreportsModel', $config);
 	}
 
 	/**
@@ -1442,7 +1519,7 @@ class TjreportsModelReports extends JModelList
 		if ($pluginName && !isset($clients[$pluginName]))
 		{
 			$clients[$pluginName] = '';
-			$model = $this->getPluginModel($pluginName);
+			$model                = $this->getPluginModel($pluginName);
 
 			if ($model)
 			{
@@ -1460,7 +1537,7 @@ class TjreportsModelReports extends JModelList
 	 */
 	public function addTjReportsPlugins()
 	{
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$query = $db->getQuery(true)
 			->select(
 				$db->quoteName(
@@ -1492,21 +1569,21 @@ class TjreportsModelReports extends JModelList
 
 		foreach ($plugins as $plugin)
 		{
-			$pluginName = $plugin->name;
-			JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
-			$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable');
-			$details = $this->getPluginInstallationDetail($pluginName);
+			$pluginName  = $plugin->name;
+			Table::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
+			$reportTable = Table::getInstance('Tjreport', 'TjreportsTable');
+			$details     = $this->getPluginInstallationDetail($pluginName);
 			$reportTable->load(array('plugin' => $pluginName, 'userid' => 0));
 
 			if (!$reportTable->id)
 			{
-				$data = array();
-				$data['title']  = $details['title'];
+				$data            = array();
+				$data['title']   = $details['title'];
 				$data['plugin']  = $pluginName;
-				$data['alias']  = $pluginName;
+				$data['alias']   = $pluginName;
 				$data['client']  = $details['client'];
 				$data['parent']  = 0;
-				$data['default']  = 1;
+				$data['default'] = 1;
 
 				$reportTable->save($data);
 				$count++;
@@ -1514,5 +1591,39 @@ class TjreportsModelReports extends JModelList
 		}
 
 		return $count;
+	}
+
+	/**
+	 * Method to get report plugin of particular type for inter linking
+	 *
+	 * @param   Int  $userId  User Id
+	 *
+	 * @return  Array
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	protected function getUserGroups($userId)
+	{
+		if (!$userId)
+		{
+			return array();
+		}
+
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+
+		// Get the titles for the user groups.
+		$query = $db->getQuery(true)
+		->select($db->quoteName('ug.id'))
+		->select($db->quoteName('ug.title'))
+		->from($db->quoteName('#__usergroups', 'ug'))
+		->join('INNER', $db->qn('#__user_usergroup_map', 'ugm') . ' ON (' .
+			$db->qn('ugm.group_id') . ' = ' . $db->qn('ug.id') . ')')
+		->where($db->quoteName('ugm.user_id') . ' = ' . (int) $userId);
+
+		$db->setQuery($query);
+
+		// Set the titles for the user groups.
+		return $db->loadAssocList('id', 'title');
 	}
 }

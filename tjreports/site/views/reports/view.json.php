@@ -13,6 +13,8 @@
 // No direct access
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+
 require_once __DIR__ . '/view.base.php';
 
 /**
@@ -31,6 +33,10 @@ class TjreportsViewReports extends ReportsViewBase
 	 */
 	public function display($tpl = null)
 	{
+		$input = Factory::getApplication()->input;
+		$tpl = $input->get('tpl', 'default', 'string');
+		$tpl = ($tpl == 'default' || $tpl == 'submit') ? null : $tpl;
+
 		$result = $this->processData('json');
 
 		if (!$result)

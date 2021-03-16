@@ -69,7 +69,7 @@ class TjreportsModelIndexer extends BaseDatabaseModel
 			// Create table
 			$db    = Factory::getDbo();
 			$query = 'CREATE TABLE IF NOT EXISTS ' . $db->quoteName($this->customFieldsTable) . ' (
-				`record_id` int(11) NOT NULL
+				`record_id` int(11) NOT NULL, KEY `record_id` (`record_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8';
 
 			$db->setQuery($query);

@@ -158,6 +158,9 @@ class TjreportsViewReports extends TjExportCsv
 
 		$this->headers = $colTitleArray;
 		$pluginTitle = str_replace(" ", "_", $reportData->title);
+
+		// Remove special character from plugin name
+		$pluginTitle = preg_replace('/[^A-Za-z0-9\-]/', '', $pluginTitle);
 		$this->fileName = rtrim(strtolower($pluginTitle)) . "_report_" . date("Y-m-d_H-i", time());
 
 		// Loop through items
@@ -204,10 +207,10 @@ class TjreportsViewReports extends TjExportCsv
 		$finalValue = strip_tags($data);
 
 		// Remove double Quotes from the data
-		$finalValue = str_replace('"', '', $finalValue);
+		// $finalValue = str_replace('"', '', $finalValue);
 
 		// Remove single Quotes from the data
-		$finalValue = str_replace("'", '', $finalValue);
+		// $finalValue = str_replace("'", '', $finalValue);
 
 		// Remove tabs and newlines from the data
 		$finalValue = preg_replace('/(\r\n|\r|\n)+/', " ", $finalValue);

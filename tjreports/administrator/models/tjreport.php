@@ -191,6 +191,15 @@ class TjreportsModelTjreport extends JModelAdmin
 			 * so false value column not display on report by default.*/
 			if (!empty($defaultColToHide))
 			{
+				// Here remove dynamic column(for example: lesson::lesson_status) from defaultColToHide because no need to load dynamic column.
+				foreach ($defaultColToHide as $key => $colHide)
+				{
+					if (strpos($key, '::') !== false)
+					{
+						unset($defaultColToHide[$key]);
+					}
+				}
+
 				$params['colToshow']        = array_merge($params['colToshow'], $defaultColToHide);
 			}
 

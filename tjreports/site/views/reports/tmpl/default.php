@@ -40,7 +40,7 @@ foreach ($this->colToshow as $key => $data)
 }
 
 $input                = Factory::getApplication()->input;
-$displayFilters       = $this->userFilters;
+$displayFilters       = (array) $this->userFilters;
 $totalHeadRows        = count($displayFilters);
 $reportId             = $app->getUserStateFromRequest('reportId', 'reportId', '');
 $user                 = Factory::getUser();

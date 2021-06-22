@@ -12,13 +12,13 @@ tjrContentUI.root_url  = (typeof root_url == 'undefined') ? '' : root_url;
 tjrContentUI.base_url = (typeof root_url == 'undefined') ? '' : root_url;
 tjrContentUI.report    = tjrContentUI.report ? tjrContentUI.report : {};
 
-
+addMorefilterCnt = 1;
 jQuery.extend(tjrContentUI.report, {
 	searchToggle: true,
 	$form: null,
 	url: 'index.php?option=com_tjreports&view=reports&format=json',
 	querySaveUrl: 'index.php?option=com_tjreports&format=json',
-	submitTJRData: function(task) {
+	submitTJRData: function(task, addMorefilter, removeFilter = '') {
 
 		// Set the view layout on the basis of task
 		task = (typeof task == 'undefined' ) ? 'default' : task;
@@ -47,6 +47,25 @@ jQuery.extend(tjrContentUI.report, {
 		this.searchToggle = jQuery('div#topFilters').is(':visible');
 		tjrContentUI.utility.loadingLayer('show');
 		this.$form = jQuery('#adminForm');
+
+		if (addMorefilterCnt >= 1)
+		{
+			if (parseInt(addMorefilter) === 1)
+			{
+				addMorefilterCnt++;
+			}
+			else if (Number.isInteger(removeFilter))
+			{
+				addMorefilterCnt--;
+			}
+
+			jQuery('#tjReportaddMorefilter').remove();
+			this.$form.append('<input type="hidden" id="tjReportaddMorefilter" name="addMorefilter" value=' + addMorefilterCnt + '>');
+
+			jQuery('#tjReportremoveFilter').remove();
+			this.$form.append('<input type="hidden" id="tjReportremoveFilter" name="removeFilter" value=' + removeFilter + '>');
+		}
+
 		var doProcess = this.validate();
 		if (!doProcess) {
 			return false;
@@ -138,6 +157,7 @@ jQuery.extend(tjrContentUI.report, {
 		 .val('')
 		 .removeAttr('checked')
 		 .removeAttr('selected');
+		 addMorefilterCnt = 1;
 		tjrContentUI.report.submitTJRData(task);
 	},
 	validate: function() {

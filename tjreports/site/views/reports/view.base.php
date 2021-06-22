@@ -213,16 +213,19 @@ class ReportsViewBase extends JViewLegacy
 			$this->showHideColumns = array_intersect($this->model->showhideCols, array_merge($this->defaultColToshow, $this->defaultColToHide));
 		}
 
-		$this->sortable            = $this->model->sortableColumns;
-		$this->emailColumn         = $this->model->getState('emailColumn');
-		$this->srButton            = $this->model->showSearchResetButton;
-		$this->colToshow           = $this->model->getState('colToshow');
-		$this->filterValues        = $this->model->getState('filters');
-		$this->userFilters         = $this->model->displayFilters();
-		$this->messages            = $this->model->getTJRMessages();
-		$this->showSummaryReport   = $this->model->getState('showSummaryReport');
-		$this->enableReportPlugins = $this->model->getenableReportPlugins($this->client);
-		$this->isExport            = $user->authorise('core.export', 'com_tjreports.tjreport.' . $this->reportId);
+		$this->sortable                = $this->model->sortableColumns;
+		$this->emailColumn             = $this->model->getState('emailColumn');
+		$this->srButton                = $this->model->showSearchResetButton;
+		$this->colToshow               = $this->model->getState('colToshow');
+		$this->filterValues            = $this->model->getState('filters');
+		$this->userFilters             = $this->model->displayFilters();
+		$this->messages                = $this->model->getTJRMessages();
+		$this->showSummaryReport       = $this->model->getState('showSummaryReport');
+		$this->enableReportPlugins     = $this->model->getenableReportPlugins($this->client);
+		$this->isExport                = $user->authorise('core.export', 'com_tjreports.tjreport.' . $this->reportId);
+		$this->allowToCreateResultSets = $this->model->allowToCreateResultSets;
+		$this->addMorefilter           = $input->get('addMorefilter', 1, 'INT');
+		$this->removeFilter            = $input->get('removeFilter', '', 'STRING');
 
 		return true;
 	}

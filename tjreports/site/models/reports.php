@@ -117,6 +117,9 @@ class TjreportsModelReports extends ListModel
 	 */
 	public $supportedFieldTypesForSummaryReport = array ('radio', 'checkbox', 'rating');
 
+
+	public $allowToCreateResultSets = false;
+
 	/**
 	 * Constructor.
 	 *
@@ -730,11 +733,34 @@ class TjreportsModelReports extends ListModel
 					{
 						if ($dispFilter['type'] == 'custom')
 						{
-							$query->where(sprintf($dispFilter['searchin'], $db->quote($filters[$key])));
+							if ($dispFilter['search_type'] == 'select' && $dispFilter['multiple'] && is_array($filters[$key]))
+							{
+								$filters[$key] = array_map(array($db, 'quote'), $filters[$key]);
+
+								// Create safe string of array.
+								$filters[$key] = implode(',', $filters[$key]);
+								$query->where(sprintf($dispFilter['searchin'], $filters[$key]));
+							}
+							else
+							{
+								$query->where(sprintf($dispFilter['searchin'], $db->quote($filters[$key])));
+							}
 						}
 						else
 						{
-							$query->where($db->quoteName($columnName) . '=' . $db->quote($filters[$key]));
+							if ($dispFilter['search_type'] == 'select' && $dispFilter['multiple'] && is_array($filters[$key]))
+							{
+								$filters[$key] = array_map(array($db, 'quote'), $filters[$key]);
+
+								// Create safe string of array.
+								$filters[$key] = implode(',', $filters[$key]);
+
+								$query->where($db->quoteName($columnName) . ' IN (' . $filters[$key] . ')');
+							}
+							else
+							{
+								$query->where($db->quoteName($columnName) . '=' . $db->quote($filters[$key]));
+							}
 						}
 					}
 					else

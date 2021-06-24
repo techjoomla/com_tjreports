@@ -94,7 +94,6 @@ class TjreportsControllerReports extends AdminController
 				$id = $db->insertid();
 				$insert_object->id = $id;
 
-				$dispatcher = JEventDispatcher::getInstance();
 				$extension = Factory::getApplication()->input->get('option');
 				PluginHelper::importPlugin('tjreports');
 				Factory::getApplication()->triggerEvent('tjReportsOnAfterReportSave', array($extension, $insert_object, true));

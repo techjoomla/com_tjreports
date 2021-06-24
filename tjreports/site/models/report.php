@@ -111,7 +111,6 @@ class  TjreportsModelReport extends AdminModel
 		{
 			$tjrTable->delete($pks);
 
-			$dispatcher = JEventDispatcher::getInstance();
 			$extension = Factory::getApplication()->input->get('option');
 			PluginHelper::importPlugin('tjreports');
 			Factory::getApplication()->triggerEvent('tjReportsOnAfterReportDelete', array($extension, $data));

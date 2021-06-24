@@ -172,7 +172,6 @@ class ReportsViewBase extends HtmlView
 		}
 
 		// Get all report plugin
-		$dispatcher   = JEventDispatcher::getInstance();
 		$pluginExists = PluginHelper::getPlugin('tjreports', $this->pluginName);
 
 		if (!$pluginExists || !$this->pluginName)

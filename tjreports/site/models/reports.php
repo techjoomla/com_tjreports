@@ -923,7 +923,6 @@ class TjreportsModelReports extends ListModel
 		$client = $input->get('client', '', 'STRING');
 
 		// Get all report plugin
-		$dispatcher   = JEventDispatcher::getInstance();
 		$plugins      = PluginHelper::getPlugin('tjreports');
 		$pluginExists = json_decode(json_encode($plugins), true);
 		$pluginNames  = array_column($pluginExists, 'name');

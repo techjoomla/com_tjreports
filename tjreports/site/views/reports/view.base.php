@@ -144,6 +144,11 @@ class ReportsViewBase extends JViewLegacy
 				$param       = json_decode($queryData->param, true);
 				$postFilters = $this->model->getValidRequestVars();
 
+				if ($this->model->allowToCreateResultSets)
+				{
+					$input->set('addMorefilter', count($param['filters']));
+				}
+
 				foreach ($postFilters as $postFilter => $filterType)
 				{
 					if (isset($param[$postFilter]))

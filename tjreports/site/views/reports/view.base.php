@@ -80,7 +80,8 @@ class ReportsViewBase extends HtmlView
 	public function processData($type = 'html')
 	{
 		$canDo = TjreportsHelper::getActions();
-		$input = Factory::getApplication()->input;
+		$app   = Factory::getApplication();
+		$input = $app->input;
 		$user  = Factory::getUser();
 
 		$this->reportId = $input->get('reportId', 0, 'INT');
@@ -100,7 +101,7 @@ class ReportsViewBase extends HtmlView
 
 		if (!$canDo->get('core.view') || !$this->pluginName)
 		{
-			JError::raiseWarning(403, Text::_('JERROR_ALERTNOAUTHOR'));
+			$app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
 
 			return false;
 		}

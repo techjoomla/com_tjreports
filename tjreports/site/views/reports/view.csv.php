@@ -104,6 +104,11 @@ class TjreportsViewReports extends TjExportCsv
 		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $pluginName);
 		$model = JModelLegacy::getInstance($pluginName, 'TjreportsModel');
 
+		if ($model->allowToCreateResultSets)
+		{
+			$model->addMorefilter = $input->get('addMorefilter', 1, 'INT');
+		}
+
 		$model->loadLanguage($pluginName);
 
 		$input->set('limit', $this->limit);

@@ -60,6 +60,7 @@ div#topFilters div.filter-search {
     display: inline-block;
     float: left;
     margin-right: 5px;
+    padding: 2px;
 }
 
 div#topFilters {

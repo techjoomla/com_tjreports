@@ -150,7 +150,9 @@ class ReportsViewBase extends JViewLegacy
 					if (count($param['filters']) >= 1)
 					{
 						// Initiate the number of filter sets count
-						Factory::getDocument()->addScriptDeclaration('addMorefilterCnt = ' . count($param['filters']));
+						Factory::getDocument()->addScriptDeclaration('
+							addMorefilterCnt = ' . count($param['filters'])
+						);
 					}
 
 					// Post the count of filter set to set the filters in the saved report
@@ -159,6 +161,16 @@ class ReportsViewBase extends JViewLegacy
 
 				foreach ($postFilters as $postFilter => $filterType)
 				{
+					if ($postFilter == 'filters' && isset($param[$postFilter]) && !empty($param['filters']))
+					{
+						Factory::getDocument()->addScriptDeclaration('
+							jQuery(document).ready(function (){
+								tjrContentUI.report.showFilter();
+							});
+						'
+						);
+					}
+
 					if (isset($param[$postFilter]))
 					{
 						$input->set($postFilter, $param[$postFilter]);

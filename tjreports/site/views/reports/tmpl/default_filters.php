@@ -19,6 +19,7 @@ if ($this->filterLevel == 2)
 	$classForShowHide = 'col-filter-header';
 }
 
+// Support multiple filter sets if allowed i.e. $this->allowToCreateResultSets is true
 if ($this->addMorefilter && $this->allowToCreateResultSets)
 {
 	$removeFilter = '';
@@ -41,9 +42,9 @@ if ($this->addMorefilter && $this->allowToCreateResultSets)
 		$filters = $tempFilter;
 	}
 
-	for ((int) $i = 0; $i < $this->addMorefilter; $i++)
+	for ((int) $filterCnt = 0; $filterCnt < $this->addMorefilter; $filterCnt++)
 	{
-		if ($i >= 1)
+		if ($filterCnt >= 1)
 		{
 			echo '<hr/>';
 		}
@@ -54,14 +55,14 @@ if ($this->addMorefilter && $this->allowToCreateResultSets)
 		foreach ($displayFilters as $searchKey => $filter)
 		{
 			$searchType  = $filter['search_type'];
-			$searchValue = isset($filters['options-' . $i][$searchKey]) ? $filters['options-' . $i][$searchKey] : '';
+			$searchValue = isset($filters['options-' . $filterCnt][$searchKey]) ? $filters['options-' . $filterCnt][$searchKey] : '';
 			$filterHtml  = '';
 			$filterHide  = $searchValue === '' ? 'filter-hide' : 'filter-show';
 
 			if ($searchType == 'text')
 			{
 				$filterHtml = '<div class="input-group">
-									<input type="text" name="filters[options-' . $i . '][' . $searchKey . ']"
+									<input type="text" name="filters[options-' . $filterCnt . '][' . $searchKey . ']"
 											class="input input-mini filter-input ' . $filterHide . '" ' .
 											'onkeydown="tjrContentUI.report.submitOnEnter(event);"
 											onblur="tjrContentUI.report.submitTJRData();"
@@ -89,7 +90,7 @@ if ($this->addMorefilter && $this->allowToCreateResultSets)
 
 				$filterHtml = '<div class="input-group">';
 
-				$filterHtml .= JHtml::_('select.genericlist', $filter['select_options'], 'filters[options-' . $i . '][' . $searchKey . ']' . $arrayFilter,
+				$filterHtml .= JHtml::_('select.genericlist', $filter['select_options'], 'filters[options-' . $filterCnt . '][' . $searchKey . ']' . $arrayFilter,
 							'class="filter-input ' . $filterHide . ' ' . $class . ' " size="1" onchange="tjrContentUI.report.submitTJRData();"' . $multiple,
 							$svalue, $stext, $searchValue);
 
@@ -129,12 +130,12 @@ if ($this->addMorefilter && $this->allowToCreateResultSets)
 						$fieldKey =  $searchKey;
 					}
 
-					$searchValue = isset($filters['options-' . $i][$fieldKey]) ? $filters['options-' . $i][$fieldKey] : '';
+					$searchValue = isset($filters['options-' . $filterCnt][$fieldKey]) ? $filters['options-' . $filterCnt][$fieldKey] : '';
 					$dateFormat  = isset($filters['dateFormat']) ? $filters['dateFormat'] : '%Y-%m-%d';
 
 					if ($j == 2)
 					{
-						$altSearchValue = isset($filters[$altfieldKey]) ? $filters[$altfieldKey] : '';
+						$altSearchValue = isset($filters['options-' . $filterCnt][$altfieldKey]) ? $filters['options-' . $filterCnt][$altfieldKey] : '';
 						$filterHide = ($searchValue === '' && $altSearchValue === '') ? 'filter-hide' : 'filter-show';
 					}
 					else
@@ -158,7 +159,7 @@ if ($this->addMorefilter && $this->allowToCreateResultSets)
 					}
 
 					$filterHtml  .= '<div class="filter-search controls custom-group input-group">'
-						. JHtml::_('calendar', htmlspecialchars($searchValue), 'filters[options-' . $i . ']['. $fieldKey . ']', 'filters_' . $fieldKey , $dateFormat, $fieldAttr);
+						. JHtml::_('calendar', htmlspecialchars($searchValue), 'filters[options-' . $filterCnt . ']['. $fieldKey . ']', 'filters_' . $fieldKey , $dateFormat, $fieldAttr);
 
 					if ($this->filterLevel == 1)
 					{
@@ -199,10 +200,10 @@ if ($this->addMorefilter && $this->allowToCreateResultSets)
 				<i class="fa fa-plus-circle" aria-hidden="true"></i>
 			</button>
 			<?php
-			if ($i != 0)
+			if ($filterCnt != 0)
 			{
 				?>
-				<button type="button" onclick="tjrContentUI.report.submitTJRData('default', 0, <?php echo $i; ?>);" class="btn hasTooltip btn-danger" title="Remove">
+				<button type="button" onclick="tjrContentUI.report.submitTJRData('default', 0, <?php echo $filterCnt; ?>);" class="btn hasTooltip btn-danger" title="Remove">
 					<i class="fa fa-minus-circle" aria-hidden="true"></i>
 				</button>
 				<?php

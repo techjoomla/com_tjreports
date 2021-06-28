@@ -117,7 +117,12 @@ class TjreportsModelReports extends ListModel
 	 */
 	public $supportedFieldTypesForSummaryReport = array ('radio', 'checkbox', 'rating');
 
-
+	/**
+	 * It will allow the report to support multiple filter sets
+	 *
+	 * @var    boolean
+	 * @since  __DEPLOY_VERSION__
+	 */
 	public $allowToCreateResultSets = false;
 
 	/**
@@ -733,6 +738,7 @@ class TjreportsModelReports extends ListModel
 					{
 						if ($dispFilter['type'] == 'custom')
 						{
+							// Support multi-select dropdown filter
 							if ($dispFilter['search_type'] == 'select' && $dispFilter['multiple'] && is_array($filters[$key]))
 							{
 								$filters[$key] = array_map(array($db, 'quote'), $filters[$key]);
@@ -748,6 +754,7 @@ class TjreportsModelReports extends ListModel
 						}
 						else
 						{
+							// Support multi-select dropdown filter
 							if ($dispFilter['search_type'] == 'select' && $dispFilter['multiple'] && is_array($filters[$key]))
 							{
 								$filters[$key] = array_map(array($db, 'quote'), $filters[$key]);

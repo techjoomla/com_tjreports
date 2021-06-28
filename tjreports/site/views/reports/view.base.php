@@ -144,8 +144,16 @@ class ReportsViewBase extends JViewLegacy
 				$param       = json_decode($queryData->param, true);
 				$postFilters = $this->model->getValidRequestVars();
 
+				// Check if multiple result sets are allowed in the Report
 				if ($this->model->allowToCreateResultSets)
 				{
+					if (count($param['filters']) >= 1)
+					{
+						// Initiate the number of filter sets count
+						Factory::getDocument()->addScriptDeclaration('addMorefilterCnt = ' . count($param['filters']));
+					}
+
+					// Post the count of filter set to set the filters in the saved report
 					$input->set('addMorefilter', count($param['filters']));
 				}
 
@@ -228,9 +236,13 @@ class ReportsViewBase extends JViewLegacy
 		$this->showSummaryReport       = $this->model->getState('showSummaryReport');
 		$this->enableReportPlugins     = $this->model->getenableReportPlugins($this->client);
 		$this->isExport                = $user->authorise('core.export', 'com_tjreports.tjreport.' . $this->reportId);
+
+		// This will be used to create multiple result sets
 		$this->allowToCreateResultSets = $this->model->allowToCreateResultSets;
-		$this->addMorefilter           = $input->get('addMorefilter', 1, 'INT');
-		$this->removeFilter            = $input->get('removeFilter', '', 'STRING');
+
+		// These two are used to generate filters sets similar to addMore in subforms
+		$this->addMorefilter = $input->get('addMorefilter', 1, 'INT');
+		$this->removeFilter  = $input->get('removeFilter', '', 'STRING');
 
 		return true;
 	}

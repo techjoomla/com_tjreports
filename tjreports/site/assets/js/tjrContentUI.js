@@ -482,6 +482,16 @@ jQuery.extend(tjrContentUI.utility, {
 	eraseJSCookie:function(name) {
 		tjrContentUI.utility.setJSCookie(name,"",-1);
 	},
+	initiateChznPlaceholders:function(placeHolders)
+	{
+		jQuery(document).ready(function () {
+			for (let i = 0; i < parseInt(addMorefilterCnt); i++) {
+				for (let x in placeHolders) {
+					jQuery('#filtersoptions_' + i + x + '_chzn').find('li.search-field input.default').val(placeHolders[x]);
+				}
+			}
+		});
+	}
 });
 tjrContentUI.tjreport  = tjrContentUI.tjreport ? tjrContentUI.tjreport : {};
 jQuery.extend(tjrContentUI.tjreport, {

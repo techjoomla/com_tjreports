@@ -161,6 +161,7 @@ class ReportsViewBase extends JViewLegacy
 
 				foreach ($postFilters as $postFilter => $filterType)
 				{
+					// If filters are set in saved queries, then by default keep the Search Tools open
 					if ($postFilter == 'filters' && isset($param[$postFilter]) && !empty($param['filters']))
 					{
 						Factory::getDocument()->addScriptDeclaration('

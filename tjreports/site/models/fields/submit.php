@@ -20,7 +20,7 @@ jimport('joomla.form.formfield');
  *
  * @since  1.6
  */
-class FormFieldSubmit extends FormField
+class JFormFieldSubmit extends JFormField
 {
 	protected $type = 'submit';
 

@@ -783,7 +783,6 @@ class TjreportsModelReports extends ListModel
 			{
 				$customFieldColumns[] = $this->customFieldsTableAlias . '.record_id';
 
-				$query->select($db->quoteName($customFieldColumns));
 				$query->join(
 					'LEFT', $db->quoteName($this->customFieldsTable, $this->customFieldsTableAlias) .
 					' ON ' . $db->quoteName($this->customFieldsTableAlias . '.record_id') . ' = ' . $db->quoteName($this->customFieldsQueryJoinOn)

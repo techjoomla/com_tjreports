@@ -17,7 +17,7 @@ use Joomla\CMS\Language\Text;
  * Tjreports API Gs fields class
  * This is used to get the fields for the Google studio connector
  *
- * @since  __DEPLOY_VERSION__
+ * @since  1.1.6
  */
 class ReportsApiResourceGdsfields extends ApiResource
 {

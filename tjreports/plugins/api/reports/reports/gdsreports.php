@@ -15,7 +15,7 @@ use Joomla\CMS\Factory;
 /**
  * Tjreports API to get the tjreports plugin those support Google studio connector
  *
- * @since  __DEPLOY_VERSION__
+ * @since  1.1.6
  */
 class ReportsApiResourceGdsreports extends ApiResource
 {

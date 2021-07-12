@@ -217,7 +217,7 @@ if ($this->showSummaryReport == 'Yes')
 						if ($totalHeadRows > 1)
 						{
 						?>
-							<div class="col-md-2 col-sm-4 col-xs-12">
+							<div class="col-md-2 col-sm-4">
 								<button type="button" class="btn btn-primary btn-custom btn-block" id="show-filter" onclick="tjrContentUI.report.showFilter();">
 									<?php echo Text::_("COM_TJREPORTS_SEARCH_TOOLS"); ?>
 									<i class="fa fa-caret-down"></i>
@@ -269,9 +269,9 @@ if ($this->showSummaryReport == 'Yes')
 							{
 								$reportContainer = "hide";
 									?>
-								<div class="show-hide-cols col-md-5 col-sm-5 inputbox radio btn-group btn-group-yesno radio">
-									<input type="radio" id="detailsReport" name="displayReport" value="1" class="displayReport" checked="checked" onclick="javascript:tjrContentUI.report.submitTJRData('default');" required="" aria-required="true"><label for="detailsReport" class="btn btn-success"><?php echo Text::_('COM_TJREPORTS_REPORT_DETAILS'); ?></label>
-									<input type="radio" id="summaryReport" name="displayReport" value="0" class="displayReport" required="" aria-required="true" onclick="javascript:tjrContentUI.report.submitTJRData('summary');"><label for="summaryReport" class="btn"><?php echo Text::_('COM_TJREPORTS_REPORT_SUMMARY'); ?></label>
+								<div class="show-hide-cols col-md-5 col-sm-5 inputbox radio btn-group btn-group-yesno radio summaryReport">
+									<input type="radio" id="detailsReport" name="displayReport" value="1" class="displayReport hide"  onclick="javascript:tjrContentUI.report.submitTJRData('default');" required="" aria-required="true"><label id="detailsReportLabel" for="detailsReport" class="btn btn-success"><?php echo Text::_('COM_TJREPORTS_REPORT_DETAILS'); ?></label>
+									<input type="radio" id="summaryReport" name="displayReport" value="0" class="displayReport hide" required="" aria-required="true" onclick="javascript:tjrContentUI.report.submitTJRData('summary');"><label id="summaryReportLabel" for="summaryReport" class="btn"><?php echo Text::_('COM_TJREPORTS_REPORT_SUMMARY'); ?></label>
 										</fieldset>
 								</div>
 								<?php
@@ -283,7 +283,7 @@ if ($this->showSummaryReport == 'Yes')
 						if (!$app->isClient('administrator') && $userAuthorisedExport && $user)
 						{
 						?>
-							<div class="col-sm-5 col-md-8">
+							<div class="col-sm-5 col-md-12">
 								<a onclick="tjexport.exportCsv(0)" class="btn btn-small export pull-right">
 									<i class='fa fa-download'></i>&nbsp;<?php echo Text::_('COM_TJREPORTS_CSV_EXPORT'); ?>
 								</a>
@@ -498,7 +498,7 @@ if ($this->showSummaryReport == 'Yes')
                             $value = isset($item[$key]) ? $item[$key] : '';
                             
                             // Wrap the report values
-                            $value = wordwrap($value, 30, '<br />', true);
+                            $value = wordwrap($value, 30, "\n", true);
 														echo "<td class=\"{$key} {$isSendEmailClass} \">{$value}</td>";
 													}
 												}

@@ -30,11 +30,15 @@ jQuery.extend(tjrContentUI.report, {
 		if (task == "summary")
 		{
 			layout = 'summary';
+			jQuery('#summaryReportLabel').addClass('btn-danger');
+			jQuery('#detailsReportLabel').removeClass('btn-success');
 			jQuery('#reportPagination').hide();
 			jQuery('#pagination').hide();
 		}
 		else
 		{
+			jQuery('#detailsReportLabel').removeClass('btn-success');
+			jQuery('#summaryReportLabel').removeClass('btn-danger');
 			jQuery('#reportPagination').show();
 			jQuery('#pagination').show();
 		}

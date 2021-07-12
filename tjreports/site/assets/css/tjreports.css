@@ -343,3 +343,7 @@ table.tjrport-table {
 .chartItems{
     margin-bottom: 30px;
 }
+.summaryReport{
+    margin-top: 0px !important;
+}
+

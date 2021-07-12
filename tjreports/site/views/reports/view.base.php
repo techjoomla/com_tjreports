@@ -189,7 +189,11 @@ class ReportsViewBase extends JViewLegacy
 		$this->headerLevel     = $this->model->headerLevel;
 
 		// Array_key - defaultColToHide column are present then get the key as value.
-		$defaultColToHide       = (array) $this->model->getState('defaultColToHide');
+		if ($this->model->getState('defaultColToHide'))
+		{
+			$this->defaultColToHide = array_keys($this->model->getState('defaultColToHide'));
+		}
+
 		$this->defaultColToHide = array_keys($defaultColToHide);
 		$this->columns          = $this->model->columns;
 

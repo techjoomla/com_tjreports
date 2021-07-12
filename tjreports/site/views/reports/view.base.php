@@ -144,8 +144,34 @@ class ReportsViewBase extends JViewLegacy
 				$param       = json_decode($queryData->param, true);
 				$postFilters = $this->model->getValidRequestVars();
 
+				// Check if multiple result sets are allowed in the Report
+				if ($this->model->allowToCreateResultSets)
+				{
+					if (count($param['filters']) >= 1)
+					{
+						// Initiate the number of filter sets count
+						Factory::getDocument()->addScriptDeclaration('
+							addMorefilterCnt = ' . count($param['filters'])
+						);
+					}
+
+					// Post the count of filter set to set the filters in the saved report
+					$input->set('addMorefilter', count($param['filters']));
+				}
+
 				foreach ($postFilters as $postFilter => $filterType)
 				{
+					// If filters are set in saved queries, then by default keep the Search Tools open
+					if ($postFilter == 'filters' && isset($param[$postFilter]) && !empty($param['filters']))
+					{
+						Factory::getDocument()->addScriptDeclaration('
+							jQuery(document).ready(function (){
+								tjrContentUI.report.showFilter();
+							});
+						'
+						);
+					}
+
 					if (isset($param[$postFilter]))
 					{
 						$input->set($postFilter, $param[$postFilter]);
@@ -213,16 +239,23 @@ class ReportsViewBase extends JViewLegacy
 			$this->showHideColumns = array_intersect($this->model->showhideCols, array_merge($this->defaultColToshow, $this->defaultColToHide));
 		}
 
-		$this->sortable            = $this->model->sortableColumns;
-		$this->emailColumn         = $this->model->getState('emailColumn');
-		$this->srButton            = $this->model->showSearchResetButton;
-		$this->colToshow           = $this->model->getState('colToshow');
-		$this->filterValues        = $this->model->getState('filters');
-		$this->userFilters         = $this->model->displayFilters();
-		$this->messages            = $this->model->getTJRMessages();
-		$this->showSummaryReport   = $this->model->getState('showSummaryReport');
-		$this->enableReportPlugins = $this->model->getenableReportPlugins($this->client);
-		$this->isExport            = $user->authorise('core.export', 'com_tjreports.tjreport.' . $this->reportId);
+		$this->sortable                = $this->model->sortableColumns;
+		$this->emailColumn             = $this->model->getState('emailColumn');
+		$this->srButton                = $this->model->showSearchResetButton;
+		$this->colToshow               = $this->model->getState('colToshow');
+		$this->filterValues            = $this->model->getState('filters');
+		$this->userFilters             = $this->model->displayFilters();
+		$this->messages                = $this->model->getTJRMessages();
+		$this->showSummaryReport       = $this->model->getState('showSummaryReport');
+		$this->enableReportPlugins     = $this->model->getenableReportPlugins($this->client);
+		$this->isExport                = $user->authorise('core.export', 'com_tjreports.tjreport.' . $this->reportId);
+
+		// This will be used to create multiple result sets
+		$this->allowToCreateResultSets = $this->model->allowToCreateResultSets;
+
+		// These two are used to generate filters sets similar to addMore in subforms
+		$this->addMorefilter = $input->get('addMorefilter', 1, 'INT');
+		$this->removeFilter  = $input->get('removeFilter', '', 'STRING');
 
 		return true;
 	}

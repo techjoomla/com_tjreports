@@ -159,8 +159,8 @@ class TjreportsViewReports extends ReportsViewBase
 			HTMLHelper::stylesheet(Uri::root() . '/media/techjoomla_strapper/bs3/css/bootstrap.min.css');
 		}
 
-		HTMLHelper::script('components/com_tjreports/assets/js/tjrContentService.min.js');
-		HTMLHelper::script('components/com_tjreports/assets/js/tjrContentUI.min.js');
+		HTMLHelper::_('script', 'com_tjreports/tjrContentService.min.js', array("relative" => true));
+		HTMLHelper::_('script', 'com_tjreports/tjrContentUI.min.js', array("relative" => true));
 		HTMLHelper::_('stylesheet', 'components/com_tjreports/assets/css/tjreports.min.css');
 
 		$document->addScriptDeclaration('tjrContentUI.base_url = "' . Uri::base() . '"');

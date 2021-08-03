@@ -45,6 +45,7 @@ class Com_TjreportsInstallerScript
 {
 	private $removeFilesAndFolders = array(
 		'files' => array(
+			// Since v1.1.7
 			'components/com_tjreports/assets/js/tjrContentService.js',
 			'components/com_tjreports/assets/js/tjrContentService.min.js',
 			'components/com_tjreports/assets/js/tjrContentUI.js',

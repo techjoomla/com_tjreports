@@ -576,13 +576,17 @@ class TjreportsModelReports extends ListModel
 		if (empty($colToshow))
 		{
 			$reportParams = $this->getReportParams($reportId);
-			$colToshow    = (array) $reportParams->get("colToshow");
-			$piiColumns   = (array) $reportParams->get("piiColumns");
-			$piiColumns   = array_flip($piiColumns);
 
-			if (!empty($piiColumns))
+			if(!empty($reportParams['data']))
 			{
-				$colToshow = (object) array_diff_key($colToshow, $piiColumns);
+				$colToshow    = (array) $reportParams->get("colToshow");
+				$piiColumns   = (array) $reportParams->get("piiColumns");
+				$piiColumns   = array_flip($piiColumns);
+
+				if (!empty($piiColumns))
+				{
+					$colToshow = (object) array_diff_key($colToshow, $piiColumns);
+				}
 			}
 		}
 

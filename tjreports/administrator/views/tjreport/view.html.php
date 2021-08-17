@@ -111,8 +111,8 @@ class TjreportsViewTjreport extends HtmlView
 
 		$document = Factory::getDocument();
 
-		HTMLHelper::_('script', 'components/com_tjreports/assets/js/tjrContentService.min.js');
-		HTMLHelper::_('script', 'components/com_tjreports/assets/js/tjrContentUI.min.js');
+		HTMLHelper::_('script', 'com_tjreports/tjrContentService.min.js', array("relative" => true));
+		HTMLHelper::_('script', 'com_tjreports/tjrContentUI.min.js', array("relative" => true));
 		HTMLHelper::_('stylesheet', 'components/com_tjreports/assets/css/tjreports.min.css');
 
 		$document->addScriptDeclaration('tjrContentUI.base_url = "' . Uri::base() . '"');

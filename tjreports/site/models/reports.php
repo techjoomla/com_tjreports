@@ -118,6 +118,14 @@ class TjreportsModelReports extends ListModel
 	public $supportedFieldTypesForSummaryReport = array ('radio', 'checkbox', 'rating');
 
 	/**
+	 * It will allow the report to support multiple filter sets
+	 *
+	 * @var    boolean
+	 * @since  __DEPLOY_VERSION__
+	 */
+	public $allowToCreateResultSets = false;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
@@ -730,11 +738,36 @@ class TjreportsModelReports extends ListModel
 					{
 						if ($dispFilter['type'] == 'custom')
 						{
-							$query->where(sprintf($dispFilter['searchin'], $db->quote($filters[$key])));
+							// Support multi-select dropdown filter
+							if ($dispFilter['search_type'] == 'select' && $dispFilter['multiple'] && is_array($filters[$key]))
+							{
+								$filters[$key] = array_map(array($db, 'quote'), $filters[$key]);
+
+								// Create safe string of array.
+								$filters[$key] = implode(',', $filters[$key]);
+								$query->where(sprintf($dispFilter['searchin'], $filters[$key]));
+							}
+							else
+							{
+								$query->where(sprintf($dispFilter['searchin'], $db->quote($filters[$key])));
+							}
 						}
 						else
 						{
-							$query->where($db->quoteName($columnName) . '=' . $db->quote($filters[$key]));
+							// Support multi-select dropdown filter
+							if ($dispFilter['search_type'] == 'select' && $dispFilter['multiple'] && is_array($filters[$key]))
+							{
+								$filters[$key] = array_map(array($db, 'quote'), $filters[$key]);
+
+								// Create safe string of array.
+								$filters[$key] = implode(',', $filters[$key]);
+
+								$query->where($db->quoteName($columnName) . ' IN (' . $filters[$key] . ')');
+							}
+							else
+							{
+								$query->where($db->quoteName($columnName) . '=' . $db->quote($filters[$key]));
+							}
 						}
 					}
 					else

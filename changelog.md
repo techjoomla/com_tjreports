@@ -8,6 +8,12 @@
 
 ---
 
+## com_tjreports v1.1.8
+
+### ^ Improvements:
+
+- #173952 Adding default values to the Tables for Joomla 4
+
 ## com_tjreports v1.1.6
 
 ### ^ Improvements:

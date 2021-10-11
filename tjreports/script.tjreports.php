@@ -46,6 +46,17 @@ use Joomla\CMS\MVC\Model\BaseDatabaseModel;
  **/
 class Com_TjreportsInstallerScript
 {
+	private $removeFilesAndFolders = array(
+		'files' => array(
+			// Since v1.1.7
+			'components/com_tjreports/assets/js/tjrContentService.js',
+			'components/com_tjreports/assets/js/tjrContentService.min.js',
+			'components/com_tjreports/assets/js/tjrContentUI.js',
+			'components/com_tjreports/assets/js/tjrContentUI.min.js',
+		),
+		'folders' => array()
+	);
+
 /** @var array The list of extra modules and plugins to install */
 	private $queue = array(
 
@@ -241,6 +252,9 @@ class Com_TjreportsInstallerScript
 			}
 		}
 
+		// Remove obsolete files and folders
+		$this->removeObsoleteFilesAndFolders($this->removeFilesAndFolders);
+
 		$this->migrateReportsOrdering();
 	}
 
@@ -267,6 +281,38 @@ class Com_TjreportsInstallerScript
 			$data['ordering'] = ++$key;
 
 			$reportTable->save($data);
+		}
+	}
+
+	/**
+	 * Removes obsolete files and folders
+	 *
+	 * @param array $removeFilesAndFolders
+	 */
+	private function removeObsoleteFilesAndFolders($removeFilesAndFolders)
+	{
+		// Remove files
+		jimport('joomla.filesystem.file');
+		if(!empty($removeFilesAndFolders['files']))
+		{
+			foreach($removeFilesAndFolders['files'] as $file)
+			{
+				$f = JPATH_ROOT.'/'.$file;
+				if(!JFile::exists($f)) continue;
+				JFile::delete($f);
+			}
+		}
+
+		// Remove folders
+		jimport('joomla.filesystem.file');
+		if(!empty($removeFilesAndFolders['folders']))
+		{
+			foreach($removeFilesAndFolders['folders'] as $folder)
+			{
+				$f = JPATH_ROOT.'/'.$folder;
+				if(!file_exists($f)) continue;
+				JFolder::delete($f);
+			}
 		}
 	}
 }

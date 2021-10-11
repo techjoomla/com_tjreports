@@ -8,6 +8,19 @@
 
 ---
 
+## com_tjreports v1.1.8
+
+### ^ Improvements:
+
+- #173952 Adding default values to the Tables for Joomla 4
+
+## com_tjreports v1.1.6
+
+### ^ Improvements:
+
+- #172689 Allow overriding frontend report view's JS
+
+
 ## com_tjreports v1.1.5
 
 ### + Features Additions:
@@ -22,7 +35,7 @@
 - #160788 Added index in #__tjreports_com_users_user table
 - #148927 Add reports API plugin in TJReport package
 
-#### - Bug Fixes:
+### - Bug Fixes:
 
 - #169471 Reports > In report data not showing count with link, it's showing href string
 - #169429 Reports > Frontend > Reports > Radio button and Export CSV alignment messed up
@@ -39,12 +52,3 @@
 - #180 Added missing language constants for column wise sorting
 - #176 Compatible date field filter for any date format and modified in query
 - #172 Notice: Undefined index in reports model & reports default view
-
-
-
-
-
-
-
-
-

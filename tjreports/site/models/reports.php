@@ -105,7 +105,7 @@ class TjreportsModelReports extends ListModel
 	 * Show button to display option as Summary Report & Details Report
 	 *
 	 * @var    string
-	 * @since  __DEPLOY_VERSION__
+	 * @since  1.1.6
 	 */
 	public $showSummaryReport = 'No';
 
@@ -113,7 +113,7 @@ class TjreportsModelReports extends ListModel
 	 * Array about field type which suppport for summary report
 	 *
 	 * @var    string
-	 * @since  __DEPLOY_VERSION__
+	 * @since  1.1.6
 	 */
 	public $supportedFieldTypesForSummaryReport = array ('radio', 'checkbox', 'rating');
 
@@ -1599,7 +1599,7 @@ class TjreportsModelReports extends ListModel
 	 *
 	 * @return  Array
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   1.1.6
 	 */
 	protected function getUserGroups($userId)
 	{

@@ -8,12 +8,17 @@
  */
 // No direct access to this file
 defined('_JEXEC') or die;
+use Joomla\CMS\MVC\Controller\AdminController;
+use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Language\Text;
 /**
  * com tjreports Controller
  *
  * @since  0.0.1
  */
-class TjreportsControllerTjreports extends JControllerAdmin
+class TjreportsControllerTjreports extends AdminController
 {
 	/**
 	 * Proxy for getModel.
@@ -46,7 +51,7 @@ class TjreportsControllerTjreports extends JControllerAdmin
 	*/
 	public function setRedirect($url, $msg = null,$type = null)
 	{
-		$extension = JFactory::getApplication()->input->get('extension', '', 'word');
+		$extension = Factory::getApplication()->input->get('extension', '', 'word');
 
 		if ($extension)
 		{
@@ -65,10 +70,10 @@ class TjreportsControllerTjreports extends JControllerAdmin
 	 */
 	public function discover()
 	{
-		JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_tjreports/models');
-		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
+		BaseDatabaseModel::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_tjreports/models');
+		Table::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
 
-		$db    = JFactory::getDbo();
+		$db    = Factory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('element');
 		$query->from($db->quoteName('#__extensions'));
@@ -89,9 +94,9 @@ class TjreportsControllerTjreports extends JControllerAdmin
 
 		foreach ($discoverPlugins as $value)
 		{
-			$model = JModelLegacy::getInstance('Reports', 'TjreportsModel');
+			$model = BaseDatabaseModel::getInstance('Reports', 'TjreportsModel');
 			$pluginName = $value;
-			$reportTable = JTable::getInstance('Tjreport', 'TjreportsTable');
+			$reportTable = Table::getInstance('Tjreport', 'TjreportsTable');
 			$details = $model->getPluginInstallationDetail($pluginName);
 			$reportTable->load(array('plugin' => $pluginName, 'userid' => 0));
 
@@ -110,11 +115,11 @@ class TjreportsControllerTjreports extends JControllerAdmin
 			}
 		}
 
-		$message = JText::_('COM_TJREPORTS_NOTHING_TO_DISCOVER_PLUGINS');
+		$message = Text::_('COM_TJREPORTS_NOTHING_TO_DISCOVER_PLUGINS');
 
 		if ($count > 0)
 		{
-			$message = JText::sprintf(JText::_('COM_TJREPORTS_DISCOVER_NEW_PLUGINS'), $count);
+			$message = Text::sprintf(Text::_('COM_TJREPORTS_DISCOVER_NEW_PLUGINS'), $count);
 		}
 
 		$this->setRedirect('index.php?option=com_tjreports', $message);

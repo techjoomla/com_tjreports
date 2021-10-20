@@ -9,13 +9,17 @@
  */
 // No direct access
 defined('_JEXEC') or die;
+use Joomla\CMS\Helper\ContentHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\Path;
+use Joomla\CMS\Filesystem\File;
 
 /**
  * Cp helper.
  *
  * @since  1.6
  */
-class TjreportsHelper extends JHelperContent
+class TjreportsHelper extends ContentHelper
 {
 	/**
 	 * Configure the Linkbar.
@@ -26,17 +30,17 @@ class TjreportsHelper extends JHelperContent
 	 */
 	public static function addSubmenu($view='')
 	{
-		$client = JFactory::getApplication()->input->get('client', '', 'STRING');
+		$client = Factory::getApplication()->input->get('client', '', 'STRING');
 		$full_client = $client;
 
 		// Set ordering.
-		$mainframe = JFactory::getApplication();
+		$mainframe = Factory::getApplication();
 		$full_client = explode('.', $full_client);
 
 		// Eg com_jgive
 		$component = $full_client[0];
 		$eName = str_replace('com_', '', $component);
-		$file = JPath::clean(JPATH_ADMINISTRATOR . '/components/' . $component . '/helpers/' . $eName . '.php');
+		$file = Path::clean(JPATH_ADMINISTRATOR . '/components/' . $component . '/helpers/' . $eName . '.php');
 
 		if (file_exists($file))
 		{
@@ -49,14 +53,14 @@ class TjreportsHelper extends JHelperContent
 			{
 				if (is_callable(array($cName, 'addSubmenu')))
 				{
-					$lang = JFactory::getLanguage();
+					$lang = Factory::getLanguage();
 
 					// Loading language file from the administrator/language directory then
 					// Loading language file from the administrator/components/*extension*/language directory
 					$lang->load($component, JPATH_BASE, null, false, false)
-					|| $lang->load($component, JPath::clean(JPATH_ADMINISTRATOR . '/components/' . $component), null, false, false)
+					|| $lang->load($component, Path::clean(JPATH_ADMINISTRATOR . '/components/' . $component), null, false, false)
 					|| $lang->load($component, JPATH_BASE, $lang->getDefault(), false, false)
-					|| $lang->load($component, JPath::clean(JPATH_ADMINISTRATOR . '/components/' . $component), $lang->getDefault(), false, false);
+					|| $lang->load($component, Path::clean(JPATH_ADMINISTRATOR . '/components/' . $component), $lang->getDefault(), false, false);
 
 					// Call_user_func(array($cName, 'addSubmenu'), 'categories' . (isset($section) ? '.' . $section : ''));
 					call_user_func(array($cName, 'addSubmenu'), $view . (isset($section) ? '.' . $section : ''));
@@ -98,7 +102,7 @@ class TjreportsHelper extends JHelperContent
 	 */
 	public function getViewpath($component, $viewname, $layout = 'default', $searchTmpPath = 'SITE', $useViewpath = 'SITE')
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		$searchTmpPath = ($searchTmpPath == 'SITE') ? JPATH_SITE : JPATH_ADMINISTRATOR;
 		$useViewpath   = ($useViewpath == 'SITE') ? JPATH_SITE : JPATH_ADMINISTRATOR;
@@ -107,7 +111,7 @@ class TjreportsHelper extends JHelperContent
 
 		$override = $searchTmpPath . '/' . 'templates' . '/' . $app->getTemplate() . '/' . 'html' . '/' . $component . '/' . $viewname . '/' . $layoutname;
 
-		if (JFile::exists($override))
+		if (File::exists($override))
 		{
 			return $view = $override;
 		}

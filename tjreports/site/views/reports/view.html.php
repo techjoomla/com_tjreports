@@ -12,11 +12,11 @@
 
 // No direct access
 defined('_JEXEC') or die;
+use Joomla\CMS\HTML\HTMLHelper;
 
 Use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Component\ComponentHelper;
 
 require_once __DIR__ . '/view.base.php';
@@ -68,7 +68,7 @@ class TjreportsViewReports extends ReportsViewBase
 		$bar                  = JToolBar::getInstance('toolbar');
 		$canDo                = TjreportsHelper::getActions();
 
-		if ($app->isAdmin())
+		if ($app->isClient('administrator'))
 		{
 			$title = Text::_('COM_TJREPORTS_TITLE_REPORT');
 
@@ -128,7 +128,7 @@ class TjreportsViewReports extends ReportsViewBase
 			JLoader::import('administrator.components.com_tjreports.helpers.tjreports', JPATH_SITE);
 			TjreportsHelper::addSubmenu('reports');
 
-			if ($app->isAdmin())
+			if ($app->isClient('administrator'))
 			{
 				$this->sidebar = JHtmlSidebar::render();
 			}
@@ -153,8 +153,8 @@ class TjreportsViewReports extends ReportsViewBase
 		$bootstrapSetting = $com_params->get('bootstrap_setting', 1);
 
 		if (($bootstrapSetting == 3)
-			|| ( $app->isAdmin() && $bootstrapSetting == 1 )
-			|| ( !$app->isAdmin() && $bootstrapSetting == 2 ) )
+			|| ( $app->isClient('administrator') && $bootstrapSetting == 1 )
+			|| ( !$app->isClient('administrator') && $bootstrapSetting == 2 ) )
 		{
 			HTMLHelper::stylesheet(Uri::root() . '/media/techjoomla_strapper/bs3/css/bootstrap.min.css');
 		}
@@ -172,7 +172,7 @@ class TjreportsViewReports extends ReportsViewBase
 
 			foreach ($plgScripts as $script)
 			{
-				$document->addScript($script);
+				HTMLHelper::_('script', $script);
 			}
 		}
 
@@ -182,7 +182,7 @@ class TjreportsViewReports extends ReportsViewBase
 
 			foreach ($styles as $style)
 			{
-				$document->addStylesheet($style);
+				HTMLHelper::_('stylesheet', $style);
 			}
 		}
 

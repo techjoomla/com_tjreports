@@ -8,6 +8,7 @@
  */
 
 defined('JPATH_BASE') or die;
+use Joomla\CMS\Form\FormField;
 
 jimport('joomla.form.formfield');
 
@@ -16,7 +17,7 @@ jimport('joomla.form.formfield');
  *
  * @since  1.6
  */
-class JFormFieldFileMultiple extends JFormField
+class FormFieldFileMultiple extends FormField
 {
 	/**
 	 * The form field type.

@@ -8,13 +8,18 @@
  */
 // No direct access to this file
 defined('_JEXEC') or die;
+use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Toolbar\ToolbarHelper;
 require_once JPATH_COMPONENT . '/helpers/tjreports.php';
 /**
  * HelloWorlds View
  *
  * @since  0.0.1
  */
-class TjreportsViewTjreports extends JViewLegacy
+class TjreportsViewTjreports extends HtmlView
 {
 	/**
 	 * Display the Tjreports view
@@ -29,7 +34,7 @@ class TjreportsViewTjreports extends JViewLegacy
 
 		if (!$this->canDo->get('core.view'))
 		{
-			JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
+			JError::raiseError(403, Text::_('JERROR_ALERTNOAUTHOR'));
 
 			return false;
 		}
@@ -42,10 +47,10 @@ class TjreportsViewTjreports extends JViewLegacy
 		$this->filterForm    = $this->get('FilterForm');
 
 		// Initialise variables.
-		$app = JFactory::getApplication('administrator');
+		$app = Factory::getApplication('administrator');
 
 		// Get extension name
-		$client = JFactory::getApplication()->input->get('client', '', 'word');
+		$client = Factory::getApplication()->input->get('client', '', 'word');
 
 		if ($client)
 		{
@@ -69,33 +74,33 @@ class TjreportsViewTjreports extends JViewLegacy
 	 */
 	protected function addToolBar()
 	{
-		$name = JText::_('COM_TJREPORTS');
+		$name = Text::_('COM_TJREPORTS');
 
-		JToolBarHelper::title($name, 'list');
+		ToolbarHelper::title($name, 'list');
 
 		if ($this->canDo->get('core.create'))
 		{
-			JToolBarHelper::addNew('tjreport.add');
+			ToolbarHelper::addNew('tjreport.add');
 		}
 
 		if ($this->canDo->get('core.edit'))
 		{
-			JToolBarHelper::editList('tjreport.edit');
+			ToolbarHelper::editList('tjreport.edit');
 		}
 
 		if ($this->canDo->get('core.delete'))
 		{
-			JToolBarHelper::deleteList('', 'tjreports.delete');
+			ToolbarHelper::deleteList('', 'tjreports.delete');
 		}
 
 		if ($this->canDo->get('core.admin'))
 		{
-			JToolBarHelper::preferences('com_tjreports');
+			ToolbarHelper::preferences('com_tjreports');
 		}
 
 		if ($this->canDo->get('core.create'))
 		{
-			JToolBarHelper::custom('tjreports.discover', 'refresh', 'refresh', 'JLIB_INSTALLER_DISCOVER', false);
+			ToolbarHelper::custom('tjreports.discover', 'refresh', 'refresh', 'JLIB_INSTALLER_DISCOVER', false);
 		}
 	}
 }

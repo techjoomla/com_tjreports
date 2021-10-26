@@ -9,8 +9,8 @@
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
 use Joomla\CMS\Factory;
+
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Table\Table;
 Use Joomla\Registry\Registry;
@@ -1609,7 +1609,7 @@ class TjreportsModelReports extends ListModel
 			return array();
 		}
 
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$query = $db->getQuery(true);
 
 		// Get the titles for the user groups.

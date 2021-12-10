@@ -10,6 +10,6 @@ CREATE TABLE IF NOT EXISTS `#__tj_reports` (
   `default` tinyint(4) NOT NULL DEFAULT 0,
   `userid` int(11) NOT NULL DEFAULT 0,
   `datadenyset` int(11) DEFAULT 0,
-  `param` text NOT NULL,
+  `param` text DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;

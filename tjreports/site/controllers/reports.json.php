@@ -96,7 +96,7 @@ class TjreportsControllerReports extends AdminController
 
 				$extension = Factory::getApplication()->input->get('option');
 				PluginHelper::importPlugin('tjreports');
-				Factory::getApplication()->triggerEvent('tjReportsOnAfterReportSave', array($extension, $insert_object, true));
+				Factory::getApplication()->triggerEvent('onAfterTjReportsReportSave', array($extension, $insert_object, true));
 
 				$app->enqueueMessage('Data save successfully.');
 				echo new JsonResponse('Done');

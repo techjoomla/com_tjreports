@@ -113,7 +113,7 @@ class  TjreportsModelReport extends AdminModel
 
 			$extension = Factory::getApplication()->input->get('option');
 			PluginHelper::importPlugin('tjreports');
-			Factory::getApplication()->triggerEvent('tjReportsOnAfterReportDelete', array($extension, $data));
+			Factory::getApplication()->triggerEvent('onAfterTjReportsReportDelete', array($extension, $data));
 
 			return true;
 		}

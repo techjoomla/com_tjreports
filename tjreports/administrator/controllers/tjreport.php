@@ -8,10 +8,10 @@
  */
 // No direct access to this file
 defined('_JEXEC') or die;
+
 use Joomla\CMS\MVC\Controller\FormController;
 use Joomla\CMS\Factory;
 
-jimport('joomla.application.component.controllerform');
 /**
  * tjreport Controller
  *

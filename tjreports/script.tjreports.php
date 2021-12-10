@@ -33,9 +33,6 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Table\Table;
-jimport('joomla.installer.installer');
-jimport('joomla.filesystem.file');
-jimport('joomla.application.component.helper');
 
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
@@ -100,7 +97,6 @@ class Com_TjreportsInstallerScript
 	 */
 	public function uninstall($parent)
 	{
-		jimport('joomla.installer.installer');
 
 		$db = Factory::getDBO();
 
@@ -292,7 +288,6 @@ class Com_TjreportsInstallerScript
 	private function removeObsoleteFilesAndFolders($removeFilesAndFolders)
 	{
 		// Remove files
-		jimport('joomla.filesystem.file');
 		if(!empty($removeFilesAndFolders['files']))
 		{
 			foreach($removeFilesAndFolders['files'] as $file)
@@ -304,7 +299,6 @@ class Com_TjreportsInstallerScript
 		}
 
 		// Remove folders
-		jimport('joomla.filesystem.file');
 		if(!empty($removeFilesAndFolders['folders']))
 		{
 			foreach($removeFilesAndFolders['folders'] as $folder)

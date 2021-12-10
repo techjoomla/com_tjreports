@@ -9,6 +9,7 @@
 
 // No direct access
 defined('_JEXEC') or die;
+
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
@@ -41,7 +42,6 @@ $document = Factory::getDocument();
 $document->addStyleSheet(Uri::root(true) . '/media/com_tjreports/css/font-awesome/css/font-awesome.min.css');
 
 // Include dependancies
-jimport('joomla.application.component.controller');
 
 JLoader::registerPrefix('Tjreports', JPATH_COMPONENT_ADMINISTRATOR);
 

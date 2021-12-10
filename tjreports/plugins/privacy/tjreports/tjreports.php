@@ -10,15 +10,15 @@
 
 // No direct access.
 defined('_JEXEC') or die();
+
+use Joomla\CMS\Factory;
 use Joomla\CMS\User\User;
-use Joomla\CMS\Table\User;
+use Joomla\CMS\Table\User as UserTable;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
 JLoader::register('PrivacyPlugin', JPATH_ADMINISTRATOR . '/components/com_privacy/helpers/plugin.php');
 JLoader::register('PrivacyRemovalStatus', JPATH_ADMINISTRATOR . '/components/com_privacy/helpers/removal/status.php');
-
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
 /**
  * TJReports Privacy Plugin.
@@ -84,7 +84,7 @@ class PlgPrivacyTjreports extends PrivacyPlugin
 		}
 
 		/** @var JTableUser $user */
-		$userTable = User::getTable();
+		$userTable = UserTable::getTable();
 		$userTable->load($user->id);
 
 		$domains = array();

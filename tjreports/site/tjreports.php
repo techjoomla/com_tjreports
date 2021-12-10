@@ -30,7 +30,6 @@ else
 }
 
 // Include dependancies
-jimport('joomla.application.component.controller');
 
 JLoader::registerPrefix('tjreports', JPATH_COMPONENT);
 

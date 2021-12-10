@@ -8,12 +8,11 @@
  */
 
 defined('JPATH_BASE') or die;
+
 use Joomla\CMS\Form\FormField;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
-
-jimport('joomla.form.formfield');
 
 /**
  * Supports an HTML select list of categories

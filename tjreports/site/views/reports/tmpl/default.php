@@ -336,7 +336,6 @@ if ($this->showSummaryReport == 'Yes')
 								<table id="report-table" class="table table-striped left_table ">
 									<thead>
 										<?php
-										jimport('joomla.filter.output');
 										$filters = array();
 
 										if (!empty($displayFilters))

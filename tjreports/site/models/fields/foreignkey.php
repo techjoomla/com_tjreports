@@ -12,7 +12,6 @@ use Joomla\CMS\Form\FormField;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 
-jimport('joomla.form.formfield');
 
 /**
  * Supports a value from an external table

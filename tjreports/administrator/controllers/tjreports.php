@@ -8,11 +8,13 @@
  */
 // No direct access to this file
 defined('_JEXEC') or die;
+
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\Language\Text;
+
 /**
  * com tjreports Controller
  *

@@ -9,6 +9,7 @@
  */
 // No direct access
 defined('_JEXEC') or die;
+
 use Joomla\CMS\Helper\ContentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\Path;
@@ -109,7 +110,7 @@ class TjreportsHelper extends ContentHelper
 
 		$layoutname = $layout . '.php';
 
-		$override = $searchTmpPath . '/' . 'templates' . '/' . $app->getTemplate() . '/' . 'html' . '/' . $component . '/' . $viewname . '/' . $layoutname;
+		$override = $searchTmpPath . '/templates/' . $app->getTemplate() . '/html/' . $component . '/' . $viewname . '/' . $layoutname;
 
 		if (File::exists($override))
 		{
@@ -117,7 +118,7 @@ class TjreportsHelper extends ContentHelper
 		}
 		else
 		{
-			return $view = $useViewpath . '/' . 'components' . '/' . $component . '/' . 'views' . '/' . $viewname . '/' . 'tmpl' . '/' . $layoutname;
+			return $view = $useViewpath . '/components/' . $component . '/views/' . $viewname . '/tmpl/' . $layoutname;
 		}
 	}
 }

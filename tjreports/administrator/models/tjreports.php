@@ -8,8 +8,10 @@
  */
 // No direct access to this file
 defined('_JEXEC') or die;
+
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\CMS\Factory;
+
 /**
  * Tjreportslist Model
  *

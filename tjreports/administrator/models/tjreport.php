@@ -8,10 +8,12 @@
  */
 // No direct access to this file
 defined('_JEXEC') or die;
+
 use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+
 /**
  * jticketing Model
  *
@@ -227,7 +229,6 @@ class TjreportsModelTjreport extends AdminModel
 	 */
 	protected function prepareTable($table)
 	{
-		jimport('joomla.filter.output');
 		$db = Factory::getDbo();
 		$query = $db->getQuery(true);
 

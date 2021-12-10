@@ -21,7 +21,6 @@ Use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
 
-jimport('joomla.application.component.modellist');
 
 // Load TJReports db helper
 JLoader::import('database', JPATH_SITE . '/components/com_tjreports/helpers');

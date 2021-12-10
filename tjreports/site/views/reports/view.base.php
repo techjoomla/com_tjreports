@@ -21,7 +21,6 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
-jimport('joomla.application.component.view');
 JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_ADMINISTRATOR);
 JLoader::import('components.com_tjreports.models.tjreports', JPATH_SITE);
 JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_SITE);

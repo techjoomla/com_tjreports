@@ -11,7 +11,6 @@ defined('JPATH_BASE') or die;
 use Joomla\CMS\Form\FormField;
 use Joomla\CMS\Factory;
 
-jimport('joomla.form.formfield');
 
 /**
  * Supports an HTML select list of categories

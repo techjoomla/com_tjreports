@@ -10,9 +10,9 @@
 
 // No direct access.
 defined('_JEXEC') or die;
+
 use Joomla\CMS\Factory;
 
-jimport('joomla.plugin.plugin');
 JLoader::import('components.com_tjreports.models.report', JPATH_SITE);
 
 /**

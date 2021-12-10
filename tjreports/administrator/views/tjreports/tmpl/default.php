@@ -8,11 +8,13 @@
  */
 // No direct access to this file
 defined('_JEXEC') or die;
+
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
+
 HTMLHelper::_('formbehavior.chosen', 'select');
 $user	= Factory::getUser();
 $listOrder     = $this->escape($this->state->get('list.ordering'));

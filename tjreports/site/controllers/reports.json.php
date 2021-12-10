@@ -19,7 +19,6 @@ use Joomla\CMS\Response\JsonResponse;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
-jimport('joomla.application.component.controlleradmin');
 
 /**
  * Courses list controller class.

@@ -8,27 +8,30 @@
  */
 // No direct access
 defined('_JEXEC') or die;
+
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
+
 HTMLHelper::_('behavior.formvalidator');
 $input = Factory::getApplication()->input;
 
 $showParent = true;
-if($this->form->getValue('id'))
+
+if ($this->form->getValue('id'))
 {
-	if(!$this->form->getValue('parent'))
+	if (!$this->form->getValue('parent'))
 	{
 		$showParent = false;
 	}
 
-	$this->form->setFieldAttribute('client','readonly','readonly');
-	$this->form->setFieldAttribute('parent','readonly','readonly');
+	$this->form->setFieldAttribute('client', 'readonly', 'readonly');
+	$this->form->setFieldAttribute('parent', 'readonly', 'readonly');
 }
 else
 {
-	$this->form->setFieldAttribute('parent','required','required');
+	$this->form->setFieldAttribute('parent', 'required', 'required');
 }
 
 JFactory::getDocument()->addScriptDeclaration('

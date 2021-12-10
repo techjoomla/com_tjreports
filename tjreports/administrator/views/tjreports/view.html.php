@@ -8,11 +8,14 @@
  */
 // No direct access to this file
 defined('_JEXEC') or die;
+
 use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
+
 require_once JPATH_COMPONENT . '/helpers/tjreports.php';
+
 /**
  * HelloWorlds View
  *

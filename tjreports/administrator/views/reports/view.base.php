@@ -12,4 +12,5 @@
 
 // No direct access
 defined('_JEXEC') or die;
+
 JLoader::register('ReportsViewBase', JPATH_SITE . '/components/com_tjreports/views/reports/view.base.php');

@@ -8,12 +8,14 @@
  */
 // No direct access
 defined('_JEXEC') or die;
+
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\Language\Text;
+
 /**
- * Hello Table class
+ * Report Table class
  *
  * @since  0.0.1
  */

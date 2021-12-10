@@ -11,7 +11,6 @@
 defined('_JEXEC') or die;
 use Joomla\CMS\MVC\Controller\BaseController;
 
-jimport('joomla.application.component.controller');
 
 /**
  * Class TjreportsController

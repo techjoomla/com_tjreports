@@ -13,7 +13,6 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Language\Text;
 
-jimport('joomla.form.formfield');
 
 /**
  * Supports an HTML select list of categories

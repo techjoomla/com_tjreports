@@ -148,7 +148,7 @@ class TjreportsViewReports extends ReportsViewBase
 		$app = Factory::getApplication();
 		$document = Factory::getDocument();
 
-		$com_params	= ComponentHelper::getParams('com_tjreports');
+		$com_params = ComponentHelper::getParams('com_tjreports');
 		$bootstrapSetting = $com_params->get('bootstrap_setting', 1);
 
 		if (($bootstrapSetting == 3)

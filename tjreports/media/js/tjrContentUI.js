@@ -59,7 +59,7 @@ jQuery.extend(tjrContentUI.report, {
 			jQuery(".hasPopover").popover('dispose');
 		}
 
-		var promise = tjrContentService.postData(this.url+'&tpl='+layout, this.$form.serialize());//, {'datatype':'html'}
+		var promise = tjrContentService.postData(this.url+'&tmpl='+layout, this.$form.serialize());
 
 		promise.fail(
 			function(response) {

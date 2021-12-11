@@ -13,4 +13,5 @@
 // No direct access
 defined('_JEXEC') or die;
 
+require_once JPATH_SITE . '/components/com_tjreports/views/reports/view.base.php';
 JLoader::register('ReportsViewBase', JPATH_SITE . '/components/com_tjreports/views/reports/view.base.php');

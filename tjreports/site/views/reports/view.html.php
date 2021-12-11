@@ -146,7 +146,6 @@ class TjreportsViewReports extends ReportsViewBase
 	protected function addDocumentHeaderData()
 	{
 		$app = Factory::getApplication();
-		HTMLHelper::_('formbehavior.chosen', 'select');
 		$document = Factory::getDocument();
 
 		$com_params	= ComponentHelper::getParams('com_tjreports');

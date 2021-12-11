@@ -20,16 +20,17 @@ if ($this->filterLevel == 2)
 	$classForShowHide = 'col-filter-header';
 }
 
-foreach($displayFilters as $searchKey => $filter)
+foreach ($displayFilters as $searchKey => $filter)
 {
 	$searchType = $filter['search_type'];
 	$searchValue = isset($filters[$searchKey]) ? $filters[$searchKey] : '';
 	$filterHtml = '';
 	$filterHide = $searchValue === '' ? 'filter-hide' : 'filter-show';
+	$bsGroupClass  = (JVERSION < '4.0.0') ? ' input-group ' : ' form-group ';
 
 	if ($searchType == 'text')
 	{
-		$filterHtml = '<div class="input-group">
+		$filterHtml = '<div class="' . $bsGroupClass . '">
 							<input type="text" name="filters[' . $searchKey . ']"
 									class="input input-mini filter-input ' . $filterHide . '" ' .
 									'onkeydown="tjrContentUI.report.submitOnEnter(event);"
@@ -43,21 +44,24 @@ foreach($displayFilters as $searchKey => $filter)
 							</span>
 						</div>';
 
-		if(isset($this->colKey))
+		if (isset($this->colKey))
 		{
 			$filterHtml .= HTMLHelper::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
 		}
 	}
-	elseif($searchType == 'select' && isset($filter['select_options']))
+	elseif ($searchType == 'select' && isset($filter['select_options']))
 	{
 		$svalue = isset($filter['select_value']) ? $filter['select_value'] : "value";
 		$stext  = isset($filter['select_text']) ? $filter['select_text'] : "text";
 
-		$filterHtml = '<div class="input-group">';
+		$filterHtml = '<div class="' . $bsGroupClass . '">';
+
+		$selectClass  = (JVERSION < '4.0.0') ? ' filter-input ' : ' form-select ';
 
 		$filterHtml .= HTMLHelper::_('select.genericlist', $filter['select_options'], 'filters[' . $searchKey . ']',
-					'class="filter-input ' . $filterHide . '" size="1" onchange="tjrContentUI.report.submitTJRData();"',
-					$svalue, $stext, $searchValue);
+			'class="' . $selectClass . $filterHide . '" size="1" onchange="tjrContentUI.report.submitTJRData();"',
+			$svalue, $stext, $searchValue
+		);
 
 		if ($this->filterLevel == 1)
 		{
@@ -72,12 +76,12 @@ foreach($displayFilters as $searchKey => $filter)
 							</span></div>';
 		}
 
-		if(isset($this->colKey))
+		if (isset($this->colKey))
 		{
 			$filterHtml .= HTMLHelper::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
 		}
 	}
-	elseif($searchType == 'date.range' || $searchType == 'calendar')
+	elseif ($searchType == 'date.range' || $searchType == 'calendar')
 	{
 		$j = ($searchType == 'date.range') ? 2 : 1;
 
@@ -123,8 +127,8 @@ foreach($displayFilters as $searchKey => $filter)
 				$fieldAttr = $attrib;
 			}
 
-			$filterHtml  .= '<div class="filter-search controls custom-group input-group">'
-				. HTMLHelper::_('calendar', htmlspecialchars($searchValue), 'filters['. $fieldKey . ']', 'filters_' . $fieldKey , $dateFormat, $fieldAttr);
+			$filterHtml  .= '<div class="filter-search controls custom-group ' . $bsGroupClass . '">'
+				. HTMLHelper::_('calendar', htmlspecialchars($searchValue), 'filters[' . $fieldKey . ']', 'filters_' . $fieldKey , $dateFormat, $fieldAttr);
 
 			if ($this->filterLevel == 1)
 			{
@@ -139,13 +143,13 @@ foreach($displayFilters as $searchKey => $filter)
 							</span></div>';
 			}
 
-			if(isset($this->colKey))
+			if (isset($this->colKey))
 			{
 				$filterHtml .= HTMLHelper::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
 			}
 		}
 	}
-	elseif($searchType == 'html')
+	elseif ($searchType == 'html')
 	{
 		$filterHtml = $filter['html'];
 	}

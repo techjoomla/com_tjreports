@@ -10,4 +10,4 @@ ALTER TABLE `#__tj_reports` CHANGE `parent` `parent` int(11) NOT NULL DEFAULT 0;
 ALTER TABLE `#__tj_reports` CHANGE `default` `default` tinyint(4) NOT NULL DEFAULT 0;
 ALTER TABLE `#__tj_reports` CHANGE `userid` `userid` int(11) NOT NULL DEFAULT 0;
 ALTER TABLE `#__tj_reports` CHANGE `datadenyset` `datadenyset` int(11) DEFAULT 0;
-ALTER TABLE `#__tj_reports` CHANGE `param` `param` text NOT NULL DEFAULT '';
+ALTER TABLE `#__tj_reports` CHANGE `param` `param` text;

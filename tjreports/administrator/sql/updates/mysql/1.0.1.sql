@@ -9,6 +9,6 @@ CREATE TABLE IF NOT EXISTS `#__tj_reports` (
   `default` tinyint(4) NOT NULL DEFAULT 0,
   `userid` int(11) NOT NULL DEFAULT 0,
   `datadenyset` int(11) DEFAULT 0,
-  `param` text NOT NULL DEFAULT '',
+  `param` text,
   PRIMARY KEY (`id`)
 ) AUTO_INCREMENT=1 ;

@@ -8,13 +8,17 @@
 
 // No direct access.
 defined('_JEXEC') or die;
+use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\PluginHelper;
 
 /**
  * Tmt model.
  *
  * @since  1.0
  */
-class  TjreportsModelReport extends JModelAdmin
+class  TjreportsModelReport extends AdminModel
 {
 	/**
 	 * Method to get a table object, load it if necessary.
@@ -30,7 +34,7 @@ class  TjreportsModelReport extends JModelAdmin
 
 	public function getTable($type = 'Tjreport', $prefix = 'TjreportsTable', $config = array())
 	{
-		return JTable::getInstance($type, $prefix, $config);
+		return Table::getInstance($type, $prefix, $config);
 	}
 
 	/**
@@ -73,7 +77,7 @@ class  TjreportsModelReport extends JModelAdmin
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState(
+		$data = Factory::getApplication()->getUserState(
 			'com_tjreports.edit.tjreports.data',
 			array()
 		);
@@ -97,20 +101,19 @@ class  TjreportsModelReport extends JModelAdmin
 	 */
 	public function delete(&$pks)
 	{
-		$db    = JFactory::getDBO();
-		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
-		$tjrTable = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
+		$db    = Factory::getDBO();
+		Table::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
+		$tjrTable = Table::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
 		$tjrTable->load(array('id' => &$pks));
 		$data = $tjrTable;
 
-		if ($tjrTable->userid == JFactory::getUser()->id)
+		if ($tjrTable->userid == Factory::getUser()->id)
 		{
 			$tjrTable->delete($pks);
 
-			$dispatcher = JEventDispatcher::getInstance();
-			$extension = JFactory::getApplication()->input->get('option');
-			JPluginHelper::importPlugin('tjreports');
-			$dispatcher->trigger('tjReportsOnAfterReportDelete', array($extension, $data));
+			$extension = Factory::getApplication()->input->get('option');
+			PluginHelper::importPlugin('tjreports');
+			Factory::getApplication()->triggerEvent('tjReportsOnAfterReportDelete', array($extension, $data));
 
 			return true;
 		}

@@ -9,6 +9,7 @@
 
 // no direct access
 defined('_JEXEC') or die;
+use Joomla\CMS\HTML\HTMLHelper;
 
 $displayFilters = $this->filters;
 $filters = $this->filterValues;
@@ -44,7 +45,7 @@ foreach($displayFilters as $searchKey => $filter)
 
 		if(isset($this->colKey))
 		{
-			$filterHtml .= JHtml::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
+			$filterHtml .= HTMLHelper::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
 		}
 	}
 	elseif($searchType == 'select' && isset($filter['select_options']))
@@ -54,7 +55,7 @@ foreach($displayFilters as $searchKey => $filter)
 
 		$filterHtml = '<div class="input-group">';
 
-		$filterHtml .= JHtml::_('select.genericlist', $filter['select_options'], 'filters[' . $searchKey . ']',
+		$filterHtml .= HTMLHelper::_('select.genericlist', $filter['select_options'], 'filters[' . $searchKey . ']',
 					'class="filter-input ' . $filterHide . '" size="1" onchange="tjrContentUI.report.submitTJRData();"',
 					$svalue, $stext, $searchValue);
 
@@ -73,7 +74,7 @@ foreach($displayFilters as $searchKey => $filter)
 
 		if(isset($this->colKey))
 		{
-			$filterHtml .= JHtml::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
+			$filterHtml .= HTMLHelper::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
 		}
 	}
 	elseif($searchType == 'date.range' || $searchType == 'calendar')
@@ -123,7 +124,7 @@ foreach($displayFilters as $searchKey => $filter)
 			}
 
 			$filterHtml  .= '<div class="filter-search controls custom-group input-group">'
-				. JHtml::_('calendar', htmlspecialchars($searchValue), 'filters['. $fieldKey . ']', 'filters_' . $fieldKey , $dateFormat, $fieldAttr);
+				. HTMLHelper::_('calendar', htmlspecialchars($searchValue), 'filters['. $fieldKey . ']', 'filters_' . $fieldKey , $dateFormat, $fieldAttr);
 
 			if ($this->filterLevel == 1)
 			{
@@ -140,7 +141,7 @@ foreach($displayFilters as $searchKey => $filter)
 
 			if(isset($this->colKey))
 			{
-				$filterHtml .= JHtml::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
+				$filterHtml .= HTMLHelper::_('grid.sort', '', $this->colKey, $this->listDirn, $this->listOrder);
 			}
 		}
 	}

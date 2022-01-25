@@ -9,8 +9,8 @@
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
 use Joomla\CMS\Factory;
+
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Table\Table;
 Use Joomla\Registry\Registry;
@@ -21,7 +21,6 @@ Use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
 
-jimport('joomla.application.component.modellist');
 
 // Load TJReports db helper
 JLoader::import('database', JPATH_SITE . '/components/com_tjreports/helpers');
@@ -923,7 +922,6 @@ class TjreportsModelReports extends ListModel
 		$client = $input->get('client', '', 'STRING');
 
 		// Get all report plugin
-		$dispatcher   = JEventDispatcher::getInstance();
 		$plugins      = PluginHelper::getPlugin('tjreports');
 		$pluginExists = json_decode(json_encode($plugins), true);
 		$pluginNames  = array_column($pluginExists, 'name');
@@ -1609,7 +1607,7 @@ class TjreportsModelReports extends ListModel
 			return array();
 		}
 
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$query = $db->getQuery(true);
 
 		// Get the titles for the user groups.

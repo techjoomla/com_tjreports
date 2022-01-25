@@ -12,15 +12,20 @@
 
 // No direct access
 defined('_JEXEC') or die;
+use Joomla\CMS\MVC\Controller\AdminController;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\OutputFilter;
+use Joomla\CMS\Response\JsonResponse;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
-jimport('joomla.application.component.controlleradmin');
 
 /**
  * Courses list controller class.
  *
  * @since  1.0.0
  */
-class TjreportsControllerReports extends JControllerAdmin
+class TjreportsControllerReports extends AdminController
 {
 	/**
 	 * Save a query for report engine
@@ -33,11 +38,11 @@ class TjreportsControllerReports extends JControllerAdmin
 	{
 		try
 		{
-			$app = JFactory::getApplication();
-			$db        		= JFactory::getDBO();
+			$app = Factory::getApplication();
+			$db        		= Factory::getDBO();
 			$input 			= $app->input;
 			$post			= $input->post->getArray();
-			$current_user 	= JFactory::getUser()->id;
+			$current_user 	= Factory::getUser()->id;
 
 			if (empty($post))
 			{
@@ -51,13 +56,13 @@ class TjreportsControllerReports extends JControllerAdmin
 
 			if ($alias)
 			{
-				if (JFactory::getConfig()->get('unicodeslugs') == 1)
+				if (Factory::getConfig()->get('unicodeslugs') == 1)
 				{
-					$alias = JFilterOutput::stringURLUnicodeSlug($alias);
+					$alias = OutputFilter::stringURLUnicodeSlug($alias);
 				}
 				else
 				{
-					$alias = JFilterOutput::stringURLSafe($alias);
+					$alias = OutputFilter::stringURLSafe($alias);
 				}
 			}
 
@@ -81,25 +86,24 @@ class TjreportsControllerReports extends JControllerAdmin
 			{
 				$app->enqueueMessage($db->stderr());
 
-				echo new JResponseJson(null, 'Could not insert data.', true);
+				echo new JsonResponse(null, 'Could not insert data.', true);
 			}
 			else
 			{
 				$id = $db->insertid();
 				$insert_object->id = $id;
 
-				$dispatcher = JEventDispatcher::getInstance();
-				$extension = JFactory::getApplication()->input->get('option');
-				JPluginHelper::importPlugin('tjreports');
-				$dispatcher->trigger('tjReportsOnAfterReportSave', array($extension, $insert_object, true));
+				$extension = Factory::getApplication()->input->get('option');
+				PluginHelper::importPlugin('tjreports');
+				Factory::getApplication()->triggerEvent('onAfterTjReportsReportSave', array($extension, $insert_object, true));
 
 				$app->enqueueMessage('Data save successfully.');
-				echo new JResponseJson('Done');
+				echo new JsonResponse('Done');
 			}
 		}
 		catch (Exception $e)
 		{
-			echo new JResponseJson($e);
+			echo new JsonResponse($e);
 		}
 	}
 
@@ -114,21 +118,21 @@ class TjreportsControllerReports extends JControllerAdmin
 	{
 		try
 		{
-			$app = JFactory::getApplication();
-			$db        		= JFactory::getDBO();
+			$app = Factory::getApplication();
+			$db        		= Factory::getDBO();
 			$input 			= $app->input;
 			$queryId = $input->get('queryId', 0, 'INT');
 
-			JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_tjreports/models');
-			$model = JModelLegacy::getInstance('Report', 'TjreportsModel');
+			BaseDatabaseModel::addIncludePath(JPATH_SITE . '/components/com_tjreports/models');
+			$model = BaseDatabaseModel::getInstance('Report', 'TjreportsModel');
 
 			$result = $model->delete($queryId);
 
-			echo new JResponseJson($result);
+			echo new JsonResponse($result);
 		}
 		catch (Exception $e)
 		{
-			echo new JResponseJson($e);
+			echo new JsonResponse($e);
 		}
 	}
 }

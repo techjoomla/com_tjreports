@@ -11,11 +11,12 @@
 // No direct access.
 defined('_JEXEC') or die();
 
-JLoader::register('ActionlogsHelper', JPATH_ADMINISTRATOR . '/components/com_actionlogs/helpers/actionlogs.php');
-
-use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+
+JLoader::register('ActionlogsHelper', JPATH_ADMINISTRATOR . '/components/com_actionlogs/helpers/actionlogs.php');
 
 /**
  * TJReports Actions Logging Plugin.
@@ -92,9 +93,9 @@ class PlgActionlogTjreports extends CMSPlugin
 			return;
 		}
 
-		$context = JFactory::getApplication()->input->get('option');
+		$context = Factory::getApplication()->input->get('option');
 
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		if ($isNew && !empty($table->client))
 		{
@@ -114,7 +115,7 @@ class PlgActionlogTjreports extends CMSPlugin
 
 		if ($table->client)
 		{
-			$language = JFactory::getLanguage();
+			$language = Factory::getLanguage();
 			$language->load($table->client);
 		}
 
@@ -123,7 +124,7 @@ class PlgActionlogTjreports extends CMSPlugin
 			'id'          => $table->id,
 			'title'       => $table->title,
 			'plugin'      => $table->plugin,
-			'client'      => JText::_(strtoupper($table->client)),
+			'client'      => Text::_(strtoupper($table->client)),
 			'itemlink'    => 'index.php?option=com_tjreports&task=tjreport.edit&id=' . $table->id,
 			'userid'      => $user->id,
 			'username'    => $user->username,
@@ -153,12 +154,12 @@ class PlgActionlogTjreports extends CMSPlugin
 			return;
 		}
 
-		$context            = JFactory::getApplication()->input->get('option');
-		$user               = JFactory::getUser();
+		$context            = Factory::getApplication()->input->get('option');
+		$user               = Factory::getUser();
 
 		if (!empty($table->client))
 		{
-			$language = JFactory::getLanguage();
+			$language = Factory::getLanguage();
 			$language->load($table->client);
 
 			$messageLanguageKey = 'PLG_ACTIONLOG_TJREPORTS_REPORT_DELETED_WITH_CLIENT';
@@ -173,7 +174,7 @@ class PlgActionlogTjreports extends CMSPlugin
 				'id'          => $table->id,
 				'title'       => $table->title,
 				'plugin'      => $table->plugin,
-				'client'      => JText::_(strtoupper($table->client)),
+				'client'      => Text::_(strtoupper($table->client)),
 				'userid'      => $user->id,
 				'username'    => $user->username,
 				'accountlink' => 'index.php?option=com_users&task=user.edit&id=' . $user->id,

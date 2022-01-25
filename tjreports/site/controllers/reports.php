@@ -12,15 +12,20 @@
 
 // No direct access
 defined('_JEXEC') or die;
+use Joomla\CMS\MVC\Controller\AdminController;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
-jimport('joomla.application.component.controlleradmin');
 
 /**
  * Courses list controller class.
  *
  * @since  1.0.0
  */
-class TjreportsControllerReports extends JControllerAdmin
+class TjreportsControllerReports extends AdminController
 {
 	/**
 	 * Function used to export data in csv format
@@ -31,23 +36,23 @@ class TjreportsControllerReports extends JControllerAdmin
 	 */
 	public function csvexport()
 	{
-		$app  = JFactory::getApplication();
-		$user = JFactory::getUser();
-		$input 	= JFactory::getApplication()->input;
+		$app  = Factory::getApplication();
+		$user = Factory::getUser();
+		$input 	= Factory::getApplication()->input;
 		$reportId = $input->post->get('reportId');
 
 		if (!$user->authorise('core.export', 'com_tjreports.tjreport.' . $reportId))
 		{
 			if ($user->guest)
 			{
-				$return = base64_encode(JUri::getInstance());
-				$login_url_with_return = JRoute::_('index.php?option=com_users&view=login&return=' . $return);
-				$app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'notice');
+				$return = base64_encode(Uri::getInstance());
+				$login_url_with_return = Route::_('index.php?option=com_users&view=login&return=' . $return);
+				$app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'notice');
 				$app->redirect($login_url_with_return, 403);
 			}
 			else
 			{
-				$app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+				$app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
 				$app->setHeader('status', 403, true);
 
 				return;
@@ -58,8 +63,8 @@ class TjreportsControllerReports extends JControllerAdmin
 		$reportData = $this->model->getReportNameById($reportId);
 		$pluginName = $reportData->plugin;
 
-		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $pluginName);
-		$model = JModelLegacy::getInstance($pluginName, 'TjreportsModel');
+		BaseDatabaseModel::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $pluginName);
+		$model = BaseDatabaseModel::getInstance($pluginName, 'TjreportsModel');
 
 		$model->loadLanguage($pluginName);
 		$input->set('limit', 0);
@@ -90,7 +95,7 @@ class TjreportsControllerReports extends JControllerAdmin
 						$subTextTitle = $columns[$subKey]['title'];
 					}
 
-					$colTitleArray[] = $contentTitle . ' ' . JText::sprintf($subTextTitle, $contentTitle, $contentId);
+					$colTitleArray[] = $contentTitle . ' ' . Text::sprintf($subTextTitle, $contentTitle, $contentId);
 				}
 			}
 			else
@@ -106,7 +111,7 @@ class TjreportsControllerReports extends JControllerAdmin
 					$colTitle = $columns[$colKey]['title'];
 				}
 
-				$colTitleArray[] = JText::_($colTitle);
+				$colTitleArray[] = Text::_($colTitle);
 			}
 		}
 
@@ -165,11 +170,11 @@ class TjreportsControllerReports extends JControllerAdmin
 	public function pdfExport()
 	{
 		require_once JPATH_SITE . '/components/com_tjlms/models/review.php';
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
-		$jinput = JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 		$track_id = $jinput->get('track_id', '0', 'INT');
 		$curriculam_id = $jinput->get('curId', '0', 'INT');
 		$user_id = $user->id;
@@ -181,7 +186,7 @@ class TjreportsControllerReports extends JControllerAdmin
 		}
 		else
 		{
-			return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+			return JError::raiseWarning(404, Text::_('JERROR_ALERTNOAUTHOR'));
 		}
 
 		jexit();
@@ -225,12 +230,12 @@ class TjreportsControllerReports extends JControllerAdmin
 	 */
 	public function defaultReport()
 	{
-		$input = JFactory::getApplication()->input;
+		$input = Factory::getApplication()->input;
 		$client = $input->get('client', '', 'STRING');
 
 		$model = $this->getModel('reports');
 		$reports = $model->getenableReportPlugins();
 
-		$this->setRedirect(JRoute::_('index.php?option=com_tjreports&view=reports&client=' . $client . '&reportId=' . $reports[0]['reportId'], false));
+		$this->setRedirect(Route::_('index.php?option=com_tjreports&view=reports&client=' . $client . '&reportId=' . $reports[0]['reportId'], false));
 	}
 }

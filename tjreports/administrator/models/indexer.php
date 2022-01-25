@@ -11,6 +11,7 @@
 // No direct access.
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Response\JsonResponse;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
@@ -77,7 +78,7 @@ class TjreportsModelIndexer extends BaseDatabaseModel
 			if ($db->execute())
 			{
 				$msg = 'DB table - ' . $db->quoteName($this->customFieldsTable) . ' created successfully';
-				echo new JResponseJson($msg);
+				echo new JsonResponse($msg);
 
 				return true;
 			}
@@ -88,7 +89,7 @@ class TjreportsModelIndexer extends BaseDatabaseModel
 		}
 		catch (Exception $e)
 		{
-			echo new JResponseJson(null, $e->getMessage(), true);
+			echo new JsonResponse(null, $e->getMessage(), true);
 		}
 	}
 }

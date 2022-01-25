@@ -12,7 +12,6 @@
 
 // No direct access
 defined('_JEXEC') or die;
-jimport('joomla.application.component.controlleradmin');
 
 // Load frontend venues model
 JLoader::import('com_tjreports.controllers.reports', JPATH_SITE . '/components');

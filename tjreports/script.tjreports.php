@@ -29,11 +29,11 @@
  */
 
 defined('_JEXEC') or die( ';)' );
-jimport('joomla.installer.installer');
-jimport('joomla.filesystem.file');
-jimport('joomla.application.component.helper');
+use Joomla\CMS\Factory;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Installer\Installer;
+use Joomla\CMS\Table\Table;
 
-Use Joomla\CMS\Table\Table;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
 /**
@@ -97,11 +97,10 @@ class Com_TjreportsInstallerScript
 	 */
 	public function uninstall($parent)
 	{
-		jimport('joomla.installer.installer');
 
-		$db = JFactory::getDBO();
+		$db = Factory::getDBO();
 
-		$status          = new JObject;
+		$status          = new CMSObject;
 		$status->plugins = array();
 
 		$src = $parent->getParent()->getPath('source');
@@ -126,7 +125,7 @@ class Com_TjreportsInstallerScript
 
 						if ($id)
 						{
-							$installer         = new JInstaller;
+							$installer         = new Installer;
 							$result            = $installer->uninstall('plugin', $id);
 							$status->plugins[] = array(
 								'name' => 'plg_' . $plugin,
@@ -184,9 +183,9 @@ class Com_TjreportsInstallerScript
 	{
 		$src = $parent->getParent()->getPath('source');
 
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
-		$status = new JObject;
+		$status = new CMSObject;
 		$status->plugins = array();
 
 		// Plugins installation
@@ -229,7 +228,7 @@ class Com_TjreportsInstallerScript
 						$db->setQuery($query);
 						$count = $db->loadResult();
 
-						$installer = new JInstaller;
+						$installer = new Installer;
 						$result = $installer->install($path);
 
 						$status->plugins[] = array('name' => 'plg_' . $plugin, 'group' => $folder, 'result' => $result);
@@ -269,7 +268,7 @@ class Com_TjreportsInstallerScript
 		$tjreportsModel->setState('list.ordering', 'id');
 		$reportList = $tjreportsModel->getItems();
 
-		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
+		Table::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
 		$reportTable = Table::getInstance('Tjreport', 'TjreportsTable');
 
 		foreach ($reportList as $key => $report)
@@ -289,7 +288,6 @@ class Com_TjreportsInstallerScript
 	private function removeObsoleteFilesAndFolders($removeFilesAndFolders)
 	{
 		// Remove files
-		jimport('joomla.filesystem.file');
 		if(!empty($removeFilesAndFolders['files']))
 		{
 			foreach($removeFilesAndFolders['files'] as $file)
@@ -301,7 +299,6 @@ class Com_TjreportsInstallerScript
 		}
 
 		// Remove folders
-		jimport('joomla.filesystem.file');
 		if(!empty($removeFilesAndFolders['folders']))
 		{
 			foreach($removeFilesAndFolders['folders'] as $folder)

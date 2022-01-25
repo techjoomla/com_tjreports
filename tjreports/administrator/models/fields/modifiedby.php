@@ -9,7 +9,8 @@
 
 defined('JPATH_BASE') or die;
 
-jimport('joomla.form.formfield');
+use Joomla\CMS\Form\FormField;
+use Joomla\CMS\Factory;
 
 /**
  * Supports an HTML select list of categories
@@ -37,7 +38,7 @@ class JFormFieldModifiedby extends JFormField
 	{
 		// Initialize variables.
 		$html   = array();
-		$user   = JFactory::getUser();
+		$user   = Factory::getUser();
 		$html[] = '<input type="hidden" name="' . $this->name . '" value="' . $user->id . '" />';
 		$html[] = "<div>" . $user->name . " (" . $user->username . ")</div>";
 

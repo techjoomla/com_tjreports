@@ -11,13 +11,14 @@
 // No direct access.
 defined('_JEXEC') or die();
 
-JLoader::register('PrivacyPlugin', JPATH_ADMINISTRATOR . '/components/com_privacy/helpers/plugin.php');
-JLoader::register('PrivacyRemovalStatus', JPATH_ADMINISTRATOR . '/components/com_privacy/helpers/removal/status.php');
-
-use Joomla\CMS\User\User;
 use Joomla\CMS\Factory;
+use Joomla\CMS\User\User;
+use Joomla\CMS\Table\User as UserTable;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+
+JLoader::register('PrivacyPlugin', JPATH_ADMINISTRATOR . '/components/com_privacy/helpers/plugin.php');
+JLoader::register('PrivacyRemovalStatus', JPATH_ADMINISTRATOR . '/components/com_privacy/helpers/removal/status.php');
 
 /**
  * TJReports Privacy Plugin.
@@ -75,7 +76,7 @@ class PlgPrivacyTjreports extends PrivacyPlugin
 	 *
 	 * @since   1.0.3
 	 */
-	public function onPrivacyExportRequest(PrivacyTableRequest $request, JUser $user = null)
+	public function onPrivacyExportRequest(PrivacyTableRequest $request, User $user = null)
 	{
 		if (!$user)
 		{
@@ -83,7 +84,7 @@ class PlgPrivacyTjreports extends PrivacyPlugin
 		}
 
 		/** @var JTableUser $user */
-		$userTable = User::getTable();
+		$userTable = UserTable::getTable();
 		$userTable->load($user->id);
 
 		$domains = array();
@@ -101,7 +102,7 @@ class PlgPrivacyTjreports extends PrivacyPlugin
 	 *
 	 * @since   1.0.3
 	 */
-	private function createTJReportsUserReports(JTableUser $user)
+	private function createTJReportsUserReports(User $user)
 	{
 		$domain = $this->createDomain('User Reports', 'Reports of user in TJReports');
 
@@ -135,7 +136,7 @@ class PlgPrivacyTjreports extends PrivacyPlugin
 	 *
 	 * @since   1.0.3
 	 */
-	public function onPrivacyRemoveData(PrivacyTableRequest $request, JUser $user = null)
+	public function onPrivacyRemoveData(PrivacyTableRequest $request, User $user = null)
 	{
 		// This plugin only processes data for registered user accounts
 		if (!$user)

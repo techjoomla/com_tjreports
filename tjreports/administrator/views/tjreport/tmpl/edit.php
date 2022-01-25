@@ -8,23 +8,30 @@
  */
 // No direct access
 defined('_JEXEC') or die;
-JHtml::_('behavior.formvalidator');
-$input = JFactory::getApplication()->input;
+
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
+
+HTMLHelper::_('behavior.formvalidator');
+$input = Factory::getApplication()->input;
 
 $showParent = true;
-if($this->form->getValue('id'))
+
+if ($this->form->getValue('id'))
 {
-	if(!$this->form->getValue('parent'))
+	if (!$this->form->getValue('parent'))
 	{
 		$showParent = false;
 	}
 
-	$this->form->setFieldAttribute('client','readonly','readonly');
-	$this->form->setFieldAttribute('parent','readonly','readonly');
+	$this->form->setFieldAttribute('client', 'readonly', 'readonly');
+	$this->form->setFieldAttribute('parent', 'readonly', 'readonly');
 }
 else
 {
-	$this->form->setFieldAttribute('parent','required','required');
+	$this->form->setFieldAttribute('parent', 'required', 'required');
 }
 
 JFactory::getDocument()->addScriptDeclaration('
@@ -38,7 +45,7 @@ JFactory::getDocument()->addScriptDeclaration('
 					var params = JSON.stringify(JSON.parse(jQuery("#jform_param").val()));
 					jQuery("#jform_param").val(params)
 				}catch(e){
-					alert(Joomla.JText._("COM_TJREPORTS_INVALID_JSON_VALUE"));
+					alert(Joomla.Text._("COM_TJREPORTS_INVALID_JSON_VALUE"));
 					return false;
 				}
 			}
@@ -52,14 +59,14 @@ JFactory::getDocument()->addScriptDeclaration('
 	};
 ');
 ?>
-<form action="<?php echo JRoute::_('index.php?option=com_tjreports&layout=edit&id=' . (int) $this->item->id); ?>"
+<form action="<?php echo Route::_('index.php?option=com_tjreports&layout=edit&id=' . (int) $this->item->id); ?>"
     method="post" name="adminForm" id="adminForm" class="form-validate tjreportForm">
 
 	<div class="form-horizontal" id="tjreportContainer">
 		<fieldset class="adminform">
-			<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'general')); ?>
+			<?php echo HTMLHelper::_('bootstrap.startTabSet', 'myTab', array('active' => 'general')); ?>
 
-			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'general', JText::_('COM_TJREPORTS_FEILDSET_DETAILS')); ?>
+			<?php echo HTMLHelper::_('bootstrap.addTab', 'myTab', 'general', Text::_('COM_TJREPORTS_FEILDSET_DETAILS')); ?>
 				<div class="control-group" style="display:none">
 					<div class="control-label"><?php echo $this->form->getLabel('id'); ?></div>
 					<div class="controls"><?php echo $this->form->getInput('id'); ?></div>
@@ -99,7 +106,7 @@ JFactory::getDocument()->addScriptDeclaration('
 					<div class="control-label">&nbsp;</div>
 					<div class="controls">
 						<button onclick="tjrContentUI.tjreport.getParams(true); return false;" class="btn">
-							<?php echo JText::_('COM_TJREPORTS_LOAD_DEFAULT_PARAMS') ?>
+							<?php echo Text::_('COM_TJREPORTS_LOAD_DEFAULT_PARAMS') ?>
 						</button>
 					</div>
 				</div>
@@ -119,21 +126,21 @@ JFactory::getDocument()->addScriptDeclaration('
 					<input type="hidden" name="jform[plugin]" id="jform_plugin" value=""/>
 		<?php	}	?>
 
-			<?php echo JHtml::_('bootstrap.endTab'); ?>
+			<?php echo HTMLHelper::_('bootstrap.endTab'); ?>
 
 			<?php if ($this->canDo->get('core.admin')) : ?>
-				<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'rules', JText::_('COM_CONTENT_FIELDSET_RULES')); ?>
+				<?php echo HTMLHelper::_('bootstrap.addTab', 'myTab', 'rules', Text::_('COM_CONTENT_FIELDSET_RULES')); ?>
 					<div class="control-group">
 						<div class="controls"><?php echo $this->form->getInput('rules'); ?></div>
 					</div>
-				<?php echo JHtml::_('bootstrap.endTab'); ?>
+				<?php echo HTMLHelper::_('bootstrap.endTab'); ?>
 			<?php endif; ?>
 
-			<?php echo JHtml::_('bootstrap.endTabSet'); ?>
+			<?php echo HTMLHelper::_('bootstrap.endTabSet'); ?>
 		</fieldset>
 
 	</div>
     <input type="hidden" name="extension" value="<?php echo $input->get('extension') ?>" id="jform_parent" />
     <input type="hidden" id="task" name="task" value="tjreport.edit" />
-    <?php echo JHtml::_('form.token'); ?>
+    <?php echo HTMLHelper::_('form.token'); ?>
 </form>

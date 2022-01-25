@@ -9,8 +9,7 @@
 
 defined('JPATH_BASE') or die;
 
-jimport('joomla.html.html');
-jimport('joomla.form.formfield');
+use Joomla\CMS\Form\FormField;
 
 /**
  * Supports an HTML select list of categories

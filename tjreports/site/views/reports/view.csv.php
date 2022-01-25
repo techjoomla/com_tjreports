@@ -11,7 +11,10 @@
  */
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-jimport('joomla.application.component.view');
+use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 jimport('techjoomla.view.csv');
 JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_ADMINISTRATOR);
 
@@ -42,8 +45,8 @@ class TjreportsViewReports extends TjExportCsv
 	 */
 	public function display($tpl = null)
 	{
-		$input = JFactory::getApplication()->input;
-		$user  = JFactory::getUser();
+		$input = Factory::getApplication()->input;
+		$user  = Factory::getUser();
 		$canDo = TjreportsHelper::getActions();
 		$reportId = $input->post->get('reportId');
 		$userAuthorisedExport = $user->authorise('core.export', 'com_tjreports.tjreport.' . $reportId);
@@ -51,8 +54,8 @@ class TjreportsViewReports extends TjExportCsv
 		if (!$canDo->get('core.export') || !$user)
 		{
 			// Redirect to the list screen.
-			$redirect = JRoute::_('index.php?option=com_tjreports&view=reports', false);
-			JFactory::getApplication()->redirect($redirect, JText::_('JERROR_ALERTNOAUTHOR'));
+			$redirect = Route::_('index.php?option=com_tjreports&view=reports', false);
+			Factory::getApplication()->redirect($redirect, Text::_('JERROR_ALERTNOAUTHOR'));
 
 			return false;
 		}
@@ -62,7 +65,7 @@ class TjreportsViewReports extends TjExportCsv
 			{
 				$fileName = $input->get('file_name');
 				$this->download($fileName);
-				JFactory::getApplication()->close();
+				Factory::getApplication()->close();
 			}
 			else
 			{
@@ -74,7 +77,7 @@ class TjreportsViewReports extends TjExportCsv
 				}
 				else
 				{
-					JFactory::getApplication()->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+					Factory::getApplication()->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
 
 					return false;
 				}
@@ -93,7 +96,7 @@ class TjreportsViewReports extends TjExportCsv
 	{
 		JLoader::import('components.com_reports.models.reports', JPATH_SITE);
 		$reportModel = new TjreportsModelReports;
-		$input = JFactory::getApplication()->input;
+		$input = Factory::getApplication()->input;
 		$this->limitStart = $input->get('limitstart');
 		$this->limit = $reportModel->getState('list.limit');
 		$reportId = $input->post->get('reportId');
@@ -101,8 +104,8 @@ class TjreportsViewReports extends TjExportCsv
 		$reportData = $reportModel->getReportNameById($reportId);
 		$pluginName = $reportData->plugin;
 
-		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $pluginName);
-		$model = JModelLegacy::getInstance($pluginName, 'TjreportsModel');
+		BaseDatabaseModel::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $pluginName);
+		$model = BaseDatabaseModel::getInstance($pluginName, 'TjreportsModel');
 
 		$model->loadLanguage($pluginName);
 
@@ -136,7 +139,7 @@ class TjreportsViewReports extends TjExportCsv
 						$subTextTitle = $columns[$subKey]['title'];
 					}
 
-					$colTitleArray[] = $contentTitle . ' ' . JText::sprintf($subTextTitle, $contentTitle, $contentId);
+					$colTitleArray[] = $contentTitle . ' ' . Text::sprintf($subTextTitle, $contentTitle, $contentId);
 				}
 			}
 			else
@@ -152,7 +155,7 @@ class TjreportsViewReports extends TjExportCsv
 					$colTitle = $columns[$colKey]['title'];
 				}
 
-				$colTitleArray[] = JText::_($colTitle);
+				$colTitleArray[] = Text::_($colTitle);
 			}
 		}
 

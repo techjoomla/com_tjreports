@@ -9,7 +9,9 @@
 // No direct access to this file
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.controllerform');
+use Joomla\CMS\MVC\Controller\FormController;
+use Joomla\CMS\Factory;
+
 /**
  * tjreport Controller
  *
@@ -17,7 +19,7 @@ jimport('joomla.application.component.controllerform');
  * @subpackage  com_tjreports
  * @since       0.0.1
  */
-class TjreportsControllerTjreport extends JControllerForm
+class TjreportsControllerTjreport extends FormController
 {
 	/**
 	 * Contructor
@@ -40,7 +42,7 @@ class TjreportsControllerTjreport extends JControllerForm
 	 */
 	public function setRedirect($url, $msg = null,$type = null)
 	{
-		$extension = JFactory::getApplication()->input->get('extension', '', 'word');
+		$extension = Factory::getApplication()->input->get('extension', '', 'word');
 
 		if ($extension)
 		{
@@ -61,7 +63,7 @@ class TjreportsControllerTjreport extends JControllerForm
 	 */
 	protected function allowAdd($data = array())
 	{
-		$user       = JFactory::getUser();
+		$user       = Factory::getUser();
 
 		if ($user->authorise('core.create', 'com_tjreports'))
 		{
@@ -86,7 +88,7 @@ class TjreportsControllerTjreport extends JControllerForm
 	 */
 	protected function allowEdit($data = array(), $key = 'id')
 	{
-		$user       = JFactory::getUser();
+		$user       = Factory::getUser();
 
 		if ($user->authorise('core.edit', 'com_tjreports'))
 		{

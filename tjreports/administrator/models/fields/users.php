@@ -10,6 +10,10 @@
 // No direct access.
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
+
 JFormHelper::loadFieldClass('list');
 
 /**
@@ -44,7 +48,7 @@ class JFormFieldUsers extends JFormFieldList
 	 */
 	protected function getOptions()
 	{
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$query = $db->getQuery(true);
 
 		// Select the required fields from the table.
@@ -61,7 +65,7 @@ class JFormFieldUsers extends JFormFieldList
 
 		foreach ($allUsers as $u)
 		{
-			$options[] = JHtml::_('select.option', $u->id, $u->name);
+			$options[] = HTMLHelper::_('select.option', $u->id, $u->name);
 		}
 
 		if (!$this->loadExternally)

@@ -11,7 +11,8 @@
 // No direct access.
 defined('_JEXEC') or die;
 
-jimport('joomla.plugin.plugin');
+use Joomla\CMS\Factory;
+
 JLoader::import('components.com_tjreports.models.report', JPATH_SITE);
 
 /**
@@ -37,7 +38,7 @@ class PlgAPIReports extends ApiPlugin
 		ApiResource::addIncludePath(dirname(__FILE__) . '/reports');
 
 		// Load language files
-		$lang = JFactory::getLanguage();
+		$lang = Factory::getLanguage();
 		$lang->load('plg_api_reports', JPATH_SITE . "/plugins/api/reports/", 'en-GB', true);
 	}
 }

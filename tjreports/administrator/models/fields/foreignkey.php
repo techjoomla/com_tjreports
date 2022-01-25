@@ -9,7 +9,9 @@
  */
 defined('JPATH_BASE') or die;
 
-jimport('joomla.form.formfield');
+use Joomla\CMS\Form\FormField;
+use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
 
 /**
  * Supports a value from an external table
@@ -64,7 +66,7 @@ class JFormFieldForeignKey extends JFormField
 		$fk_value = '';
 
 		// Load all the field options
-		$db    = JFactory::getDbo();
+		$db    = Factory::getDbo();
 		$query = $db->getQuery(true);
 
 		// Support for multiple fields on fk_values
@@ -113,7 +115,7 @@ class JFormFieldForeignKey extends JFormField
 				// Iterate through all the results
 				foreach ($results as $result)
 				{
-					$options[] = JHtml::_('select.option', $result->{$this->key_field}, $result->{$this->value_field});
+					$options[] = HTMLHelper::_('select.option', $result->{$this->key_field}, $result->{$this->value_field});
 				}
 
 				$value = $this->value;
@@ -136,10 +138,10 @@ class JFormFieldForeignKey extends JFormField
 				}
 				else
 				{
-					array_unshift($options, JHtml::_('select.option', '', ''));
+					array_unshift($options, HTMLHelper::_('select.option', '', ''));
 				}
 
-				$html = JHtml::_('select.genericlist', $options, $this->name, $input_options, 'value', 'text', $value, $this->id);
+				$html = HTMLHelper::_('select.genericlist', $options, $this->name, $input_options, 'value', 'text', $value, $this->id);
 				break;
 		}
 

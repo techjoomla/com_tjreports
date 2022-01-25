@@ -8,12 +8,18 @@
  */
 // No direct access to this file
 defined('_JEXEC') or die;
+
+use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+
 /**
  * jticketing Model
  *
  * @since  0.0.1
  */
-class TjreportsModelTjreport extends JModelAdmin
+class TjreportsModelTjreport extends AdminModel
 {
 	/**
 	 * Constructor.
@@ -43,7 +49,7 @@ class TjreportsModelTjreport extends JModelAdmin
 	 */
 	public function getTable($type = 'Tjreport', $prefix = 'TjreportsTable', $config = array())
 	{
-		return JTable::getInstance($type, $prefix, $config);
+		return Table::getInstance($type, $prefix, $config);
 	}
 
 	/**
@@ -86,7 +92,7 @@ class TjreportsModelTjreport extends JModelAdmin
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState(
+		$data = Factory::getApplication()->getUserState(
 			'com_tjreports.edit.tjreports.data',
 			array()
 		);
@@ -117,7 +123,7 @@ class TjreportsModelTjreport extends JModelAdmin
 	 */
 	public function getClientPlugins($client, $currentId = 0, $userId = 0)
 	{
-		$db    = JFactory::getDbo();
+		$db    = Factory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('r.*,r.id as value,r.title as text');
 		$query->from('#__tj_reports as r');
@@ -152,7 +158,7 @@ class TjreportsModelTjreport extends JModelAdmin
 	{
 		if ($pluginId)
 		{
-			$db = JFactory::getDbo();
+			$db = Factory::getDbo();
 			$query = $db->getQuery(true);
 			$query->select('r.*');
 			$query->from('#__tj_reports as r');
@@ -170,8 +176,8 @@ class TjreportsModelTjreport extends JModelAdmin
 
 		if ($pluginName || (empty($report->param) && !empty($report->plugin)))
 		{
-			JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $pluginName);
-			$plgModel = JModelLegacy::getInstance($pluginName, 'TjreportsModel');
+			BaseDatabaseModel::addIncludePath(JPATH_SITE . '/plugins/tjreports/' . $pluginName);
+			$plgModel = BaseDatabaseModel::getInstance($pluginName, 'TjreportsModel');
 
 			$defaultColToHide = $plgModel->getState('defaultColToHide');
 
@@ -223,8 +229,7 @@ class TjreportsModelTjreport extends JModelAdmin
 	 */
 	protected function prepareTable($table)
 	{
-		jimport('joomla.filter.output');
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$query = $db->getQuery(true);
 
 		if (empty($table->id))

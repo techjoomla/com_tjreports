@@ -14,6 +14,7 @@ use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Table\Table;
 use Joomla\Data\DataObject;
+use Joomla\Database\Exception\ExecutionFailureException;
 
 /**
  * Class for Tjreportsindexer User Plugin
@@ -192,7 +193,7 @@ class PlgUserTjreportsindexer extends CMSPlugin
 		{
 			$db->setQuery($query)->execute();
 		}
-		catch (DataObjectbaseExceptionExecuting $e)
+		catch (ExecutionFailureException $e)
 		{
 			return false;
 		}

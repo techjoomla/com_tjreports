@@ -229,7 +229,7 @@ if ($this->showSummaryReport == 'Yes')
 						}
 						?>
 					<!--/col-md-2-->
-							<div class="show-hide-cols col-md-2 col-sm-3">
+							<div class="show-hide-cols col-md-3 col-sm-3">
 								<input type="button" id="show-hide-cols-btn" class="btn btn-success" onclick="tjrContentUI.report.getColNames(); return false;" value="<?php echo Text::_('COM_TJREPORTS_HIDE_SHOW_COL_BUTTON'); ?>" />
 								<ul id="ul-columns-name" class="ColVis_collection">
 									<?php
@@ -261,6 +261,11 @@ if ($this->showSummaryReport == 'Yes')
 									}
 								?>
 								</ul>
+							</div>
+							<div class="col-md-2 col-sm-3">
+								<button type="button" class="btn btn-transparent" onclick="tjrContentUI.report.resetSubmitTJRData('reset'); return false;">
+									<?php echo Text::_('JCLEAR'); ?>
+								</button>
 							</div>
 							<span id="sendEmail">
 							</span>

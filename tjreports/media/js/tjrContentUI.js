@@ -43,7 +43,13 @@ jQuery.extend(tjrContentUI.report, {
 			jQuery('#pagination').show();
 		}
 
-		jQuery('#reports-container .hasTooltip').tooltip('destroy');
+		try {
+			jQuery("#reports-container .hasTooltip").tooltip('destroy');
+		}
+		catch(err) {
+			jQuery("#reports-container .hasTooltip").tooltip('dispose');
+		}
+
 		this.searchToggle = jQuery('div#topFilters').is(':visible');
 		tjrContentUI.utility.loadingLayer('show');
 		this.$form = jQuery('#adminForm');

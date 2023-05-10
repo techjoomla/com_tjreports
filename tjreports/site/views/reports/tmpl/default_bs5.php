@@ -74,7 +74,7 @@ if ($this->showSummaryReport == 'Yes')
 
 ?>
 <div id="reports-container">
-	<div class="<?php echo COM_TJLMS_WRAPPER_DIV ?> tjBs3">
+	<div class="<?php echo COM_TJLMS_WRAPPER_DIV ?> tjBs5">
 		<div id="j-main-container">
 		<?php
 		if ($app->isClient('site') && isset($this->reportData->title))

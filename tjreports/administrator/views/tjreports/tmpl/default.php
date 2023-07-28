@@ -14,7 +14,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
-
+JHtml::stylesheet('administrator/components/com_tjreports/assets/css/tjreports.css');
 HTMLHelper::_('formbehavior.chosen', 'select');
 $user	= Factory::getUser();
 $listOrder     = $this->escape($this->state->get('list.ordering'));
@@ -32,16 +32,16 @@ $input = Factory::getApplication()->input;
 ?>
 <form action="index.php?option=com_tjreports&view=tjreports" method="post" id="adminForm" name="adminForm">
 	<?php if (!empty($this->sidebar)):?>
-		<div id="j-sidebar-container" class="span2">
+		<div id="j-sidebar-container" class="col-md-2">
 			<?php echo $this->sidebar;?>
 		</div>
-		<div id="j-main-container" class="span10">
+		<div id="j-main-container" class="col-md-10">
 	<?php else :?>
 		<div id="j-main-container">
 	<?php endif;?>
 
-	<div class="row-fluid">
-		<div class="span12">
+	<div class="row">
+		<div class="col-md-12">
 			<?php
 				echo LayoutHelper::render(
 					'joomla.searchtools.default',

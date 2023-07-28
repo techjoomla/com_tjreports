@@ -14,7 +14,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
-JHtml::stylesheet('administrator/components/com_tjreports/assets/css/tjreports.css');
+HTMLHelper::stylesheet('administrator/components/com_tjreports/assets/css/tjreports.css');
 HTMLHelper::_('formbehavior.chosen', 'select');
 $user	= Factory::getUser();
 $listOrder     = $this->escape($this->state->get('list.ordering'));

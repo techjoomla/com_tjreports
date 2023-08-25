@@ -206,7 +206,7 @@ if ($this->showSummaryReport == 'Yes')
 						if ($totalHeadRows > 1)
 						{
 						?>
-							<div class="col-md-2 col-sm-4">
+							<div class="col-md-3 col-sm-4">
 								<button type="button" class="btn btn-custom btn-block btn-primary" id="show-filter" onclick="tjrContentUI.report.showFilter();">
 									<?php echo Text::_("COM_TJREPORTS_SEARCH_TOOLS"); ?>
 									<i class="fa fa-caret-down"></i>
@@ -305,14 +305,18 @@ if ($this->showSummaryReport == 'Yes')
 										if ($this->srButton !== -1)
 										{
 										?>
+										<div class="col-md-2">
 											<button class="btn hasTooltip btn-primary" onclick="tjrContentUI.report.submitTJRData(); return false;" title="<?php echo Text::_('JSEARCH_FILTER_SUBMIT')?>">
 												<i class="fa fa-search"></i>
 											</button>
+											</div>
 										<?php
 										} ?>
+                                       <!-- <div class="col-md-2">
 										<button class="btn hasTooltip btn-primary" type="button" title="<?php echo Text::_('JSEARCH_FILTER_CLEAR')?>" onclick="tjrContentUI.report.resetSubmitTJRData('reset'); return false;">
 											<i class="fa fa-remove"></i>
 										</button>
+										</div> -->
 									</div>
 							 <?php
 								}

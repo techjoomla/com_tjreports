@@ -86,7 +86,7 @@ if ($this->showSummaryReport == 'Yes')
 		?>
 			<form action="<?php echo Route::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm" onsubmit="return tjrContentUI.report.submitForm();">
 				<!--html code-->
-				<div class="row justify-content-md-end mt-2">
+				<div class="row">
 					<div class="col-md-3 col-sm-5 col-xs-10">
 						<div class="form-group">
 							<select class="form-select" id="report-select" onchange="tjrContentUI.report.loadReport(this,'<?php echo $this->client; ?>');">
@@ -114,8 +114,8 @@ if ($this->showSummaryReport == 'Yes')
 						<!--form-group-->
 					</div>
 					<!--col-md-3-->
-					<div class="col-xs-2 col-sm-2">
-						<div id="reportPagination">
+					<div class="col-xs-2 col-sm-2 col-md-9">
+						<div id="reportPagination" class="float-end">
 							<?php
 							/*if (!$app->isClient('administrator'))
 							{
@@ -155,7 +155,7 @@ if ($this->showSummaryReport == 'Yes')
 				</div>
 				<!--row-->
 				<!--/html code-->
-				<div class="row mt-2">
+				<div class="row">
 					<?php
 					if (!empty($this->savedQueries))
 					{
@@ -184,7 +184,7 @@ if ($this->showSummaryReport == 'Yes')
 						{
 						}
 					?>
-						<div class="col-sm-7 col-md-5">
+						<div class="col-sm-7 col-md-5 mt-2">
 							<span id="btn-cancel">
 								<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName"/>
 							</span>
@@ -200,7 +200,7 @@ if ($this->showSummaryReport == 'Yes')
 					<!--/col-md-5-->
 				</div>
 				<!--/row-->
-				<div class="report-top-bar mt-2">
+				<div class="report-top-bar">
 					<div class="row form-group">
 						<?php
 						if ($totalHeadRows > 1)
@@ -278,7 +278,7 @@ if ($this->showSummaryReport == 'Yes')
 						{
 						?>
 							<div class="col-sm-5 col-md-12">
-								<a onclick="tjexport.exportCsv(0)" class="btn btn-sm export float-end">
+								<a onclick="tjexport.exportCsv(0)" class="btn btn-small export pull-right">
 									<i class='fa fa-download'></i>&nbsp;<?php echo Text::_('COM_TJREPORTS_CSV_EXPORT'); ?>
 								</a>
 							</div>

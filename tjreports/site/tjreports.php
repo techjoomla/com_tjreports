@@ -10,6 +10,7 @@
 // No direct access
 defined('_JEXEC') or die;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Factory;
 
 if (!defined('DS'))
@@ -27,6 +28,14 @@ if (JVERSION < '3.0')
 else
 {
 	define('COM_TJLMS_WRAPPER_DIV', 'tjlms-wrapper row-fluid');
+}
+
+$tjStrapperPath = JPATH_SITE . '/media/techjoomla_strapper/tjstrapper.php';
+
+if (File::exists($tjStrapperPath))
+{
+	require_once $tjStrapperPath;
+	TjStrapper::loadTjAssets('com_tjreports');
 }
 
 // Include dependancies

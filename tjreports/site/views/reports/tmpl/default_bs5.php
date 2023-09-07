@@ -206,8 +206,8 @@ if ($this->showSummaryReport == 'Yes')
 						if ($totalHeadRows > 1)
 						{
 						?>
-							<div class="col-md-2 col-sm-4">
-								<button type="button" class="btn btn-primary btn-custom btn-block" id="show-filter" onclick="tjrContentUI.report.showFilter();">
+							<div class="col-md-3 col-sm-4">
+								<button type="button" class="btn btn-custom btn-block btn-primary" id="show-filter" onclick="tjrContentUI.report.showFilter();">
 									<?php echo Text::_("COM_TJREPORTS_SEARCH_TOOLS"); ?>
 									<i class="fa fa-caret-down"></i>
 								</button>
@@ -250,7 +250,7 @@ if ($this->showSummaryReport == 'Yes')
 								</ul>
 							</div>
 							<div class="col-md-2 col-sm-3">
-								<button type="button" class="btn btn-transparent" onclick="tjrContentUI.report.resetSubmitTJRData('reset'); return false;">
+								<button type="button" class="btn btn-primary" onclick="tjrContentUI.report.resetSubmitTJRData('reset'); return false;">
 									<?php echo Text::_('JCLEAR'); ?>
 								</button>
 							</div>
@@ -300,19 +300,23 @@ if ($this->showSummaryReport == 'Yes')
 								if ($this->srButton)
 								{
 								?>
-									<div class="btn-group filter-btn-block control-group">
+									<div class="btn-group filter-btn-block control-group mt-0">
 									<?php
 										if ($this->srButton !== -1)
 										{
 										?>
-											<button class="btn hasTooltip" onclick="tjrContentUI.report.submitTJRData(); return false;" title="<?php echo Text::_('JSEARCH_FILTER_SUBMIT')?>">
+										<div class="col-md-2">
+											<button class="btn hasTooltip btn-primary" onclick="tjrContentUI.report.submitTJRData(); return false;" title="<?php echo Text::_('JSEARCH_FILTER_SUBMIT')?>">
 												<i class="fa fa-search"></i>
 											</button>
+											</div>
 										<?php
 										} ?>
-										<button class="btn hasTooltip" type="button" title="<?php echo Text::_('JSEARCH_FILTER_CLEAR')?>" onclick="tjrContentUI.report.resetSubmitTJRData('reset'); return false;">
+                                       <!-- <div class="col-md-2">
+										<button class="btn hasTooltip btn-primary" type="button" title="<?php echo Text::_('JSEARCH_FILTER_CLEAR')?>" onclick="tjrContentUI.report.resetSubmitTJRData('reset'); return false;">
 											<i class="fa fa-remove"></i>
 										</button>
+										</div> -->
 									</div>
 							 <?php
 								}

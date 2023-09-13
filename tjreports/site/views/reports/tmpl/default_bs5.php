@@ -114,8 +114,8 @@ if ($this->showSummaryReport == 'Yes')
 						<!--form-group-->
 					</div>
 					<!--col-md-3-->
-					<div class="col-xs-2 col-sm-2">
-						<div id="reportPagination">
+					<div class="col-xs-2 col-sm-2 col-md-9">
+						<div id="reportPagination" class="float-end">
 							<?php
 							/*if (!$app->isClient('administrator'))
 							{
@@ -184,7 +184,7 @@ if ($this->showSummaryReport == 'Yes')
 						{
 						}
 					?>
-						<div class="col-sm-7 col-md-5">
+						<div class="col-sm-7 col-md-5 mt-2">
 							<span id="btn-cancel">
 								<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName"/>
 							</span>

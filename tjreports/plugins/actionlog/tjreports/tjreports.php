@@ -15,6 +15,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\Component\Actionlogs\Administrator\Model\ActionlogModel;
 
 JLoader::register('ActionlogsHelper', JPATH_ADMINISTRATOR . '/components/com_actionlogs/helpers/actionlogs.php');
 
@@ -65,10 +66,18 @@ class PlgActionlogTjreports extends CMSPlugin
 	 */
 	protected function addLog($messages, $messageLanguageKey, $context, $userId = null)
 	{
-		JLoader::register('ActionlogsModelActionlog', JPATH_ADMINISTRATOR . '/components/com_actionlogs/models/actionlog.php');
+		if (JVERSION >= '4.0')
+		{
+			$model = new ActionlogModel;
+		}
+		else
+		{
+			JLoader::register('ActionlogsModelActionlog', JPATH_ADMINISTRATOR . '/components/com_actionlogs/models/actionlog.php');
 
-		/* @var ActionlogsModelActionlog $model */
-		$model = BaseDatabaseModel::getInstance('Actionlog', 'ActionlogsModel');
+			/* @var ActionlogsModelActionlog $model */
+			$model = BaseDatabaseModel::getInstance('Actionlog', 'ActionlogsModel');
+		}
+
 		$model->addLog($messages, $messageLanguageKey, $context, $userId);
 	}
 

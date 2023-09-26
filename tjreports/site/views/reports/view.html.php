@@ -114,14 +114,14 @@ class TjreportsViewReports extends ReportsViewBase
 			$bar->appendButton('CsvExport', $message);
 		}
 
-		$button = '<span id="btn-cancel">
+		$button = '<span id="btn-cancel" class="ms-2">
 						<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName" />
 					</span>
-					<a class="btn btn-primary  saveData" type="button" id="saveQuery"
+					<a class="btn btn-primary  saveData ms-2" type="button" id="saveQuery"
 						onclick="tjrContentUI.report.saveThisQuery();">'
 						. Text::_('COM_TJREPORTS_SAVE_THIS_QUERY') . '</a>
 
-					<button class="btn btn btn-default  cancel-btn" type="button" onclick="tjrContentUI.report.cancel();">
+					<button class="btn btn btn-default  cancel-btn ms-2" type="button" onclick="tjrContentUI.report.cancel();">
 						Cancel
 					</button>';
 

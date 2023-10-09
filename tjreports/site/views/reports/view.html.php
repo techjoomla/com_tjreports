@@ -115,9 +115,9 @@ class TjreportsViewReports extends ReportsViewBase
 		}
 
 		$button = '<span id="btn-cancel">
-						<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName" />
+						<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName" class="m-1" />
 					</span>
-					<a class="btn btn-primary  saveData" type="button" id="saveQuery"
+					<a class="btn btn-primary  saveData ms-2" type="button" id="saveQuery"
 						onclick="tjrContentUI.report.saveThisQuery();">'
 						. Text::_('COM_TJREPORTS_SAVE_THIS_QUERY') . '</a>
 

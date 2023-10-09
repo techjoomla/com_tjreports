@@ -207,7 +207,7 @@ class TjreportsViewReports extends TjExportCsv
 	private function filterValue($data)
 	{
 		// Remove double Quotes from the data
-		$finalValue = strip_tags($data);
+		$finalValue = strip_tags($data ? $data : '');
 
 		// Remove double Quotes from the data
 		// $finalValue = str_replace('"', '', $finalValue);

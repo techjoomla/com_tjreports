@@ -184,15 +184,15 @@ if ($this->showSummaryReport == 'Yes')
 						{
 						}
 					?>
-						<div class="col-sm-7 col-md-5 mt-2">
-							<span id="btn-cancel">
-								<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName"/>
-							</span>
-							<a class="btn btn-primary  saveData" type="button" id="saveQuery"
+						<div class="col-sm-7 col-md-12 mt-2">
+							<button class="btn btn btn-default cancel-btn float-end ms-2" type="button" style="display:none;" onclick="tjrContentUI.report.cancel();">Cancel</button>
+							<a class="btn btn-primary  saveData float-end" type="button" id="saveQuery"
 							onclick="tjrContentUI.report.saveThisQuery();">
 								<?php echo Text::_('COM_TJREPORTS_SAVE_THIS_QUERY'); ?>
 							</a>
-							<button class="btn btn btn-default cancel-btn " type="button" style="display:none;" onclick="tjrContentUI.report.cancel();">Cancel</button>
+							<span id="btn-cancel" class="float-end">
+								<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName"/>
+							</span>
 						</div>
 					<?php
 					}

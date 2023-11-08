@@ -56,7 +56,7 @@ foreach ($displayFilters as $searchKey => $filter)
 
 		$filterHtml = '<div class="' . $bsGroupClass . '">';
 
-		$selectClass  = (JVERSION < '4.0.0') ? ' filter-input ' : ' form-select ';
+		$selectClass  = (JVERSION < '4.0.0') ? ' filter-input form-select-sm ' : ' form-select-sm ';
 
 		$filterHtml .= HTMLHelper::_('select.genericlist', $filter['select_options'], 'filters[' . $searchKey . ']',
 			'class="' . $selectClass . $filterHide . '" size="1" onchange="tjrContentUI.report.submitTJRData();"',

@@ -330,7 +330,7 @@ if ($this->showSummaryReport == 'Yes')
 					<div id="report-containing-div" class="row">
 						<div class="col-xs-12">
 							<div class="table-responsive report-tbl">
-								<table id="report-table" class="table table-striped left_table ">
+								<table id="report-table" class="table table-striped left_table">
 									<thead>
 										<?php
 										$filters = array();

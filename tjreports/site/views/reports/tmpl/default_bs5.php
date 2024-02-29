@@ -87,7 +87,7 @@ if ($this->showSummaryReport == 'Yes')
 			<form action="<?php echo Route::_('index.php?option=com_tjreports&view=reports'); ?>" method="post" name="adminForm" id="adminForm" onsubmit="return tjrContentUI.report.submitForm();">
 				<!--html code-->
 				<div class="row">
-					<div class="col-md-3 col-sm-5 col-xs-10">
+					<div class="col-md-4 col-sm-6 col-xs-10">
 						<div class="form-group">
 							<select class="form-select" id="report-select" onchange="tjrContentUI.report.loadReport(this,'<?php echo $this->client; ?>');">
 							<?php
@@ -114,7 +114,7 @@ if ($this->showSummaryReport == 'Yes')
 						<!--form-group-->
 					</div>
 					<!--col-md-3-->
-					<div class="col-xs-2 col-sm-2 col-md-9">
+					<div class="col-xs-2 col-sm-6 col-md-8">
 						<div id="reportPagination" class="float-end">
 							<?php
 							/*if (!$app->isClient('administrator'))

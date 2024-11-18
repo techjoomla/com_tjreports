@@ -28,8 +28,6 @@ $this->listOrder = $this->state->get('list.ordering');
 $this->listDirn  = $this->state->get('list.direction');
 $totalCount      = 0;
 
-HTMLHelper::_('formbehavior.chosen', methodArgs: 'select');
-
 foreach ($this->colToshow as $key => $data)
 {
 	if (is_array($data))
@@ -186,7 +184,7 @@ if ($this->showSummaryReport == 'Yes')
 						{
 						}
 					?>
-						<div class="col-sm-7 col-md-5 mt-2">
+						<div class="col-sm-7 col-md-12 mt-2">
 							<span id="btn-cancel">
 								<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName"/>
 							</span>

@@ -66,7 +66,12 @@ class PlgActionlogTjreports extends CMSPlugin
 	 */
 	protected function addLog($messages, $messageLanguageKey, $context, $userId = null)
 	{
-		if (JVERSION >= '4.0')
+		if (JVERSION >= '4.4.0')
+		{
+			$model = Factory::getApplication()->bootComponent('com_actionlogs')
+            ->getMVCFactory()->createModel('Actionlog', 'Administrator', ['ignore_request' => true]);
+		}
+		else if (JVERSION >= '4.0')
 		{
 			$model = new ActionlogModel;
 		}

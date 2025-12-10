@@ -12,15 +12,15 @@
 
 // No direct access
 defined('_JEXEC') or die;
+use Joomla\CMS\HTML\HTMLHelper;
 
 Use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Component\ComponentHelper;
 
 require_once __DIR__ . '/view.base.php';
-jimport('techjoomla.tjtoolbar.button.csvexport');
+require_once JPATH_LIBRARIES . '/techjoomla/tjtoolbar/button/csvexport.php';
 
 /**
  * View class for a list of Tjreports.
@@ -65,10 +65,10 @@ class TjreportsViewReports extends ReportsViewBase
 		$reportId             = $app->getUserStateFromRequest('reportId', 'reportId', '');
 		$user                 = Factory::getUser();
 		$userAuthorisedExport = $user->authorise('core.export', 'com_tjreports.tjreport.' . $reportId);
-		$bar                  = JToolBar::getInstance('toolbar');
+		$bar                  = Toolbar::getInstance('toolbar');
 		$canDo                = TjreportsHelper::getActions();
 
-		if ($app->isAdmin())
+		if ($app->isClient("administrator"))
 		{
 			$title = Text::_('COM_TJREPORTS_TITLE_REPORT');
 
@@ -77,7 +77,7 @@ class TjreportsViewReports extends ReportsViewBase
 				$title = $title . ' - ' . $this->reportData->title;
 			}
 
-			JToolBarHelper::title($title, 'list');
+			ToolbarHelper::title($title, 'list');
 		}
 		else
 		{
@@ -115,9 +115,9 @@ class TjreportsViewReports extends ReportsViewBase
 		}
 
 		$button = '<span id="btn-cancel">
-						<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName" />
+						<input type="text" name="queryName" autocomplete="off" placeholder="Title for the Query"  id="queryName" class="m-1" />
 					</span>
-					<a class="btn btn-primary  saveData" type="button" id="saveQuery"
+					<a class="btn btn-primary  saveData ms-2" type="button" id="saveQuery"
 						onclick="tjrContentUI.report.saveThisQuery();">'
 						. Text::_('COM_TJREPORTS_SAVE_THIS_QUERY') . '</a>
 
@@ -128,9 +128,9 @@ class TjreportsViewReports extends ReportsViewBase
 			JLoader::import('administrator.components.com_tjreports.helpers.tjreports', JPATH_SITE);
 			TjreportsHelper::addSubmenu('reports');
 
-			if ($app->isAdmin())
+			if ($app->isClient("administrator"))
 			{
-				$this->sidebar = JHtmlSidebar::render();
+				$this->sidebar = '';;
 			}
 
 			$bar->appendButton('Custom', $button);
@@ -146,15 +146,14 @@ class TjreportsViewReports extends ReportsViewBase
 	protected function addDocumentHeaderData()
 	{
 		$app = Factory::getApplication();
-		HTMLHelper::_('formbehavior.chosen', 'select');
 		$document = Factory::getDocument();
 
-		$com_params	= ComponentHelper::getParams('com_tjreports');
+		$com_params = ComponentHelper::getParams('com_tjreports');
 		$bootstrapSetting = $com_params->get('bootstrap_setting', 1);
 
 		if (($bootstrapSetting == 3)
-			|| ( $app->isAdmin() && $bootstrapSetting == 1 )
-			|| ( !$app->isAdmin() && $bootstrapSetting == 2 ) )
+			|| ( $app->isClient("administrator") && $bootstrapSetting == 1 )
+			|| ( !$app->isClient("administrator") && $bootstrapSetting == 2 ) )
 		{
 			HTMLHelper::stylesheet(Uri::root() . '/media/techjoomla_strapper/bs3/css/bootstrap.min.css');
 		}

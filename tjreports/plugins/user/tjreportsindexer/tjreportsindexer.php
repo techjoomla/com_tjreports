@@ -10,12 +10,18 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Table\Table;
+use Joomla\Data\DataObject;
+use Joomla\Database\Exception\ExecutionFailureException;
+
 /**
  * Class for Tjreportsindexer User Plugin
  *
  * @since  1.1.0
  */
-class PlgUserTjreportsindexer extends JPlugin
+class PlgUserTjreportsindexer extends CMSPlugin
 {
 	/**
 	 * Load the language file on instantiation.
@@ -96,7 +102,7 @@ class PlgUserTjreportsindexer extends JPlugin
 	 */
 	protected function addIndexerEntry($user)
 	{
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		// Get column name, type for custom fields index table
 		$columnsDetails = $db->getTableColumns($this->customFieldsTable);
@@ -107,7 +113,7 @@ class PlgUserTjreportsindexer extends JPlugin
 		// For all fields get type, fieldparams
 		// Register FieldsHelper, Get fields data from current entry
 		JLoader::register('FieldsHelper', JPATH_ADMINISTRATOR . '/components/com_fields/helpers/fields.php');
-		$userTableObj = JTable::getInstance('User');
+		$userTableObj = Table::getInstance('User');
 		$userTableObj->load((int) $user['id']);
 		$fields = FieldsHelper::getFields('com_users.user', $userTableObj, true);
 
@@ -176,7 +182,7 @@ class PlgUserTjreportsindexer extends JPlugin
 	 */
 	protected function deleteIndexerEntry($userId)
 	{
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		// Here record_id = user_id
 		$query = $db->getQuery(true)
@@ -187,7 +193,7 @@ class PlgUserTjreportsindexer extends JPlugin
 		{
 			$db->setQuery($query)->execute();
 		}
-		catch (JDatabaseExceptionExecuting $e)
+		catch (ExecutionFailureException $e)
 		{
 			return false;
 		}

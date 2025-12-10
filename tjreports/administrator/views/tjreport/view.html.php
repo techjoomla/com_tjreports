@@ -48,7 +48,7 @@ class TjreportsViewTjreport extends HtmlView
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
-			JError::raiseError(500, implode('<br />', $errors));
+			throw new \Exception(implode('<br />', $errors), 500);
 
 			return false;
 		}
@@ -56,7 +56,7 @@ class TjreportsViewTjreport extends HtmlView
 		$input = Factory::getApplication()->input;
 		$extension = $input->get('extension', '', 'STRING');
 
-		$this->addToolBar();
+		$this->addToolbar();
 		$this->addDocumentHeaderData();
 
 		// Display the template
@@ -70,7 +70,7 @@ class TjreportsViewTjreport extends HtmlView
 	 *
 	 * @since   1.6
 	 */
-	protected function addToolBar()
+	protected function addToolbar()
 	{
 		$input = Factory::getApplication()->input;
 

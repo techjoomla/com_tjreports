@@ -12,6 +12,7 @@
 
 // No direct access
 defined('_JEXEC') or die;
+use Joomla\CMS\MVC\View\HtmlView;
 
 Use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Factory;
@@ -20,18 +21,17 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
-jimport('joomla.application.component.view');
 JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_ADMINISTRATOR);
 JLoader::import('components.com_tjreports.models.tjreports', JPATH_SITE);
 JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_SITE);
-JLoader::register('JToolBarHelper', JPATH_ADMINISTRATOR . '/includes/toolbar.php');
+JLoader::register('ToolbarHelper', JPATH_ADMINISTRATOR . '/includes/toolbar.php');
 
 /**
  * View class for a list of Tjreports.
  *
  * @since  1.0.0
  */
-class ReportsViewBase extends JViewLegacy
+class ReportsViewBase extends HtmlView
 {
 	protected $items;
 
@@ -79,7 +79,8 @@ class ReportsViewBase extends JViewLegacy
 	public function processData($type = 'html')
 	{
 		$canDo = TjreportsHelper::getActions();
-		$input = Factory::getApplication()->input;
+		$app   = Factory::getApplication();
+		$input = $app->input;
 		$user  = Factory::getUser();
 
 		$this->reportId = $input->get('reportId', 0, 'INT');
@@ -99,7 +100,7 @@ class ReportsViewBase extends JViewLegacy
 
 		if (!$canDo->get('core.view') || !$this->pluginName)
 		{
-			JError::raiseWarning(403, Text::_('JERROR_ALERTNOAUTHOR'));
+			$app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
 
 			return false;
 		}
@@ -117,14 +118,14 @@ class ReportsViewBase extends JViewLegacy
 
 			if (!$allow_permission)
 			{
-				JError::raiseWarning(403, Text::_('JERROR_ALERTNOAUTHOR'));
+				throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
 
 				return false;
 			}
 		}
 		else
 		{
-			JError::raiseWarning(403, Text::_('JERROR_ALERTNOAUTHOR'));
+			throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
 
 			return false;
 		}
@@ -171,12 +172,11 @@ class ReportsViewBase extends JViewLegacy
 		}
 
 		// Get all report plugin
-		$dispatcher   = JEventDispatcher::getInstance();
 		$pluginExists = PluginHelper::getPlugin('tjreports', $this->pluginName);
 
 		if (!$pluginExists || !$this->pluginName)
 		{
-			JError::raiseError(404, Text::_('COM_TJREPORTS_PLUGIN_DESABLED_OR_NOT_EXISTS'));
+			throw new \Exception(Text::_('COM_TJREPORTS_PLUGIN_DESABLED_OR_NOT_EXISTS'), 404);
 
 			return false;
 		}

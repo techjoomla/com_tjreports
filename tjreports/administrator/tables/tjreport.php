@@ -8,12 +8,18 @@
  */
 // No direct access
 defined('_JEXEC') or die;
+
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\OutputFilter;
+use Joomla\CMS\Language\Text;
+
 /**
- * Hello Table class
+ * Report Table class
  *
  * @since  0.0.1
  */
-class TjreportsTableTjreport extends JTable
+class TjreportsTableTjreport extends Table
 {
 	/**
 	 * Constructor
@@ -52,10 +58,10 @@ class TjreportsTableTjreport extends JTable
 	 *
 	 * @since  1.0.0
 	 */
-	protected function _getAssetParentId(JTable $table = null, $id = null)
+	protected function _getAssetParentId(Table $table = null, $id = null)
 	{
 		// We will retrieve the parent-asset from the Asset-table
-		$assetParent   = JTable::getInstance('Asset');
+		$assetParent   = Table::getInstance('Asset');
 
 		// Default: if no asset-parent can be found we take the global asset
 		$assetParentId = $assetParent->getRootId();
@@ -81,7 +87,7 @@ class TjreportsTableTjreport extends JTable
 	 */
 	public function check()
 	{
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 
 		$this->alias = trim($this->alias);
 
@@ -92,43 +98,43 @@ class TjreportsTableTjreport extends JTable
 
 		if ($this->alias)
 		{
-			if (JFactory::getConfig()->get('unicodeslugs') == 1)
+			if (Factory::getConfig()->get('unicodeslugs') == 1)
 			{
-				$this->alias = JFilterOutput::stringURLUnicodeSlug($this->alias);
+				$this->alias = OutputFilter::stringURLUnicodeSlug($this->alias);
 			}
 			else
 			{
-				$this->alias = JFilterOutput::stringURLSafe($this->alias);
+				$this->alias = OutputFilter::stringURLSafe($this->alias);
 			}
 		}
 
 		// Check if course with same alias is present
-		$table = JTable::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
+		$table = Table::getInstance('Tjreport', 'TjreportsTable', array('dbo', $db));
 
 		if ($table->load(array('alias' => $this->alias)) && ($table->id != $this->id || $this->id == 0))
 		{
-			$msg = JText::_('COM_TJREPORT_SAVE_ALIAS_WARNING');
+			$msg = Text::_('COM_TJREPORT_SAVE_ALIAS_WARNING');
 
 			while ($table->load(array('alias' => $this->alias)))
 			{
 				$this->alias = JString::increment($this->alias, 'dash');
 			}
 
-			JFactory::getApplication()->enqueueMessage($msg, 'warning');
+			Factory::getApplication()->enqueueMessage($msg, 'warning');
 		}
 
 		$tjreport_views = array('reports');
 
 		if (in_array($this->alias, $tjreport_views))
 		{
-			$this->setError(JText::_('COM_TJREPORT_VIEW_WITH_SAME_ALIAS'));
+			$this->setError(Text::_('COM_TJREPORT_VIEW_WITH_SAME_ALIAS'));
 
 			return false;
 		}
 
 		if (trim(str_replace('-', '', $this->alias)) == '')
 		{
-			$this->alias = JFactory::getDate()->format("Y-m-d-H-i-s");
+			$this->alias = Factory::getDate()->format("Y-m-d-H-i-s");
 		}
 
 		return parent::check();

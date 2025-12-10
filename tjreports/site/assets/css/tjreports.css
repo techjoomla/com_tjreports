@@ -347,3 +347,6 @@ table.tjrport-table {
     margin-top: 0px !important;
 }
 
+.view-reports .container-main {
+    overflow: auto;
+}

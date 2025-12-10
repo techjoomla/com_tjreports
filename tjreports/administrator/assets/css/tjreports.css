@@ -1,0 +1,11 @@
+.view-tjreports .chosen-container-single .chosen-single{
+
+
+    /* border: 1px solid #aaa; */
+    border: 1px solid var(--template-bg-dark-20);
+    height: -webkit-fill-available;
+    line-height: 1.5!important;
+    padding: 0.5rem 1rem!important;
+    font-size: 1rem;
+}
+

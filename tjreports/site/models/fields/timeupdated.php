@@ -8,15 +8,18 @@
  */
 
 defined('JPATH_BASE') or die;
+use Joomla\CMS\Form\FormField;
+use Joomla\CMS\Date\Date;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Factory;
 
-jimport('joomla.form.formfield');
 
 /**
  * Supports an HTML select list of categories
  *
  * @since  1.6
  */
-class JFormFieldTimeupdated extends JFormField
+class JFormFieldTimeupdated extends FormField
 {
 	/**
 	 * The form field type.
@@ -49,13 +52,13 @@ class JFormFieldTimeupdated extends JFormField
 			}
 			else
 			{
-				$jdate       = new JDate($old_time_updated);
-				$pretty_date = $jdate->format(JText::_('DATE_FORMAT_LC2'));
+				$jdate       = new Date($old_time_updated);
+				$pretty_date = $jdate->format(Text::_('DATE_FORMAT_LC2'));
 				$html[]      = "<div>" . $pretty_date . "</div>";
 			}
 		}
 
-		$time_updated = JFactory::getDate()->toSql();
+		$time_updated = Factory::getDate()->toSql();
 		$html[]       = '<input type="hidden" name="' . $this->name . '" value="' . $time_updated . '" />';
 
 		return implode($html);

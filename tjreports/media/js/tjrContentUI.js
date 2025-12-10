@@ -43,7 +43,13 @@ jQuery.extend(tjrContentUI.report, {
 			jQuery('#pagination').show();
 		}
 
-		jQuery('#reports-container .hasTooltip').tooltip('destroy');
+		try {
+			jQuery("#reports-container .hasTooltip").tooltip('destroy');
+		}
+		catch(err) {
+			jQuery("#reports-container .hasTooltip").tooltip('dispose');
+		}
+
 		this.searchToggle = jQuery('div#topFilters').is(':visible');
 		tjrContentUI.utility.loadingLayer('show');
 		this.$form = jQuery('#adminForm');
@@ -51,8 +57,15 @@ jQuery.extend(tjrContentUI.report, {
 		if (!doProcess) {
 			return false;
 		}
-		jQuery(".hasPopover").popover('destroy')
-		var promise = tjrContentService.postData(this.url+'&tpl='+layout, this.$form.serialize());//, {'datatype':'html'}
+
+		try {
+			jQuery(".hasPopover").popover('destroy');
+		}
+		catch(err) {
+			jQuery(".hasPopover").popover('dispose');
+		}
+
+		var promise = tjrContentService.postData(this.url+'&tmpl='+layout, this.$form.serialize());
 
 		promise.fail(
 			function(response) {
@@ -61,7 +74,7 @@ jQuery.extend(tjrContentUI.report, {
 
 				if (response.status == 403)
 				{
-					alert(Joomla.JText._('JERROR_ALERTNOAUTHOR'));
+					alert(Joomla.Text._('JERROR_ALERTNOAUTHOR'));
 				}
 			}
 		).done(
@@ -165,7 +178,7 @@ jQuery.extend(tjrContentUI.report, {
 		if (inputHidden == 1)
 		{
 			jQuery('#queryName').show();
-			jQuery('#saveQuery').html(Joomla.JText._('COM_TJREPORTS_SAVE_QUERY'));
+			jQuery('#saveQuery').html(Joomla.Text._('COM_TJREPORTS_SAVE_QUERY'));
 		}
 		else
 		{
@@ -173,7 +186,7 @@ jQuery.extend(tjrContentUI.report, {
 
 			if (queryName === '')
 			{
-				alert(Joomla.JText._('COM_TJREPORTS_ENTER_TITLE'));
+				alert(Joomla.Text._('COM_TJREPORTS_ENTER_TITLE'));
 				return false;
 			}
 			else
@@ -221,7 +234,7 @@ jQuery.extend(tjrContentUI.report, {
 		}
 		else
 		{
-			deletemsg = Joomla.JText._('COM_TJREPORTS_DELETE_MESSAGE');
+			deletemsg = Joomla.Text._('COM_TJREPORTS_DELETE_MESSAGE');
 			var comfirmDelete = confirm(deletemsg);
 			if(comfirmDelete)
 			{
@@ -477,7 +490,7 @@ jQuery.extend(tjrContentUI.tjreport, {
 				console.log('Something went wrong.');
 				if (response.status == 403)
 				{
-					alert(Joomla.JText._('JERROR_ALERTNOAUTHOR'));
+					alert(Joomla.Text._('JERROR_ALERTNOAUTHOR'));
 				}
 			}
 		).done(
@@ -534,7 +547,7 @@ jQuery.extend(tjrContentUI.tjreport, {
 				console.log('Something went wrong.');
 				if (response.status == 403)
 				{
-					alert(Joomla.JText._('JERROR_ALERTNOAUTHOR'));
+					alert(Joomla.Text._('JERROR_ALERTNOAUTHOR'));
 				}
 			}
 		).done(
@@ -569,11 +582,11 @@ jQuery(document).ready(function(){
 
 	if (tjrContentUI.utility.getJSCookie('showdeletemsg'))
 	{
-		if (!Joomla.JText.strings['SUCCESS'])
+		if (!Joomla.Text.strings['SUCCESS'])
 		{
-			Joomla.JText.strings['SUCCESS'] = "Success";
+			Joomla.Text.strings['SUCCESS'] = "Success";
 		}
-		Joomla.renderMessages({'success' : [Joomla.JText._("COM_TJREPORTS_QUERY_DELETE_SUCCESS")]});
+		Joomla.renderMessages({'success' : [Joomla.Text._("COM_TJREPORTS_QUERY_DELETE_SUCCESS")]});
 		tjrContentUI.utility.eraseJSCookie("showdeletemsg");
 	}
 

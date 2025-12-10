@@ -9,14 +9,14 @@
 
 defined('JPATH_BASE') or die;
 
-jimport('joomla.form.formfield');
+use Joomla\CMS\Form\FormField;
 
 /**
  * Supports an HTML select list of categories
  *
  * @since  1.6
  */
-class JFormFieldFileMultiple extends JFormField
+class JFormFieldFileMultiple extends FormField
 {
 	/**
 	 * The form field type.

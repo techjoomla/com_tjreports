@@ -29,12 +29,14 @@
  */
 
 defined('_JEXEC') or die( ';)' );
-jimport('joomla.installer.installer');
-jimport('joomla.filesystem.file');
-jimport('joomla.application.component.helper');
-
-Use Joomla\CMS\Table\Table;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Installer\Installer;
+use Joomla\CMS\Table\Table;
+use Joomla\Filesystem\File;
+use Joomla\Filesystem\Folder;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\Database\DatabaseInterface;
 
 /**
  * Script file of TJReports component
@@ -43,6 +45,21 @@ use Joomla\CMS\MVC\Model\BaseDatabaseModel;
  **/
 class Com_TjreportsInstallerScript
 {
+	/**
+	 * Database driver
+	 *
+	 * @var DatabaseInterface
+	 */
+	private $db;
+
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		$this->db = Factory::getContainer()->get(DatabaseInterface::class);
+	}
+
 	private $removeFilesAndFolders = array(
 		'files' => array(
 			// Since v1.1.7
@@ -97,11 +114,7 @@ class Com_TjreportsInstallerScript
 	 */
 	public function uninstall($parent)
 	{
-		jimport('joomla.installer.installer');
-
-		$db = JFactory::getDBO();
-
-		$status          = new JObject;
+		$status          = new \stdClass();
 		$status->plugins = array();
 
 		$src = $parent->getParent()->getPath('source');
@@ -115,18 +128,19 @@ class Com_TjreportsInstallerScript
 				{
 					foreach ($plugins as $plugin => $published)
 					{
-						$sql = $db->getQuery(true)->select($db->qn('extension_id'))
-						->from($db->qn('#__extensions'))
-						->where($db->qn('type') . ' = ' . $db->q('plugin'))
-						->where($db->qn('element') . ' = ' . $db->q($plugin))
-						->where($db->qn('folder') . ' = ' . $db->q($folder));
-						$db->setQuery($sql);
+						$sql = $this->db->getQuery(true)->select($this->db->quoteName('extension_id'))
+						->from($this->db->quoteName('#__extensions'))
+						->where($this->db->quoteName('type') . ' = ' . $this->db->quote('plugin'))
+						->where($this->db->quoteName('element') . ' = ' . $this->db->quote($plugin))
+						->where($this->db->quoteName('folder') . ' = ' . $this->db->quote($folder));
+						$this->db->setQuery($sql);
 
-						$id = $db->loadResult();
+						$id = $this->db->loadResult();
 
 						if ($id)
 						{
-							$installer         = new JInstaller;
+							$installer = new Installer();
+							$installer->setDatabase($this->db);
 							$result            = $installer->uninstall('plugin', $id);
 							$status->plugins[] = array(
 								'name' => 'plg_' . $plugin,
@@ -184,9 +198,7 @@ class Com_TjreportsInstallerScript
 	{
 		$src = $parent->getParent()->getPath('source');
 
-		$db = JFactory::getDbo();
-
-		$status = new JObject;
+		$status = new \stdClass();
 		$status->plugins = array();
 
 		// Plugins installation
@@ -221,28 +233,29 @@ class Com_TjreportsInstallerScript
 						}
 
 						// Was the plugin already installed?
-						$query = $db->getQuery(true)
+						$query = $this->db->getQuery(true)
 							->select('COUNT(*)')
-							->from($db->qn('#__extensions'))
-							->where($db->qn('element') . ' = ' . $db->q($plugin))
-							->where($db->qn('folder') . ' = ' . $db->q($folder));
-						$db->setQuery($query);
-						$count = $db->loadResult();
+							->from($this->db->quoteName('#__extensions'))
+							->where($this->db->quoteName('element') . ' = ' . $this->db->quote($plugin))
+							->where($this->db->quoteName('folder') . ' = ' . $this->db->quote($folder));
+						$this->db->setQuery($query);
+						$count = $this->db->loadResult();
 
-						$installer = new JInstaller;
+						$installer = new Installer();
+						$installer->setDatabase($this->db);
 						$result = $installer->install($path);
 
 						$status->plugins[] = array('name' => 'plg_' . $plugin, 'group' => $folder, 'result' => $result);
 
 						if ($published && !$count)
 						{
-							$query = $db->getQuery(true)
-								->update($db->qn('#__extensions'))
-								->set($db->qn('enabled') . ' = ' . $db->q('1'))
-								->where($db->qn('element') . ' = ' . $db->q($plugin))
-								->where($db->qn('folder') . ' = ' . $db->q($folder));
-							$db->setQuery($query);
-							$db->execute();
+							$query = $this->db->getQuery(true)
+								->update($this->db->quoteName('#__extensions'))
+								->set($this->db->quoteName('enabled') . ' = ' . $this->db->quote('1'))
+								->where($this->db->quoteName('element') . ' = ' . $this->db->quote($plugin))
+								->where($this->db->quoteName('folder') . ' = ' . $this->db->quote($folder));
+							$this->db->setQuery($query);
+							$this->db->execute();
 						}
 					}
 				}
@@ -264,20 +277,47 @@ class Com_TjreportsInstallerScript
 	 */
 	public function migrateReportsOrdering()
 	{
-		JLoader::import('components.com_tjreports.models.tjreports', JPATH_ADMINISTRATOR);
-		$tjreportsModel = BaseDatabaseModel::getInstance('Tjreports', 'TjreportsModel');
-		$tjreportsModel->setState('list.ordering', 'id');
-		$reportList = $tjreportsModel->getItems();
-
-		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjreports/tables');
-		$reportTable = Table::getInstance('Tjreport', 'TjreportsTable');
-
-		foreach ($reportList as $key => $report)
+		try
 		{
-			$data = (array) $report;
-			$data['ordering'] = ++$key;
+			// Check if component tables exist (might not during uninstall)
+			$tables = $this->db->getTableList();
+			$prefix = $this->db->getPrefix();
+			$reportTable = $prefix . 'tjreports';
+			
+			if (!in_array($reportTable, $tables))
+			{
+				return;
+			}
 
-			$reportTable->save($data);
+			// Get reports directly from database instead of using model
+			$query = $this->db->getQuery(true)
+				->select('*')
+				->from($this->db->quoteName('#__tjreports'))
+				->order($this->db->quoteName('id') . ' ASC');
+			$this->db->setQuery($query);
+			$reportList = $this->db->loadObjectList();
+
+			if (empty($reportList))
+			{
+				return;
+			}
+
+			// Update ordering for each report
+			foreach ($reportList as $key => $report)
+			{
+				$ordering = $key + 1;
+				$updateQuery = $this->db->getQuery(true)
+					->update($this->db->quoteName('#__tjreports'))
+					->set($this->db->quoteName('ordering') . ' = ' . $this->db->quote($ordering))
+					->where($this->db->quoteName('id') . ' = ' . $this->db->quote($report->id));
+				$this->db->setQuery($updateQuery);
+				$this->db->execute();
+			}
+		}
+		catch (Exception $e)
+		{
+			// Silently fail during install/uninstall - not critical
+			return;
 		}
 	}
 
@@ -289,26 +329,30 @@ class Com_TjreportsInstallerScript
 	private function removeObsoleteFilesAndFolders($removeFilesAndFolders)
 	{
 		// Remove files
-		jimport('joomla.filesystem.file');
-		if(!empty($removeFilesAndFolders['files']))
+		if (!empty($removeFilesAndFolders['files']))
 		{
-			foreach($removeFilesAndFolders['files'] as $file)
+			foreach ($removeFilesAndFolders['files'] as $file)
 			{
-				$f = JPATH_ROOT.'/'.$file;
-				if(!JFile::exists($f)) continue;
-				JFile::delete($f);
+				$f = JPATH_ROOT . '/' . $file;
+				if (!File::exists($f))
+				{
+					continue;
+				}
+				File::delete($f);
 			}
 		}
 
 		// Remove folders
-		jimport('joomla.filesystem.file');
-		if(!empty($removeFilesAndFolders['folders']))
+		if (!empty($removeFilesAndFolders['folders']))
 		{
-			foreach($removeFilesAndFolders['folders'] as $folder)
+			foreach ($removeFilesAndFolders['folders'] as $folder)
 			{
-				$f = JPATH_ROOT.'/'.$folder;
-				if(!file_exists($f)) continue;
-				JFolder::delete($f);
+				$f = JPATH_ROOT . '/' . $folder;
+				if (!Folder::exists($f))
+				{
+					continue;
+				}
+				Folder::delete($f);
 			}
 		}
 	}

@@ -10,14 +10,17 @@
 // No direct access.
 defined('_JEXEC') or die();
 
-JFormHelper::loadFieldClass('list');
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Form\Field\ListField;
 
 /**
  * Supports an HTML select list of courses
  *
  * @since  1.0.0
  */
-class JFormFieldUsers extends JFormFieldList
+class JFormFieldUsers extends ListField
 {
 	/**
 	 * The form field type.
@@ -38,13 +41,13 @@ class JFormFieldUsers extends JFormFieldList
 	/**
 	 * Method to get a list of options for a list input.
 	 *
-	 * @return	array		An array of JHtml options.
+	 * @return	array		An array of HTMLHelper options.
 	 *
 	 * @since   11.4
 	 */
 	protected function getOptions()
 	{
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$query = $db->getQuery(true);
 
 		// Select the required fields from the table.
@@ -61,7 +64,7 @@ class JFormFieldUsers extends JFormFieldList
 
 		foreach ($allUsers as $u)
 		{
-			$options[] = JHtml::_('select.option', $u->id, $u->name);
+			$options[] = HTMLHelper::_('select.option', $u->id, $u->name);
 		}
 
 		if (!$this->loadExternally)
@@ -76,7 +79,7 @@ class JFormFieldUsers extends JFormFieldList
 	/**
 	 * Method to get a list of options for a list input externally and not from xml.
 	 *
-	 * @return	array		An array of JHtml options.
+	 * @return	array		An array of HTMLHelper options.
 	 *
 	 * @since   2.2
 	 */

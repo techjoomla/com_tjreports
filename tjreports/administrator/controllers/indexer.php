@@ -33,7 +33,7 @@ class TjreportsControllerIndexer extends BaseController
 	{
 		$app = Factory::getApplication();
 
-		if ($app->isSite())
+		if ($app->isClient("site"))
 		{
 			echo 'Error creating DB table - Need to run this in admin area';
 

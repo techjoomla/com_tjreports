@@ -8,6 +8,8 @@
  */
 
 defined('JPATH_BASE') or die;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
 
 /** @var JPaginationObject $item */
 $item = $displayData['data'];
@@ -28,33 +30,33 @@ $display = $item->text;
 switch ((string) $item->text)
 {
 	// Check for "Start" item
-	case JText::_('JLIB_HTML_START') :
+	case Text::_('JLIB_HTML_START') :
 		$icon = 'icon-backward icon-first fa fa-step-backward';
-		$aria = JText::sprintf('JLIB_HTML_GOTO_POSITION', strtolower($item->text));
+		$aria = Text::sprintf('JLIB_HTML_GOTO_POSITION', strtolower($item->text));
 		break;
 
 	// Check for "Prev" item
-	case JText::_('JPREV') :
-		$item->text = JText::_('JPREVIOUS');
+	case Text::_('JPREV') :
+		$item->text = Text::_('JPREVIOUS');
 		$icon = 'icon-step-backward icon-previous fa fa-backward';
-		$aria = JText::sprintf('JLIB_HTML_GOTO_POSITION', strtolower($item->text));
+		$aria = Text::sprintf('JLIB_HTML_GOTO_POSITION', strtolower($item->text));
 		break;
 
 	// Check for "Next" item
-	case JText::_('JNEXT') :
+	case Text::_('JNEXT') :
 		$icon = 'icon-step-forward icon-next fa fa-forward';
-		$aria = JText::sprintf('JLIB_HTML_GOTO_POSITION', strtolower($item->text));
+		$aria = Text::sprintf('JLIB_HTML_GOTO_POSITION', strtolower($item->text));
 		break;
 
 	// Check for "End" item
-	case JText::_('JLIB_HTML_END') :
+	case Text::_('JLIB_HTML_END') :
 		$icon = 'icon-forward icon-last fa fa-step-forward';
-		$aria = JText::sprintf('JLIB_HTML_GOTO_POSITION', strtolower($item->text));
+		$aria = Text::sprintf('JLIB_HTML_GOTO_POSITION', strtolower($item->text));
 		break;
 
 	default:
 		$icon = null;
-		$aria = JText::sprintf('JLIB_HTML_GOTO_PAGE', $item->text);
+		$aria = Text::sprintf('JLIB_HTML_GOTO_PAGE', $item->text);
 		break;
 }
 
@@ -82,7 +84,7 @@ if ($displayData['active'])
 
 	if (!is_numeric($item->text))
 	{
-		JHtml::_('bootstrap.tooltip');
+		HTMLHelper::_('bootstrap.tooltip');
 		$cssClasses[] = 'hasTooltip';
 		$title = ' title="' . $item->text . '" ';
 	}
@@ -106,7 +108,7 @@ else
 	</li>
 <?php else : ?>
 	<li class="<?php echo $class; ?>">
-	<span <?php echo $class == 'active' ? 'aria-current="true" aria-label="' . JText::sprintf('JLIB_HTML_PAGE_CURRENT', $item->text) . '"' : ''; ?>>
+	<span <?php echo $class == 'active' ? 'aria-current="true" aria-label="' . Text::sprintf('JLIB_HTML_PAGE_CURRENT', $item->text) . '"' : ''; ?>>
 		<?php echo $display; ?>
 	</span>
 	</li>

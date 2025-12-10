@@ -10,14 +10,13 @@
 // no direct access
 defined('_JEXEC') or die;
 
-// No direct access
-defined('_JEXEC') or die;
-
 // Load the layout & push variables
+$bs = (JVERSION < '4.0.0') ? 'bs3' : 'bs5';
 
-$path = $this->tjreportsHelper->getViewpath('com_tjreports', 'reports', 'default', 'SITE', 'SITE');
+$path = $this->tjreportsHelper->getViewpath('com_tjreports', 'reports', 'default_' . $bs, 'SITE', 'SITE');
+
 ob_start();
-include($path);
+include $path;
 $html = ob_get_contents();
 ob_end_clean();
 echo $html;

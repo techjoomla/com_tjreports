@@ -38,6 +38,14 @@ if (File::exists($tjStrapperPath))
 	TjStrapper::loadTjAssets('com_tjreports');
 }
 
+$tjStrapperPath = JPATH_SITE . '/media/techjoomla_strapper/tjstrapper.php';
+
+if (File::exists($tjStrapperPath))
+{
+	require_once $tjStrapperPath;
+	TjStrapper::loadTjAssets('com_tjreports');
+}
+
 // Include dependancies
 
 spl_autoload_register(function ($class) {

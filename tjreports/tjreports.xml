@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="3.0" method="upgrade">
+<extension type="component" version="6.0" method="upgrade">
 	<name>com_tjreports</name>
 	<author>Techjoomla</author>
 	<authorEmail>extensions@techjoomla.com</authorEmail>
 	<authorUrl>https://techjoomla.com</authorUrl>
-	<copyright>Copyright (C) 2016 - 2022 Techjoomla. All rights reserved.</copyright>
+	<copyright>Copyright (C) 2016 - 2025 Techjoomla. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<creationDate>25th Jan 2022</creationDate>
-	<version>2.0.0</version>
+	<creationDate>26th November 2025</creationDate>
+	<version>6.0.0</version>
 	<description>This component is used to access all the report at single place.</description>
 	<install>
 		<!-- Runs on install -->

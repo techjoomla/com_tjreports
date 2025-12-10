@@ -16,7 +16,7 @@ use Joomla\CMS\Form\FormField;
  *
  * @since  1.6
  */
-class JFormFieldFileMultiple extends JFormField
+class JFormFieldFileMultiple extends FormField
 {
 	/**
 	 * The form field type.

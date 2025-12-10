@@ -240,7 +240,7 @@ class TjreportsModelTjreport extends AdminModel
 				$query->select('MAX(ordering)');
 				$query->from($db->quoteName('#__tj_reports'));
 				$db->setQuery($query);
-				$max             = $db->loadResult();
+				$max             = $db->loadColumn()[0] ?? null;
 				$table->ordering = $max + 1;
 			}
 		}

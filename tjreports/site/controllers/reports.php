@@ -157,7 +157,7 @@ class TjreportsControllerReports extends AdminController
 		}
 
 		fclose($output);
-		jexit();
+		Factory::getApplication()->close();
 	}
 
 	/**
@@ -186,10 +186,10 @@ class TjreportsControllerReports extends AdminController
 		}
 		else
 		{
-			return JError::raiseWarning(404, Text::_('JERROR_ALERTNOAUTHOR'));
+			throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 404);
 		}
 
-		jexit();
+		Factory::getApplication()->close();
 	}
 
 	/**

@@ -34,7 +34,7 @@ else
 	$this->form->setFieldAttribute('parent', 'required', 'required');
 }
 
-JFactory::getDocument()->addScriptDeclaration('
+Factory::getDocument()->addScriptDeclaration('
 	Joomla.submitbutton = function(task)
 	{
 		if (task == "tjreport.cancel" || document.formvalidator.isValid(document.getElementById("adminForm")))

@@ -15,8 +15,8 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-jimport('techjoomla.view.csv');
-JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_ADMINISTRATOR);
+require_once JPATH_LIBRARIES . '/techjoomla/view/csv.php';
+require_once JPATH_ADMINISTRATOR . '/components/com_tjreports/helpers/tjreports.php';
 
 /**
  * CSV class for a list of Tjreports.

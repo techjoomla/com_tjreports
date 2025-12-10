@@ -17,7 +17,10 @@ use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\Component\Actionlogs\Administrator\Model\ActionlogModel;
 
-JLoader::register('ActionlogsHelper', JPATH_ADMINISTRATOR . '/components/com_actionlogs/helpers/actionlogs.php');
+$actionlogsHelperPath = JPATH_ADMINISTRATOR . '/components/com_actionlogs/helpers/actionlogs.php';
+if (file_exists($actionlogsHelperPath)) {
+	require_once $actionlogsHelperPath;
+}
 
 /**
  * TJReports Actions Logging Plugin.
@@ -72,7 +75,10 @@ class PlgActionlogTjreports extends CMSPlugin
 		}
 		else
 		{
-			JLoader::register('ActionlogsModelActionlog', JPATH_ADMINISTRATOR . '/components/com_actionlogs/models/actionlog.php');
+			$actionlogModelPath = JPATH_ADMINISTRATOR . '/components/com_actionlogs/models/actionlog.php';
+			if (file_exists($actionlogModelPath)) {
+				require_once $actionlogModelPath;
+			}
 
 			/* @var ActionlogsModelActionlog $model */
 			$model = BaseDatabaseModel::getInstance('Actionlog', 'ActionlogsModel');

@@ -18,7 +18,7 @@ use Joomla\CMS\HTML\HTMLHelper;
  *
  * @since  1.6
  */
-class JFormFieldForeignKey extends JFormField
+class JFormFieldForeignKey extends FormField
 {
 	/**
 	 * The form field type.

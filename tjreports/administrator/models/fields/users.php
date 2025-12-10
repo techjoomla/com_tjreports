@@ -13,15 +13,14 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
-
-JFormHelper::loadFieldClass('list');
+use Joomla\CMS\Form\Field\ListField;
 
 /**
  * Supports an HTML select list of courses
  *
  * @since  1.0.0
  */
-class JFormFieldUsers extends JFormFieldList
+class JFormFieldUsers extends ListField
 {
 	/**
 	 * The form field type.
@@ -42,7 +41,7 @@ class JFormFieldUsers extends JFormFieldList
 	/**
 	 * Method to get a list of options for a list input.
 	 *
-	 * @return	array		An array of JHtml options.
+	 * @return	array		An array of HTMLHelper options.
 	 *
 	 * @since   11.4
 	 */
@@ -80,7 +79,7 @@ class JFormFieldUsers extends JFormFieldList
 	/**
 	 * Method to get a list of options for a list input externally and not from xml.
 	 *
-	 * @return	array		An array of JHtml options.
+	 * @return	array		An array of HTMLHelper options.
 	 *
 	 * @since   2.2
 	 */

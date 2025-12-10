@@ -19,7 +19,7 @@ use Joomla\CMS\Factory;
  *
  * @since  1.6
  */
-class JFormFieldTimeupdated extends JFormField
+class JFormFieldTimeupdated extends FormField
 {
 	/**
 	 * The form field type.

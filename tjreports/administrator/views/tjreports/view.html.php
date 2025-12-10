@@ -13,6 +13,7 @@ use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Toolbar\ToolbarHelper;
 
 require_once JPATH_COMPONENT . '/helpers/tjreports.php';
 
@@ -36,7 +37,7 @@ class TjreportsViewTjreports extends HtmlView
 
 		if (!$this->canDo->get('core.view'))
 		{
-			JError::raiseError(403, Text::_('JERROR_ALERTNOAUTHOR'));
+			throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
 
 			return false;
 		}
@@ -57,11 +58,11 @@ class TjreportsViewTjreports extends HtmlView
 		if ($client)
 		{
 			TjreportsHelper::addSubmenu('tjreports');
-			$this->sidebar = JHtmlSidebar::render();
+			$this->sidebar = '';;
 		}
 
 		// Set the tool-bar and number of found items
-		$this->addToolBar();
+		$this->addToolbar();
 
 		// Display the template
 		parent::display($tpl);
@@ -74,35 +75,35 @@ class TjreportsViewTjreports extends HtmlView
 	 *
 	 * @since   1.6
 	 */
-	protected function addToolBar()
+	protected function addToolbar()
 	{
 		$name = Text::_('COM_TJREPORTS');
 
-		JToolBarHelper::title($name, 'list');
+		ToolbarHelper::title($name, 'list');
 
 		if ($this->canDo->get('core.create'))
 		{
-			JToolBarHelper::addNew('tjreport.add');
+			ToolbarHelper::addNew('tjreport.add');
 		}
 
 		if ($this->canDo->get('core.edit'))
 		{
-			JToolBarHelper::editList('tjreport.edit');
+			ToolbarHelper::editList('tjreport.edit');
 		}
 
 		if ($this->canDo->get('core.delete'))
 		{
-			JToolBarHelper::deleteList('', 'tjreports.delete');
+			ToolbarHelper::deleteList('', 'tjreports.delete');
 		}
 
 		if ($this->canDo->get('core.admin'))
 		{
-			JToolBarHelper::preferences('com_tjreports');
+			ToolbarHelper::preferences('com_tjreports');
 		}
 
 		if ($this->canDo->get('core.create'))
 		{
-			JToolBarHelper::custom('tjreports.discover', 'refresh', 'refresh', 'JLIB_INSTALLER_DISCOVER', false);
+			ToolbarHelper::custom('tjreports.discover', 'refresh', 'refresh', 'JLIB_INSTALLER_DISCOVER', false);
 		}
 	}
 }

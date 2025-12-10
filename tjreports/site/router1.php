@@ -11,7 +11,14 @@
 defined('_JEXEC') or die;
 use Joomla\CMS\Component\Router\RouterBase;
 
-JLoader::registerPrefix('Tjreports', JPATH_SITE . '/components/com_tjreports/');
+spl_autoload_register(function ($class) {
+	if (strpos($class, 'Tjreports') === 0) {
+		$path = JPATH_SITE . '/components/com_tjreports/' . strtolower(substr($class, 9)) . '.php';
+		if (file_exists($path)) {
+			require_once $path;
+		}
+	}
+});
 
 /**
  * Class TjreportsRouter

@@ -43,7 +43,14 @@ $document->addStyleSheet(Uri::root(true) . '/media/com_tjreports/css/font-awesom
 
 // Include dependancies
 
-JLoader::registerPrefix('Tjreports', JPATH_COMPONENT_ADMINISTRATOR);
+spl_autoload_register(function ($class) {
+	if (strpos($class, 'Tjreports') === 0) {
+		$path = JPATH_COMPONENT_ADMINISTRATOR . '/' . strtolower(substr($class, 9)) . '.php';
+		if (file_exists($path)) {
+			require_once $path;
+		}
+	}
+});
 
 $controller = BaseController::getInstance('Tjreports');
 $controller->execute(Factory::getApplication()->input->get('task'));

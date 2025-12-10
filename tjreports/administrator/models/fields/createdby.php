@@ -17,7 +17,7 @@ use Joomla\CMS\Factory;
  *
  * @since  1.6
  */
-class JFormFieldCreatedby extends JFormField
+class JFormFieldCreatedby extends FormField
 {
 	/**
 	 * The form field type.

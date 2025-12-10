@@ -20,7 +20,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Component\ComponentHelper;
 
 require_once __DIR__ . '/view.base.php';
-jimport('techjoomla.tjtoolbar.button.csvexport');
+require_once JPATH_LIBRARIES . '/techjoomla/tjtoolbar/button/csvexport.php';
 
 /**
  * View class for a list of Tjreports.
@@ -65,7 +65,7 @@ class TjreportsViewReports extends ReportsViewBase
 		$reportId             = $app->getUserStateFromRequest('reportId', 'reportId', '');
 		$user                 = Factory::getUser();
 		$userAuthorisedExport = $user->authorise('core.export', 'com_tjreports.tjreport.' . $reportId);
-		$bar                  = JToolBar::getInstance('toolbar');
+		$bar                  = Toolbar::getInstance('toolbar');
 		$canDo                = TjreportsHelper::getActions();
 
 		if ($app->isClient("administrator"))
@@ -77,7 +77,7 @@ class TjreportsViewReports extends ReportsViewBase
 				$title = $title . ' - ' . $this->reportData->title;
 			}
 
-			JToolBarHelper::title($title, 'list');
+			ToolbarHelper::title($title, 'list');
 		}
 		else
 		{
@@ -130,7 +130,7 @@ class TjreportsViewReports extends ReportsViewBase
 
 			if ($app->isClient("administrator"))
 			{
-				$this->sidebar = JHtmlSidebar::render();
+				$this->sidebar = '';;
 			}
 
 			$bar->appendButton('Custom', $button);

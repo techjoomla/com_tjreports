@@ -24,7 +24,7 @@ use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_ADMINISTRATOR);
 JLoader::import('components.com_tjreports.models.tjreports', JPATH_SITE);
 JLoader::import('components.com_tjreports.helpers.tjreports', JPATH_SITE);
-JLoader::register('JToolBarHelper', JPATH_ADMINISTRATOR . '/includes/toolbar.php');
+JLoader::register('ToolbarHelper', JPATH_ADMINISTRATOR . '/includes/toolbar.php');
 
 /**
  * View class for a list of Tjreports.
@@ -118,14 +118,14 @@ class ReportsViewBase extends HtmlView
 
 			if (!$allow_permission)
 			{
-				JError::raiseWarning(403, Text::_('JERROR_ALERTNOAUTHOR'));
+				throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
 
 				return false;
 			}
 		}
 		else
 		{
-			JError::raiseWarning(403, Text::_('JERROR_ALERTNOAUTHOR'));
+			throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
 
 			return false;
 		}
@@ -176,7 +176,7 @@ class ReportsViewBase extends HtmlView
 
 		if (!$pluginExists || !$this->pluginName)
 		{
-			JError::raiseError(404, Text::_('COM_TJREPORTS_PLUGIN_DESABLED_OR_NOT_EXISTS'));
+			throw new \Exception(Text::_('COM_TJREPORTS_PLUGIN_DESABLED_OR_NOT_EXISTS'), 404);
 
 			return false;
 		}
